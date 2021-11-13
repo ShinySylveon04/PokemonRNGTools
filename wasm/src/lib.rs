@@ -113,36 +113,19 @@ impl PartialEq<ShinyEnum> for ShinyFilterEnum {
     }
 }
 
-pub fn get_is_shiny(tid: u16, sid: u16, rand: u32) -> bool {
-    let tsv = tid ^ sid;
-    let psv = get_shiny_value(rand);
-    // if tsv == psv {
-    //     ShinyEnum::Square
-    // } else if (tsv ^ psv) < 0x10 {
-    //     ShinyEnum::Star
-    // } else {
-    //     ShinyEnum::None
-    // }
+fn check_is_shiny(tsv: u16, rand: u32) -> bool {
+    let psv = calculate_shiny_value((rand >> 0x10) as u16, (rand & 0xFFFF) as u16);
     (tsv ^ psv) < 0x10
 }
 
-fn get_shiny_value(value: u32) -> u16 {
-    ((value >> 16) ^ (value & 0xFFFF)) as u16
-}
-
-fn check_is_shiny(tsv: u16, rand: u32) -> bool {
-    let psv = calculate_shiny_value((rand >> 0x10) as u16, (rand & 0xFFFF) as u16);
-    tsv == psv
-}
-
 fn calculate_shiny_value(first: u16, second: u16) -> u16 {
-    (first ^ second) >> 4
+    first ^ second
 }
 
 fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
     rng.rand_max(100);
     let tsv = calculate_shiny_value(tid, sid);
-    let mut is_shiny;
+    let mut is_shiny = false;
     let mut shiny_type = ShinyEnum::None;
 
     let shiny_rolls = if shiny_charm { 3 } else { 1 };
@@ -161,7 +144,31 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
     rng.rand_max(2); // ability
     let mut seed = Xoroshiro::new(rng.next() as u64);
     let ec = seed.next();
-    let pid = seed.next();
+    let mut pid = seed.next();
+
+    let tsv = tid ^ sid;
+    let psv = ((pid >> 16) ^ (pid & 0xFFFF)) as u16;
+    if !is_shiny {
+        if (psv ^ tsv) < 16 {
+            pid ^= 0x10000000; // force pid to not be shiny
+        }
+    } else {
+        // force pid to be shiny
+        if !((psv ^ tsv) < 16) {
+            let pid_high = (pid & 0xFFFF) ^ tsv as u32;
+            pid = (pid_high << 16) as u32 | (pid & 0xFFFF)
+        }
+    }
+
+    // let mut shiny_type = ShinyEnum::None;
+    // if (psv ^ tsv) < 0x10 {
+    //     if (psv ^ tsv) == 0 {
+    //         shiny_type = ShinyEnum::Square;
+    //     } else {
+    //         shiny_type = ShinyEnum::Star;
+    //     }
+    //     // shiny_type = ShinyEnum::None
+    // }
 
     Pokemon {
         shiny_type,
