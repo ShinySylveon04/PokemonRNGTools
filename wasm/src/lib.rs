@@ -126,7 +126,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
     rng.rand_max(100);
     let tsv = calculate_shiny_value(tid, sid);
     let mut is_shiny = false;
-    let mut shiny_type = ShinyEnum::None;
+    // let mut shiny_type = ShinyEnum::None;
 
     let shiny_rolls = if shiny_charm { 3 } else { 1 };
 
@@ -134,7 +134,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         let rand = rng.next(); // mock pid
         is_shiny = check_is_shiny(tsv, rand);
         if is_shiny {
-            shiny_type = ShinyEnum::Square;
+            // shiny_type = ShinyEnum::Square;
             break;
         }
     }
@@ -160,15 +160,17 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         }
     }
 
-    // let mut shiny_type = ShinyEnum::None;
-    // if (psv ^ tsv) < 0x10 {
-    //     if (psv ^ tsv) == 0 {
-    //         shiny_type = ShinyEnum::Square;
-    //     } else {
-    //         shiny_type = ShinyEnum::Star;
-    //     }
-    //     // shiny_type = ShinyEnum::None
-    // }
+    let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
+
+    let mut shiny_type = ShinyEnum::None;
+    if xor < 0x10 {
+        if xor == 0 {
+            shiny_type = ShinyEnum::Square;
+        } else {
+            shiny_type = ShinyEnum::Star;
+        }
+        // shiny_type = ShinyEnum::None
+    }
 
     Pokemon {
         shiny_type,
