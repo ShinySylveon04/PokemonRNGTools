@@ -48,14 +48,14 @@ export const TrainerInfo = ({ setState, state }) => {
     setDialogOpen(false);
   };
 
-  const handleSaveProfile = () => {
-    setProfile({
-      ...saveProfile,
-      name: 'test',
+  const handleSaveProfile = profileName => {
+    const profile = {
+      name: profileName,
       tid: state.tid,
       sid: state.sid,
-    });
-    localStorage.setItem('Profiles', JSON.stringify(saveProfile));
+    };
+    setProfile(profile);
+    localStorage.setItem('Profiles', JSON.stringify(profile));
     setDialogOpen(false);
   };
 

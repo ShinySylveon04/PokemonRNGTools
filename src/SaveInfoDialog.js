@@ -31,7 +31,7 @@ export const SaveInfoDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSaveProfile}>Save</Button>
+        <Button onClick={() => handleSaveProfile(profileName)}>Save</Button>
       </DialogActions>
     </Dialog>
   );
