@@ -11,8 +11,6 @@ import { Filters } from './Filters';
 import { Results } from './Results';
 
 export function App() {
-  // 32435 + 51677
-  // 0x7EB3C9DD
   const [state, setState] = React.useState({
     state0: BigInt('0xe1e16bc81e378a0b'),
     state1: BigInt('0xa79a405a9d7f5849'),
@@ -21,6 +19,11 @@ export function App() {
     shiny: 0,
     encounter: 0,
     shiny_charm: false,
+  });
+  const [profiles, setProfile] = React.useState({
+    name: 'No Profile',
+    tid: 0,
+    sid: 0,
   });
   const [results, setResults] = React.useState({
     advances: 0,
@@ -31,7 +34,7 @@ export function App() {
     pid: 0,
   });
   const { state0, state1, tid, sid, shiny, encounter, shiny_charm } = state;
-  const test = event => {
+  const findResults = event => {
     event.preventDefault();
     const shiny_result = calculate_pokemon(
       state0,
@@ -52,13 +55,13 @@ export function App() {
       <Box
         component="form"
         autoComplete="off"
-        onSubmit={test}
+        onSubmit={findResults}
         sx={{
           width: { sm: '75%' },
           maxWidth: '800px',
           ml: 'auto',
           mr: 'auto',
-          mb: '20px',
+          mb: '30px',
           display: 'flex',
           flexDirection: 'column',
         }}

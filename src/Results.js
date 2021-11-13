@@ -21,13 +21,15 @@ const shinyType = value => {
 export const Results = ({ results }) => {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
+      <Table sx={{ minWidth: 650 }} aria-label="results table">
         <TableHead>
           <TableRow>
             <TableCell>Advances</TableCell>
             <TableCell align="left">Shiny</TableCell>
             <TableCell align="left">State 0</TableCell>
             <TableCell align="left">State 1</TableCell>
+            <TableCell align="left">EC</TableCell>
+            <TableCell align="left">PID</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -39,6 +41,12 @@ export const Results = ({ results }) => {
             </TableCell>
             <TableCell align="left">
               {BigInt(results.state1, 16).toString(16)}
+            </TableCell>
+            <TableCell align="left">
+              {BigInt(results.ec, 16).toString(16)}
+            </TableCell>
+            <TableCell align="left">
+              {BigInt(results.pid, 16).toString(16)}
             </TableCell>
           </TableRow>
         </TableBody>

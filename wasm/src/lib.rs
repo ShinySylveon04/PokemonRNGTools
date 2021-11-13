@@ -126,7 +126,6 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
     rng.rand_max(100);
     let tsv = calculate_shiny_value(tid, sid);
     let mut is_shiny = false;
-    // let mut shiny_type = ShinyEnum::None;
 
     let shiny_rolls = if shiny_charm { 3 } else { 1 };
 
@@ -134,7 +133,6 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         let rand = rng.next(); // mock pid
         is_shiny = check_is_shiny(tsv, rand);
         if is_shiny {
-            // shiny_type = ShinyEnum::Square;
             break;
         }
     }
@@ -169,7 +167,6 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         } else {
             shiny_type = ShinyEnum::Star;
         }
-        // shiny_type = ShinyEnum::None
     }
 
     Pokemon {
@@ -178,62 +175,6 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         pid,
     }
 }
-
-// fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
-//     rng.rand_max(100);
-//     // shiny rolls
-//     let shiny_charm = false;
-//     let mut is_shiny = false;
-
-//     let shiny_rolls = if shiny_charm { 3 } else { 1 };
-//     let mut shiny_type = ShinyEnum::None;
-
-//     for _ in 0..shiny_rolls {
-//         let rand = rng.next(); // mock pid
-//         is_shiny = get_is_shiny(tid, sid, rand);
-//         if is_shiny {
-//             shiny_type = ShinyEnum::Square;
-//             break;
-//         }
-//     }
-
-//     rng.rand_max(2);
-//     rng.rand_max(25); //nature
-//     rng.rand_max(2); // ability
-//     let mut seed = Xoroshiro::new(rng.next() as u64);
-//     let ec = seed.next();
-//     let mut pid = seed.next();
-//     // get_shiny_type(tid, sid, rand)
-//     // rand for generate pkm
-//     // let tsv = tid ^ sid;
-//     // let psv = get_shiny_value(pid);
-//     // if !is_shiny {
-//     //     if (psv ^ tsv) < 16 {
-//     //         pid ^= 0x10000000; // force pid to not be shiny
-//     //     }
-//     // } else {
-//     //     // force pid to be shiny
-//     //     if !((psv ^ tsv) < 16) {
-//     //         let pid_high = (pid & 0xFFFF) ^ tsv as u32;
-//     //         pid = (pid_high << 16) as u32 | (pid & 0xFFFF)
-//     //     }
-//     // }
-//     // let mut shiny_type = ShinyEnum::None;
-//     // if (psv ^ tsv) < 0x10 {
-//     //     if (psv ^ tsv) == 0 {
-//     //         shiny_type = ShinyEnum::Square;
-//     //     } else {
-//     //         shiny_type = ShinyEnum::Star;
-//     //     }
-//     //     // shiny_type = ShinyEnum::None
-//     // }
-//     // (shiny_type, ec)
-//     Pokemon {
-//         shiny_type,
-//         ec,
-//         pid,
-//     }
-// }
 
 struct Pokemon {
     shiny_type: ShinyEnum,
@@ -312,15 +253,6 @@ pub fn calculate_pokemon(
         ec: pokemon_shininess.ec,
         pid: pokemon_shininess.pid,
     }
-    // println!(
-    //     "0x{:x}, 0x{:x}, {}",
-    //     shiny_state[0], shiny_state[1], advances
-    // )
-
-    // for i in 0..8 {
-    //     rng.next();
-    // }
-    // println!("0x{:x}, 0x{:x}", rng.get_state()[0], rng.get_state()[1])
 }
 
 #[cfg(test)]
