@@ -1,5 +1,5 @@
 import React from 'react';
-import { calculate_shiny } from '../wasm/Cargo.toml';
+import { calculate_pokemon } from '../wasm/Cargo.toml';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,18 +13,35 @@ import { Results } from './Results';
 export function App() {
   // 32435 + 51677
   // 0x7EB3C9DD
-  const [state, setState] = React.useState({state0: 0, state1: 0, tsv: 0});
-  const [shiny, setShiny] = React.useState(0);
+  const [state, setState] = React.useState({
+    state0: BigInt('0xe1e16bc81e378a0b'),
+    state1: BigInt('0xa79a405a9d7f5849'),
+    tid: 32125,
+    sid: 998,
+    shiny: 0,
+    encounter: 0,
+    shiny_charm: false,
+  });
   const [results, setResults] = React.useState({
     advances: 0,
-    shiny: 0,
-    state0: 0,
-    state1: 0,
+    shiny_value: 0,
+    state0: BigInt('0xe1e16bc81e378a0b'),
+    state1: BigInt('0xa79a405a9d7f5849'),
+    ec: 0,
+    pid: 0,
   });
-  const { state0, state1, tsv } = state;
+  const { state0, state1, tid, sid, shiny, encounter, shiny_charm } = state;
   const test = event => {
     event.preventDefault();
-    const shiny_result = calculate_shiny(state0, state1, tsv, shiny);
+    const shiny_result = calculate_pokemon(
+      state0,
+      state1,
+      tid,
+      sid,
+      shiny,
+      encounter,
+      shiny_charm,
+    );
     setResults(shiny_result);
   };
 
@@ -49,18 +66,18 @@ export function App() {
         <Typography variant="h3" gutterBottom align="center">
           Sword & Shield RNG
         </Typography>
-        <TrainerInfo setState={setState}/>
-        <RNGInfo setState={setState}/>
-        <Filters setShiny={setShiny} shiny={shiny}/>
+        <TrainerInfo setState={setState} state={state} />
+        <RNGInfo setState={setState} state={state} />
+        <Filters setState={setState} state={state} />
         <Button
           type="submit"
           variant="contained"
           fullWidth
-          sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px'}}
+          sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
         >
           Search
         </Button>
-        <Results results={results}/>
+        <Results results={results} />
       </Box>
     </Container>
   );

@@ -9,9 +9,9 @@ import Paper from '@mui/material/Paper';
 
 const shinyType = value => {
   switch (value) {
-    case 2:
+    case 1:
       return 'Star';
-    case 3:
+    case 2:
       return 'Square';
     default:
       return 'None';
@@ -33,7 +33,7 @@ export const Results = ({ results }) => {
         <TableBody>
           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
             <TableCell align="left">{results.advances}</TableCell>
-            <TableCell align="left">{shinyType(results.shiny)}</TableCell>
+            <TableCell align="left">{shinyType(results.shiny_value)}</TableCell>
             <TableCell align="left">
               {BigInt(results.state0, 16).toString(16)}
             </TableCell>
