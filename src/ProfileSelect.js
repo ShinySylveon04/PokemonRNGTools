@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 export const ProfileSelect = ({ saveProfile }) => {
+  const name = saveProfile ? saveProfile.name : 'No Profile';
   return (
     <Grid item sm={3} md={3} xs={12}>
       <FormControl fullWidth>
@@ -14,10 +15,10 @@ export const ProfileSelect = ({ saveProfile }) => {
         <Select
           labelId="saved-info-label"
           id="saved-info"
-          value={saveProfile.name}
+          value={name}
           label="Current Info"
         >
-          <MenuItem value={saveProfile.name}>{saveProfile.name}</MenuItem>
+          <MenuItem value={name}>{name}</MenuItem>
         </Select>
       </FormControl>
     </Grid>

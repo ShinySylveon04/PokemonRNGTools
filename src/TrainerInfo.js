@@ -17,19 +17,14 @@ import { SaveInfoDialog } from './SaveInfoDialog';
 import { SaveProfile } from './SaveProfile';
 import { ProfileSelect } from './ProfileSelect';
 
-export const TrainerInfo = ({ setState, state }) => {
-  const [version, setVersion] = React.useState('Sword');
-  const [badges, setBadges] = React.useState(0);
-  const [saveProfile, setProfile] = React.useState({
-    name: 'No Profile',
-    tid: 0,
-    sid: 0,
-  });
-
+export const TrainerInfo = ({ setState, state, saveProfile, setProfile }) => {
   const [checked, setChecked] = React.useState(false);
+  React.useEffect(() => {
+    setChecked(saveProfile.shinyCharm);
+  }, [saveProfile]);
 
   const handleChange = event => {
-    setState({ ...state, shiny_charm: event.target.checked });
+    setState({ ...state, shinyCharm: event.target.checked });
     setChecked(event.target.checked);
   };
 
@@ -53,6 +48,9 @@ export const TrainerInfo = ({ setState, state }) => {
       name: profileName,
       tid: state.tid,
       sid: state.sid,
+      shinyCharm: state.shinyCharm,
+      version: state.version,
+      badgeCount: state.badgeCount,
     };
     setProfile(profile);
     localStorage.setItem('Profiles', JSON.stringify(profile));
@@ -99,6 +97,7 @@ export const TrainerInfo = ({ setState, state }) => {
                 id="tid"
                 label="TID"
                 variant="outlined"
+                value={state.tid}
                 onChange={event =>
                   setState(state => ({
                     ...state,
@@ -113,6 +112,7 @@ export const TrainerInfo = ({ setState, state }) => {
                 id="sid"
                 label="SID"
                 variant="outlined"
+                value={state.sid}
                 onChange={event =>
                   setState(state => ({
                     ...state,
@@ -127,8 +127,14 @@ export const TrainerInfo = ({ setState, state }) => {
                 <Select
                   labelId="game-version-label"
                   id="game-version"
-                  value={version}
+                  value={state.version}
                   label="Game Version"
+                  onChange={event =>
+                    setState(state => ({
+                      ...state,
+                      version: event.target.value,
+                    }))
+                  }
                 >
                   <MenuItem value={'Sword'}>Sword</MenuItem>
                   <MenuItem value={'Shield'}>Shield</MenuItem>
@@ -141,11 +147,24 @@ export const TrainerInfo = ({ setState, state }) => {
                 <Select
                   labelId="badge-count-label"
                   id="badge-count"
-                  value={badges}
+                  value={state.badgeCount}
                   label="Badge Count"
+                  onChange={event =>
+                    setState(state => ({
+                      ...state,
+                      badgeCount: event.target.value,
+                    }))
+                  }
                 >
                   <MenuItem value={0}>0</MenuItem>
                   <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                  <MenuItem value={8}>8</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -168,9 +187,9 @@ export const TrainerInfo = ({ setState, state }) => {
                   label="Shiny Charm"
                 />
               </Grid>
-              <Grid item>
+              {/* <Grid item>
                 <FormControlLabel control={<Checkbox />} label="Mark Charm" />
-              </Grid>
+              </Grid> */}
             </Grid>
             <ProfileSelect saveProfile={saveProfile} />
             <SaveProfile handleDialogOpen={handleDialogOpen} />
