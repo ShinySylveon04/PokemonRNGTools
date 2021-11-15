@@ -21,6 +21,7 @@ export const SaveInfoDialog = ({
         <DialogContentText>Type in the name of the profile.</DialogContentText>
         <TextField
           autoFocus
+          autoComplete="off"
           margin="dense"
           id="saveDataName"
           label="Profile Name"
