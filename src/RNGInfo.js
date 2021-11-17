@@ -10,10 +10,12 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-export const RNGInfo = ({ setState, state }) => {
+export const RNGInfo = ({ setState, state, state0Error, state1Error }) => {
   const handleChange = event => {
     setEncounter(event.target.value);
   };
+
+  const regex = /[0-9A-Fa-f]{16}/;
 
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
@@ -32,35 +34,46 @@ export const RNGInfo = ({ setState, state }) => {
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
             fullWidth
+            error={state0Error.error}
+            helperText={state0Error.text}
+            inputProps={{
+              inputMode: 'text',
+              maxLength: 16,
+            }}
             id="state0"
             label="State 0"
             variant="outlined"
-            onChange={event =>
+            onChange={event => {
+              console.log(event.target.value, regex.test(event.target.value));
               setState(state => ({
                 ...state,
-                state0:
-                  event.target.value === ''
-                    ? ''
-                    : BigInt(`0x${event.target.value}`),
-              }))
-            }
+                state0: !regex.test(event.target.value)
+                  ? ''
+                  : BigInt(`0x${event.target.value}`),
+              }));
+            }}
           />
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
             fullWidth
+            error={state1Error.error}
+            helperText={state1Error.text}
+            inputProps={{
+              inputMode: 'text',
+              maxLength: 16,
+            }}
             id="state1"
             label="State 1"
             variant="outlined"
-            onChange={event =>
+            onChange={event => {
               setState(state => ({
                 ...state,
-                state1:
-                  event.target.value === ''
-                    ? ''
-                    : BigInt(`0x${event.target.value}`),
-              }))
-            }
+                state1: !regex.test(event.target.value)
+                  ? ''
+                  : BigInt(`0x${event.target.value}`),
+              }));
+            }}
           />
         </Grid>
         <Grid item sm={6} xs={12}>

@@ -93,21 +93,32 @@ export const TrainerInfo = ({ setState, state, saveProfile, setProfile }) => {
           >
             <Grid item sm={6} md={3} xs={12}>
               <TextField
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                  maxLength: 5,
+                }}
                 fullWidth
                 id="tid"
                 label="TID"
                 variant="outlined"
                 value={state.tid || ''}
-                onChange={event =>
-                  setState(state => ({
-                    ...state,
-                    tid: parseInt(event.target.value),
-                  }))
-                }
+                onChange={event => {
+                  console.log(event.target.value),
+                    setState(state => ({
+                      ...state,
+                      tid: parseInt(event.target.value),
+                    }));
+                }}
               />
             </Grid>
             <Grid item sm={6} md={3} xs={12}>
               <TextField
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                  maxLength: 5,
+                }}
                 fullWidth
                 id="sid"
                 label="SID"

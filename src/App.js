@@ -22,6 +22,7 @@ export function App() {
     version: 'Sword',
     badgeCount: 0,
   });
+
   React.useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
     const storageProfile = isBrowser
@@ -38,6 +39,7 @@ export function App() {
       });
     storageProfile && setProfile(storageProfile);
   }, []);
+
   const [saveProfile, setProfile] = React.useState({
     name: 'No Profile',
     tid: 0,
@@ -46,6 +48,7 @@ export function App() {
     version: 'Sword',
     badgeCount: 0,
   });
+
   const [results, setResults] = React.useState({
     advances: 0,
     shiny_value: 0,
@@ -54,19 +57,46 @@ export function App() {
     ec: 0,
     pid: 0,
   });
+
   const { state0, state1, tid, sid, shiny, encounter, shinyCharm } = state;
-  const findResults = event => {
+  const regex = /[A-F0-9]{12}/i;
+
+  const [state0Error, setState0Error] = React.useState({
+    text: '',
+    error: false,
+  });
+
+  const [state1Error, setState1Error] = React.useState({
+    text: '',
+    error: false,
+  });
+
+  const handleSubmit = event => {
     event.preventDefault();
-    const shiny_result = calculate_pokemon(
-      state0,
-      state1,
-      tid,
-      sid,
-      shiny,
-      encounter,
-      shinyCharm,
-    );
-    setResults(shiny_result);
+    if (!regex.test(state.state0)) {
+      setState0Error(state => ({
+        ...state,
+        error: true,
+        text: 'Not a valid number',
+      }));
+    } else if (!regex.test(state.state1)) {
+      setState1Error(state => ({
+        ...state,
+        error: true,
+        text: 'Not a valid number',
+      }));
+    } else {
+      const shiny_result = calculate_pokemon(
+        state0,
+        state1,
+        tid,
+        sid,
+        shiny,
+        encounter,
+        shinyCharm,
+      );
+      setResults(shiny_result);
+    }
   };
 
   return (
@@ -74,7 +104,7 @@ export function App() {
       <Box
         component="form"
         autoComplete="off"
-        onSubmit={findResults}
+        onSubmit={handleSubmit}
         sx={{
           width: { sm: '75%' },
           maxWidth: '800px',
@@ -94,14 +124,18 @@ export function App() {
           saveProfile={saveProfile}
           setProfile={setProfile}
         />
-        <RNGInfo setState={setState} state={state} />
+        <RNGInfo
+          setState={setState}
+          state={state}
+          state0Error={state0Error}
+          state1Error={state1Error}
+        />
         <Filters setState={setState} state={state} />
         <Button
           type="submit"
           variant="contained"
           fullWidth
           sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
-          disabled={state0 === '' || state1 === ''}
         >
           Search
         </Button>
