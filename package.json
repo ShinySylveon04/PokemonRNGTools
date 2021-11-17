@@ -4,7 +4,7 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "start": "parcel public/index.html",
-    "build": "parcel build"
+    "build": "parcel build public/index.html"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
