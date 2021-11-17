@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Build wasm
+        run: cd wasm && wasm-pack build
 
       - name: Install dependencies
         run: yarn
