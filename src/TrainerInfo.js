@@ -97,7 +97,7 @@ export const TrainerInfo = ({ setState, state, saveProfile, setProfile }) => {
                 id="tid"
                 label="TID"
                 variant="outlined"
-                value={state.tid}
+                value={state.tid || ''}
                 onChange={event =>
                   setState(state => ({
                     ...state,
@@ -112,7 +112,7 @@ export const TrainerInfo = ({ setState, state, saveProfile, setProfile }) => {
                 id="sid"
                 label="SID"
                 variant="outlined"
-                value={state.sid}
+                value={state.sid || ''}
                 onChange={event =>
                   setState(state => ({
                     ...state,

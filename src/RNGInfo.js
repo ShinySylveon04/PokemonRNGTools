@@ -38,7 +38,10 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event =>
               setState(state => ({
                 ...state,
-                state0: BigInt(`0x${event.target.value}`),
+                state0:
+                  event.target.value === ''
+                    ? ''
+                    : BigInt(`0x${event.target.value}`),
               }))
             }
           />
@@ -52,7 +55,10 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event =>
               setState(state => ({
                 ...state,
-                state1: BigInt(`0x${event.target.value}`),
+                state1:
+                  event.target.value === ''
+                    ? ''
+                    : BigInt(`0x${event.target.value}`),
               }))
             }
           />

@@ -12,10 +12,10 @@ import { Results } from './Results';
 
 export function App() {
   const [state, setState] = React.useState({
-    state0: BigInt('0xe1e16bc81e378a0b'),
-    state1: BigInt('0xa79a405a9d7f5849'),
-    tid: 0,
-    sid: 0,
+    state0: '',
+    state1: '',
+    tid: '',
+    sid: '',
     shiny: 0,
     encounter: 0,
     shinyCharm: false,
@@ -101,6 +101,7 @@ export function App() {
           variant="contained"
           fullWidth
           sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
+          disabled={state0 === '' || state1 === ''}
         >
           Search
         </Button>
