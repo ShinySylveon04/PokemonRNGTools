@@ -197,7 +197,6 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
     rng.rand_max(50);
     rng.rand_max(25);
     rng.rand_max(1000); // brilliant
-    // let rand = rng.next();
     let tsv = calculate_shiny_value(tid, sid);
     let mut is_shiny = false;
 
@@ -243,15 +242,11 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
         }
     }
 
-    // results
-    // Advance 12259, State A79A405A9D7F5849 E1E16BC81E378A0B
-// 12259 60 41 345CDFDF 301E4E85 Square Brave 0 3/24/22/5/28/1 None
-
-Pokemon {
-    shiny_type,
-    ec,
-    pid,
-}
+    Pokemon {
+        shiny_type,
+        ec,
+        pid,
+    }
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -284,7 +279,7 @@ pub fn calculate_pokemon(
                 generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
             EncounterFilterEnum::Dynamic => {
-                generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
+                generate_dynamic_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
         };
 
@@ -536,7 +531,6 @@ mod test {
         }
         assert_eq!(pokemon_shininess.pid, 0x8298FC03)
     }
-
 
     #[test]
     fn should_return_dynamic_shiny_pid() {
