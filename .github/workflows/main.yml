@@ -17,9 +17,6 @@ jobs:
       - run: cd wasm && cargo test
       - run: cd wasm && wasm-pack test --headless --chrome
       - run: cd wasm && wasm-pack test --headless --firefox
-      
-      - name: Build wasm
-        run: cd wasm && cargo install wasm-pack && wasm-pack build
 
       - name: Install dependencies
         run: yarn
