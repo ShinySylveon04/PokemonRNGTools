@@ -10,7 +10,14 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-export const RNGInfo = ({ setState, state, state0Error, state1Error }) => {
+export const RNGInfo = ({
+  setState,
+  state,
+  state0Error,
+  state1Error,
+  setState0Error,
+  setState1Error,
+}) => {
   const handleChange = event => {
     setEncounter(event.target.value);
   };

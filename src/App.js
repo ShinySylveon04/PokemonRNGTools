@@ -86,6 +86,16 @@ export function App() {
         text: 'Not a valid number',
       }));
     } else {
+      setState0Error(state => ({
+        ...state,
+        error: false,
+        text: '',
+      }));
+      setState1Error(state => ({
+        ...state,
+        error: false,
+        text: '',
+      }));
       const shiny_result = calculate_pokemon(
         state0,
         state1,
@@ -129,6 +139,8 @@ export function App() {
           state={state}
           state0Error={state0Error}
           state1Error={state1Error}
+          setState0Error={setState0Error}
+          setState1Error={setState1Error}
         />
         <Filters setState={setState} state={state} />
         <Button
