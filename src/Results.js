@@ -7,6 +7,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import { natures } from './natures';
+
 const shinyType = value => {
   switch (value) {
     case 1:
@@ -30,6 +32,7 @@ export const Results = ({ results }) => {
             <TableCell align="left">State 1</TableCell>
             <TableCell align="left">EC</TableCell>
             <TableCell align="left">PID</TableCell>
+            <TableCell align="left">Nature</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -48,6 +51,7 @@ export const Results = ({ results }) => {
             <TableCell align="left">
               {BigInt(results.pid, 16).toString(16)}
             </TableCell>
+            <TableCell align="left">{natures[results.nature]}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

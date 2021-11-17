@@ -56,7 +56,10 @@ export function App() {
     state1: 0,
     ec: 0,
     pid: 0,
+    nature: 0,
   });
+
+  console.log(results);
 
   const { state0, state1, tid, sid, shiny, encounter, shinyCharm } = state;
   const regex = /[A-F0-9]{12}/i;

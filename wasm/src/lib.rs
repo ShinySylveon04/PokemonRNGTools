@@ -138,7 +138,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
     }
 
     rng.rand_max(2);
-    rng.rand_max(25); //nature
+    let nature = rng.rand_max(25); //nature
     rng.rand_max(2); // ability
     let mut seed = Xoroshiro::new(rng.next() as u64);
     let ec = seed.next();
@@ -173,6 +173,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         shiny_type,
         ec,
         pid,
+        nature,
     }
 }
 
@@ -180,6 +181,7 @@ struct Pokemon {
     shiny_type: ShinyEnum,
     ec: u32,
     pid: u32,
+    nature: u32,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -211,7 +213,7 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
     }
 
     rng.rand_max(2);
-    rng.rand_max(25); // nature
+    let nature = rng.rand_max(25); // nature
     rng.rand_max(2); // ability
     let mut seed = Xoroshiro::new(rng.next() as u64);
     let ec = seed.next();
@@ -246,6 +248,7 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
         shiny_type,
         ec,
         pid,
+        nature,
     }
 }
 
@@ -257,6 +260,7 @@ pub struct ShinyResult {
     pub shiny_value: ShinyEnum,
     pub ec: u32,
     pub pid: u32,
+    pub nature: u32,
 }
 
 #[wasm_bindgen]
@@ -298,6 +302,7 @@ pub fn calculate_pokemon(
         shiny_value: pokemon_shininess.shiny_type,
         ec: pokemon_shininess.ec,
         pid: pokemon_shininess.pid,
+        nature: pokemon_shininess.nature,
     }
 }
 
@@ -581,5 +586,39 @@ mod test {
             rng.next();
         }
         assert_eq!(pokemon_shininess.ec, 0x345CDFDF)
+    }
+
+    #[test]
+    fn should_return_static_shiny_nature() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            rng.next();
+        }
+        assert_eq!(pokemon_shininess.nature, 10)
+    }
+
+    #[test]
+    fn should_return_dynamic_shiny_nature() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            rng.next();
+        }
+        assert_eq!(pokemon_shininess.nature, 2)
     }
 }
