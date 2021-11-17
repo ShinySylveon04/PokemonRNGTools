@@ -396,4 +396,74 @@ mod test {
             assert_eq!(rng.next(), expected_results[i]);
         }
     }
+
+    #[test]
+    fn should_return_static_square_shiny() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            rng.next();
+        }
+        assert_eq!(pokemon_shininess.shiny_type, ShinyEnum::Square)
+    }
+
+    #[test]
+    fn should_return_static_square_shiny_advances() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut advances = 0;
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            advances += 1;
+            rng.next();
+        }
+        assert_eq!(advances, 5932)
+    }
+
+    #[test]
+    fn should_return_static_shiny_pid() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            rng.next();
+        }
+        assert_eq!(pokemon_shininess.pid, 0x8298FC03)
+    }
+
+    #[test]
+    fn should_return_static_shiny_ec() {
+        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+
+        let mut pokemon_shininess;
+
+        loop {
+            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+
+            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                break;
+            }
+            rng.next();
+        }
+        assert_eq!(pokemon_shininess.ec, 0x829A116A)
+    }
 }
