@@ -44,7 +44,6 @@ export const RNGInfo = ({ setState, state, state0Error, state1Error }) => {
             label="State 0"
             variant="outlined"
             onChange={event => {
-              console.log(event.target.value, regex.test(event.target.value));
               setState(state => ({
                 ...state,
                 state0: !regex.test(event.target.value)
