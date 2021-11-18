@@ -336,6 +336,8 @@ pub struct ShinyResult {
     pub ec: u32,
     pub pid: u32,
     pub nature: NatureEnum,
+    pub min: u32,
+    pub max: u32,
 }
 
 #[wasm_bindgen]
@@ -348,13 +350,14 @@ pub fn calculate_pokemon(
     encounter_type: EncounterFilterEnum,
     shiny_charm: bool,
     nature_filter: NatureFilterEnum,
+    min: u32,
+    max: u32,
 ) -> Array {
     let mut rng = Xoroshiro::from_state(seed1, seed2);
-    let mut advances = 0;
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResult> = Vec::new();
-
-    for i in 1..100000 {
+    let values = min..max;
+    for value in values {
         pokemon_results = match encounter_type {
             EncounterFilterEnum::Static => {
                 generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
@@ -369,15 +372,16 @@ pub fn calculate_pokemon(
             let result = ShinyResult {
                 state0: shiny_state.0,
                 state1: shiny_state.1,
-                advances,
+                advances: value,
                 shiny_value: pokemon_results.shiny_type,
                 ec: pokemon_results.ec,
                 pid: pokemon_results.pid,
                 nature: pokemon_results.nature,
+                min: min,
+                max: max,
             };
             shiny_results.push(result);
         }
-        advances += 1;
         rng.next();
     }
 
@@ -564,38 +568,36 @@ mod test {
     fn should_return_static_square_shiny_advances() {
         let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
-        let mut advances = 0;
         let mut pokemon_shininess;
 
-        loop {
+        let values = 0..10000;
+        for value in values {
             pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                assert_eq!(value, 5932);
                 break;
             }
-            advances += 1;
             rng.next();
         }
-        assert_eq!(advances, 5932)
     }
 
     #[test]
     fn should_return_dynamic_square_shiny_advances() {
         let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
-        let mut advances = 0;
         let mut pokemon_shininess;
 
-        loop {
+        let values = 0..10000;
+        for value in values {
             pokemon_shininess = generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
+                assert_eq!(value, 12259);
                 break;
             }
-            advances += 1;
             rng.next();
         }
-        assert_eq!(advances, 12259)
     }
 
     #[test]

@@ -102,6 +102,44 @@ export const RNGInfo = ({
             </Select>
           </FormControl>
         </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <TextField
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+            }}
+            fullWidth
+            id="min"
+            label="Min Advances"
+            variant="outlined"
+            value={state.min}
+            onChange={event =>
+              setState(state => ({
+                ...state,
+                min: parseInt(event.target.value),
+              }))
+            }
+          />
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <TextField
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+            }}
+            fullWidth
+            id="max"
+            label="Max Advances"
+            variant="outlined"
+            value={state.max}
+            onChange={event =>
+              setState(state => ({
+                ...state,
+                max: parseInt(event.target.value),
+              }))
+            }
+          />
+        </Grid>
         {/* <Grid container item sm={6} xs={12} sx={{justifyContent: {xs: "center", md: 'flex-start'}}}>
         <Grid item>
           <FormControlLabel control={<Checkbox />} label="Weather Active" />

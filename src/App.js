@@ -22,6 +22,8 @@ export function App() {
     shinyCharm: false,
     version: 'Sword',
     badgeCount: 0,
+    min: 0,
+    max: 1000000,
   });
 
   React.useEffect(() => {
@@ -62,8 +64,20 @@ export function App() {
     },
   ]);
 
-  const { state0, state1, tid, sid, shiny, encounter, shinyCharm, nature } =
-    state;
+  console.log(results);
+
+  const {
+    state0,
+    state1,
+    tid,
+    sid,
+    shiny,
+    encounter,
+    shinyCharm,
+    nature,
+    min,
+    max,
+  } = state;
   const regex = /[A-F0-9]{12}/i;
 
   const [state0Error, setState0Error] = React.useState({
@@ -110,6 +124,8 @@ export function App() {
         encounter,
         shinyCharm,
         nature,
+        min,
+        max,
       );
       setResults(shiny_result);
     }
