@@ -1,3 +1,4 @@
+use js_sys::Array;
 use num_enum::FromPrimitive;
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
@@ -347,12 +348,13 @@ pub fn calculate_pokemon(
     encounter_type: EncounterFilterEnum,
     shiny_charm: bool,
     nature_filter: NatureFilterEnum,
-) -> ShinyResult {
+) -> Array {
     let mut rng = Xoroshiro::from_state(seed1, seed2);
     let mut advances = 0;
     let mut pokemon_results;
+    let mut shiny_results: Vec<ShinyResult> = Vec::new();
 
-    loop {
+    for i in 1..100000 {
         pokemon_results = match encounter_type {
             EncounterFilterEnum::Static => {
                 generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
@@ -363,22 +365,23 @@ pub fn calculate_pokemon(
         };
 
         if shiny_filter == pokemon_results.shiny_type && nature_filter == pokemon_results.nature {
-            break;
+            let shiny_state = rng.get_state();
+            let result = ShinyResult {
+                state0: shiny_state.0,
+                state1: shiny_state.1,
+                advances,
+                shiny_value: pokemon_results.shiny_type,
+                ec: pokemon_results.ec,
+                pid: pokemon_results.pid,
+                nature: pokemon_results.nature,
+            };
+            shiny_results.push(result);
         }
         advances += 1;
         rng.next();
     }
 
-    let shiny_state = rng.get_state();
-    ShinyResult {
-        state0: shiny_state.0,
-        state1: shiny_state.1,
-        advances,
-        shiny_value: pokemon_results.shiny_type,
-        ec: pokemon_results.ec,
-        pid: pokemon_results.pid,
-        nature: pokemon_results.nature,
-    }
+    shiny_results.into_iter().map(JsValue::from).collect()
 }
 
 #[cfg(test)]

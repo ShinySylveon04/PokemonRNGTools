@@ -50,17 +50,17 @@ export function App() {
     badgeCount: 0,
   });
 
-  const [results, setResults] = React.useState({
-    advances: 0,
-    shiny_value: 0,
-    state0: 0,
-    state1: 0,
-    ec: 0,
-    pid: 0,
-    nature: 0,
-  });
-
-  // console.log(state);
+  const [results, setResults] = React.useState([
+    {
+      advances: 0,
+      shiny_value: 0,
+      state0: 0,
+      state1: 0,
+      ec: 0,
+      pid: 0,
+      nature: 0,
+    },
+  ]);
 
   const { state0, state1, tid, sid, shiny, encounter, shinyCharm, nature } =
     state;
