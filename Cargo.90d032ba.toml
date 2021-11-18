@@ -11,3 +11,4 @@ crate-type = ["cdylib"]
 [dependencies]
 wasm-bindgen = "0.2.78"
 wasm-bindgen-test = "0.2"
+num_enum = "0.5"
