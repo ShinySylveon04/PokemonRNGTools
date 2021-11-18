@@ -7,6 +7,8 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
+import { natures } from './natures';
+
 export const Filters = ({ setState, state }) => {
   const [mark, setMark] = React.useState('None');
   const [slot, setSlot] = React.useState('Any');
@@ -51,22 +53,31 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        {/* <Grid item sm={6} md={4} xs={12}>
-        <FormControl fullWidth>
-          <InputLabel id="mark-type-label">Mark</InputLabel>
-          <Select
-            labelId="mark-type-label"
-            id="mark-type"
-            value={mark}
-            label="Mark"
-            onChange={handleChange}
-          >
-            <MenuItem value={'None'}>None</MenuItem>
-            <MenuItem value={'Rare'}>Rare</MenuItem>
-            <MenuItem value={'Other'}>Other</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
+        <Grid item sm={6} md={4} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="nature-label">Nature</InputLabel>
+            <Select
+              labelId="nature-label"
+              id="nature"
+              value={state.nature}
+              label="Nature"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  nature: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={25}>Any</MenuItem>
+              {natures.map((nature, index) => (
+                <MenuItem value={index} key={nature}>
+                  {nature}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {/*           
       <Grid item sm={6} md={4} xs={12}>
         <FormControl fullWidth>
           <InputLabel id="slot-label">Encounter Slot</InputLabel>
@@ -81,7 +92,7 @@ export const Filters = ({ setState, state }) => {
             <MenuItem value={1}>1</MenuItem>
           </Select>
         </FormControl>
-      </Grid> */}
+      </Grid>  */}
       </Grid>
     </Paper>
   );

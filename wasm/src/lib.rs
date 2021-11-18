@@ -1,3 +1,5 @@
+use num_enum::FromPrimitive;
+use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -73,6 +75,78 @@ impl Xoroshiro {
         }
 
         rand
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum NatureFilterEnum {
+    Hardy = 0,
+    Lonely = 1,
+    Brave = 2,
+    Adamant = 3,
+    Naughty = 4,
+    Bold = 5,
+    Docile = 6,
+    Relaxed = 7,
+    Impish = 8,
+    Lax = 9,
+    Timid = 10,
+    Hasty = 11,
+    Serious = 12,
+    Jolly = 13,
+    Naive = 14,
+    Modest = 15,
+    Mild = 16,
+    Quiet = 17,
+    Bashful = 18,
+    Rash = 19,
+    Calm = 20,
+    Gentle = 21,
+    Sassy = 22,
+    Careful = 23,
+    Quirky = 24,
+    Any = 25,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[repr(u32)]
+pub enum NatureEnum {
+    #[num_enum(default)]
+    Hardy = 0,
+    Lonely = 1,
+    Brave = 2,
+    Adamant = 3,
+    Naughty = 4,
+    Bold = 5,
+    Docile = 6,
+    Relaxed = 7,
+    Impish = 8,
+    Lax = 9,
+    Timid = 10,
+    Hasty = 11,
+    Serious = 12,
+    Jolly = 13,
+    Naive = 14,
+    Modest = 15,
+    Mild = 16,
+    Quiet = 17,
+    Bashful = 18,
+    Rash = 19,
+    Calm = 20,
+    Gentle = 21,
+    Sassy = 22,
+    Careful = 23,
+    Quirky = 24,
+}
+
+impl PartialEq<NatureEnum> for NatureFilterEnum {
+    fn eq(&self, other: &NatureEnum) -> bool {
+        match (self, other) {
+            (NatureFilterEnum::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
     }
 }
 
@@ -173,7 +247,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         shiny_type,
         ec,
         pid,
-        nature,
+        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
     }
 }
 
@@ -181,7 +255,7 @@ struct Pokemon {
     shiny_type: ShinyEnum,
     ec: u32,
     pid: u32,
-    nature: u32,
+    nature: NatureEnum,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -248,7 +322,7 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
         shiny_type,
         ec,
         pid,
-        nature,
+        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
     }
 }
 
@@ -260,7 +334,7 @@ pub struct ShinyResult {
     pub shiny_value: ShinyEnum,
     pub ec: u32,
     pub pid: u32,
-    pub nature: u32,
+    pub nature: NatureEnum,
 }
 
 #[wasm_bindgen]
@@ -272,13 +346,14 @@ pub fn calculate_pokemon(
     shiny_filter: ShinyFilterEnum,
     encounter_type: EncounterFilterEnum,
     shiny_charm: bool,
+    nature_filter: NatureFilterEnum,
 ) -> ShinyResult {
     let mut rng = Xoroshiro::from_state(seed1, seed2);
     let mut advances = 0;
-    let mut pokemon_shininess;
+    let mut pokemon_results;
 
     loop {
-        pokemon_shininess = match encounter_type {
+        pokemon_results = match encounter_type {
             EncounterFilterEnum::Static => {
                 generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
@@ -287,7 +362,7 @@ pub fn calculate_pokemon(
             }
         };
 
-        if shiny_filter == pokemon_shininess.shiny_type {
+        if shiny_filter == pokemon_results.shiny_type && nature_filter == pokemon_results.nature {
             break;
         }
         advances += 1;
@@ -299,10 +374,10 @@ pub fn calculate_pokemon(
         state0: shiny_state.0,
         state1: shiny_state.1,
         advances,
-        shiny_value: pokemon_shininess.shiny_type,
-        ec: pokemon_shininess.ec,
-        pid: pokemon_shininess.pid,
-        nature: pokemon_shininess.nature,
+        shiny_value: pokemon_results.shiny_type,
+        ec: pokemon_results.ec,
+        pid: pokemon_results.pid,
+        nature: pokemon_results.nature,
     }
 }
 
@@ -602,7 +677,7 @@ mod test {
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.nature, 10)
+        assert_eq!(pokemon_shininess.nature, NatureEnum::Timid)
     }
 
     #[test]
@@ -619,6 +694,6 @@ mod test {
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.nature, 2)
+        assert_eq!(pokemon_shininess.nature, NatureEnum::Brave)
     }
 }
