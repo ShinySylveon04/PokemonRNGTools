@@ -356,7 +356,7 @@ pub fn calculate_pokemon(
     let mut rng = Xoroshiro::from_state(seed1, seed2);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResult> = Vec::new();
-    let values = min..max;
+    let values = min..=max;
     for value in values {
         pokemon_results = match encounter_type {
             EncounterFilterEnum::Static => {
