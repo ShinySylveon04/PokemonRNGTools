@@ -77,6 +77,27 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item sm={6} md={4} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="ability-label">Ability</InputLabel>
+            <Select
+              labelId="ability-label"
+              id="ability"
+              value={state.ability}
+              label="Ability"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  ability: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={2}>Any</MenuItem>
+              <MenuItem value={1}>0</MenuItem>
+              <MenuItem value={0}>1</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         {/*           
       <Grid item sm={6} md={4} xs={12}>
         <FormControl fullWidth>

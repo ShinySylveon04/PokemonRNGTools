@@ -8,6 +8,32 @@ pub use xoroshiro::*;
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum AbilityFilterEnum {
+    Any = 2,
+    Ability0 = 0,
+    Ability1 = 1,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[repr(u32)]
+pub enum AbilityEnum {
+    #[num_enum(default)]
+    Ability0 = 0,
+    Ability1 = 1,
+}
+
+impl PartialEq<AbilityEnum> for AbilityFilterEnum {
+    fn eq(&self, other: &AbilityEnum) -> bool {
+        match (self, other) {
+            (AbilityFilterEnum::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum NatureFilterEnum {
     Hardy = 0,
     Lonely = 1,
@@ -176,7 +202,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
         ec,
         pid,
         nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ability,
+        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
     }
 }
 
@@ -186,7 +212,7 @@ pub struct Pokemon {
     ec: u32,
     pid: u32,
     nature: NatureEnum,
-    ability: u32,
+    ability: AbilityEnum,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -254,7 +280,7 @@ fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm:
         ec,
         pid,
         nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ability,
+        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
     }
 }
 
@@ -267,15 +293,19 @@ pub struct ShinyResult {
     pub ec: u32,
     pub pid: u32,
     pub nature: NatureEnum,
-    pub ability: u32,
+    pub ability: AbilityEnum,
 }
 
 pub fn filter(
     results: Pokemon,
     shiny_filter: ShinyFilterEnum,
     nature_filter: NatureFilterEnum,
+    ability_filter: AbilityFilterEnum,
 ) -> bool {
-    if shiny_filter == results.shiny_type && nature_filter == results.nature {
+    if shiny_filter == results.shiny_type
+        && nature_filter == results.nature
+        && ability_filter == results.ability
+    {
         return true;
     } else {
         return false;
@@ -292,6 +322,7 @@ pub fn calculate_pokemon(
     encounter_type: EncounterFilterEnum,
     shiny_charm: bool,
     nature_filter: NatureFilterEnum,
+    ability_filter: AbilityFilterEnum,
     min: u32,
     max: u32,
 ) -> Array {
@@ -309,7 +340,7 @@ pub fn calculate_pokemon(
             }
         };
 
-        if filter(pokemon_results, shiny_filter, nature_filter) {
+        if filter(pokemon_results, shiny_filter, nature_filter, ability_filter) {
             let shiny_state = rng.get_state();
             let result = ShinyResult {
                 state0: shiny_state.0,
@@ -657,7 +688,7 @@ mod test {
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.ability, 0)
+        assert_eq!(pokemon_shininess.ability, AbilityEnum::Ability0)
     }
 
     #[test]
@@ -674,6 +705,6 @@ mod test {
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.ability, 1)
+        assert_eq!(pokemon_shininess.ability, AbilityEnum::Ability1)
     }
 }

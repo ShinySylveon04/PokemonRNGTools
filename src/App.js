@@ -24,6 +24,7 @@ export function App() {
     badgeCount: 0,
     min: 0,
     max: 1000000,
+    ability: 2,
   });
 
   React.useEffect(() => {
@@ -65,7 +66,7 @@ export function App() {
     },
   ]);
 
-  console.log(results);
+  console.log(state);
 
   const {
     state0,
@@ -76,6 +77,7 @@ export function App() {
     encounter,
     shinyCharm,
     nature,
+    ability,
     min,
     max,
   } = state;
@@ -125,6 +127,7 @@ export function App() {
         encounter,
         shinyCharm,
         nature,
+        ability,
         min,
         max,
       );
