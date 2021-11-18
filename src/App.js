@@ -61,6 +61,7 @@ export function App() {
       ec: 0,
       pid: 0,
       nature: 0,
+      ability: 0,
     },
   ]);
 

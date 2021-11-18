@@ -21,6 +21,15 @@ const shinyType = value => {
   }
 };
 
+const abilityType = value => {
+  switch (value) {
+    case 1:
+      return 0;
+    default:
+      return 1;
+  }
+};
+
 const ShowResults = ({ results }) => {
   return results.map((result, index) => (
     <TableRow
@@ -30,6 +39,7 @@ const ShowResults = ({ results }) => {
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{shinyType(result.shiny_value)}</TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
+      <TableCell align="left">{abilityType(result.ability)}</TableCell>
       <TableCell align="left">
         {BigInt(result.state0, 16).toString(16)}
       </TableCell>
@@ -68,6 +78,7 @@ export const Results = ({ results }) => {
               <TableCell>Advances</TableCell>
               <TableCell align="left">Shiny</TableCell>
               <TableCell align="left">Nature</TableCell>
+              <TableCell align="left">Ability</TableCell>
               <TableCell align="left">State 0</TableCell>
               <TableCell align="left">State 1</TableCell>
               <TableCell align="left">EC</TableCell>
