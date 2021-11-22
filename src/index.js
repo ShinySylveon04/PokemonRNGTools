@@ -6,7 +6,7 @@ import { BdSp } from './BdSp/BdSp';
 
 const app = document.getElementById('app');
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Routes>
       <Route path="/" element={<SwSh />} />
       <Route path="bdsp" element={<BdSp />} />
