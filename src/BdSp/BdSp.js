@@ -18,6 +18,7 @@ export function BdSp() {
     shiny: false,
     min: 0,
     max: 1000000,
+    delay: 0,
     nature: 25,
     ability: 2,
   });
@@ -35,7 +36,7 @@ export function BdSp() {
     },
   ]);
 
-  const { state0, state1, state2, state3, shiny, min, max } = state;
+  const { state0, state1, state2, state3, shiny, min, max, delay } = state;
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -47,6 +48,7 @@ export function BdSp() {
       shiny,
       min,
       max,
+      delay,
     );
     setResults(shiny_result);
   };
@@ -83,7 +85,7 @@ export function BdSp() {
         >
           Search
         </Button>
-        <Results results={results} />
+        <Results results={results} state={state} />
       </Box>
     </Container>
   );

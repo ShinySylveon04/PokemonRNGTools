@@ -134,6 +134,25 @@ export const RNGInfo = ({ setState, state }) => {
             }
           />
         </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <TextField
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+            }}
+            fullWidth
+            id="delay"
+            label="Delay"
+            variant="outlined"
+            value={state.delay}
+            onChange={event =>
+              setState(state => ({
+                ...state,
+                delay: parseInt(event.target.value),
+              }))
+            }
+          />
+        </Grid>
       </Grid>
     </Paper>
   );

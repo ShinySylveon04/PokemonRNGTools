@@ -402,8 +402,9 @@ pub fn calculate_pokemon_bdsp_wasm(
     shiny_filter: bool,
     min: u32,
     max: u32,
+    delay: usize,
 ) -> Array {
-    calculate_pokemon_bdsp(seed1, seed2, seed3, seed4, shiny_filter, min, max)
+    calculate_pokemon_bdsp(seed1, seed2, seed3, seed4, shiny_filter, min, max, delay)
 }
 
 #[wasm_bindgen]
@@ -415,8 +416,10 @@ pub fn calculate_pokemon_bdsp(
     shiny_filter: bool,
     min: u32,
     max: u32,
+    delay: usize,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    rng.advance(delay);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResultBdsp> = Vec::new();
     let values = min..=max;
