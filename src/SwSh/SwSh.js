@@ -1,5 +1,5 @@
 import React from 'react';
-import { calculate_pokemon } from '../wasm/Cargo.toml';
+import { calculate_pokemon } from '../../wasm/Cargo.toml';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,7 +10,7 @@ import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
-export function App() {
+export function SwSh() {
   const [state, setState] = React.useState({
     state0: '',
     state1: '',
@@ -65,8 +65,6 @@ export function App() {
       ability: 0,
     },
   ]);
-
-  console.log(state);
 
   const {
     state0,

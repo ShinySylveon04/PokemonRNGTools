@@ -6,6 +6,9 @@ use wasm_bindgen::prelude::*;
 mod xoroshiro;
 pub use xoroshiro::*;
 
+mod xorshift;
+pub use xorshift::*;
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AbilityFilterEnum {
@@ -206,6 +209,18 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
     }
 }
 
+fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
+    let mut is_shiny = false;
+    let pid = rng.next();
+    let rand = rng.next();
+
+    if (pid & 0xFFF0 ^ pid >> 0x10 ^ rand >> 0x10 ^ rand & 0xFFF0) < 0x10 {
+        is_shiny = true
+    }
+
+    Pokemonbdsp { is_shiny, pid }
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: ShinyEnum,
@@ -213,6 +228,12 @@ pub struct Pokemon {
     pid: u32,
     nature: NatureEnum,
     ability: AbilityEnum,
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub struct Pokemonbdsp {
+    is_shiny: bool,
+    pid: u32,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -296,6 +317,18 @@ pub struct ShinyResult {
     pub ability: AbilityEnum,
 }
 
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Debug)]
+pub struct ShinyResultBdsp {
+    pub state0: u32,
+    pub state1: u32,
+    pub state2: u32,
+    pub state3: u32,
+    pub advances: u32,
+    pub shiny_value: bool,
+    pub pid: u32,
+}
+
 pub fn filter(
     results: Pokemon,
     shiny_filter: ShinyFilterEnum,
@@ -351,6 +384,55 @@ pub fn calculate_pokemon(
                 pid: pokemon_results.pid,
                 nature: pokemon_results.nature,
                 ability: pokemon_results.ability,
+            };
+            shiny_results.push(result);
+        }
+        rng.next();
+    }
+
+    shiny_results.into_iter().map(JsValue::from).collect()
+}
+
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_wasm(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: bool,
+    min: u32,
+    max: u32,
+) -> Array {
+    calculate_pokemon_bdsp(seed1, seed2, seed3, seed4, shiny_filter, min, max)
+}
+
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: bool,
+    min: u32,
+    max: u32,
+) -> Array {
+    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut pokemon_results;
+    let mut shiny_results: Vec<ShinyResultBdsp> = Vec::new();
+    let values = min..=max;
+    for value in values {
+        pokemon_results = generate_bdsp_pokemon(rng.clone());
+
+        if pokemon_results.is_shiny == shiny_filter {
+            let shiny_state = rng.get_state();
+            let result = ShinyResultBdsp {
+                state0: shiny_state[0],
+                state1: shiny_state[1],
+                state2: shiny_state[2],
+                state3: shiny_state[3],
+                advances: value,
+                pid: pokemon_results.pid,
+                shiny_value: pokemon_results.is_shiny,
             };
             shiny_results.push(result);
         }
@@ -471,8 +553,8 @@ mod test {
             0x79128863d624f7ba,
         ];
 
-        for i in 0..100 {
-            assert_eq!(rng.next_u64(), expected_results[i]);
+        for rand in expected_results.iter() {
+            assert_eq!(&rng.next_u64(), rand);
         }
     }
 
@@ -707,4 +789,31 @@ mod test {
         }
         assert_eq!(pokemon_shininess.ability, AbilityEnum::Ability1)
     }
+
+    // #[test]
+    // fn should_return_shiny_bdsp() {
+    //     let mut rng = Xorshift::from_state([0x3ad6c1f0, 0x0ccea7a7, 0x3aa81fb1, 0xf423082b]);
+
+    //     let results = calculate_pokemon_bdsp(
+    //         0x3ad6c1f0, 0x0ccea7a7, 0x3aa81fb1, 0xf423082b, true, 0, 10000,
+    //     );
+
+    //     let mut expected_results: Vec<ShinyResultBdsp> = Vec::new();
+
+    //     let expected_result = ShinyResultBdsp {
+    //         state0: 0x4271729c,
+    //         state1: 0xa55ea294,
+    //         state2: 0x5a84f134,
+    //         state3: 0xd7e1385,
+    //         advances: 253,
+    //         pid: 0,
+    //         shiny_value: true,
+    //     };
+
+    //     expected_results.push(expected_result);
+
+    //     let array = expected_results.into_iter().map(JsValue::from).collect();
+
+    //     assert_eq!(results, array)
+    // }
 }

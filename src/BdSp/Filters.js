@@ -7,16 +7,9 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
-import { natures } from './natures';
+import { natures } from '../natures';
 
 export const Filters = ({ setState, state }) => {
-  const [mark, setMark] = React.useState('None');
-  const [slot, setSlot] = React.useState('Any');
-
-  const handleChange = event => {
-    setEncounter(event.target.value);
-  };
-
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -46,10 +39,8 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={0}>None</MenuItem>
-              <MenuItem value={1}>Star</MenuItem>
-              <MenuItem value={2}>Square</MenuItem>
-              <MenuItem value={3}>Any</MenuItem>
+              <MenuItem value={false}>None</MenuItem>
+              <MenuItem value={true}>Any</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -98,22 +89,6 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        {/*           
-      <Grid item sm={6} md={4} xs={12}>
-        <FormControl fullWidth>
-          <InputLabel id="slot-label">Encounter Slot</InputLabel>
-          <Select
-            labelId="slot-label"
-            id="slot"
-            value={slot}
-            label="Encounter Slot"
-            onChange={handleChange}
-          >
-            <MenuItem value={'Any'}>Any</MenuItem>
-            <MenuItem value={1}>1</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>  */}
       </Grid>
     </Paper>
   );
