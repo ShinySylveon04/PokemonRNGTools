@@ -110,7 +110,10 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event =>
               setState(state => ({
                 ...state,
-                min: parseInt(event.target.value),
+                min:
+                  event.target.value.length === 0
+                    ? ''
+                    : parseInt(event.target.value),
               }))
             }
           />
@@ -129,7 +132,10 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event =>
               setState(state => ({
                 ...state,
-                max: parseInt(event.target.value),
+                max:
+                  event.target.value.length === 0
+                    ? ''
+                    : parseInt(event.target.value),
               }))
             }
           />
@@ -148,7 +154,10 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event =>
               setState(state => ({
                 ...state,
-                delay: parseInt(event.target.value),
+                delay:
+                  event.target.value.length === 0
+                    ? ''
+                    : parseInt(event.target.value),
               }))
             }
           />
