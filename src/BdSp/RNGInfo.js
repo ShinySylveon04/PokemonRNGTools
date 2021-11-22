@@ -21,6 +21,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
+            autoComplete="new-password"
             fullWidth
             inputProps={{
               inputMode: 'text',
@@ -39,6 +40,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
+            autoComplete="new-password"
             fullWidth
             inputProps={{
               inputMode: 'text',
@@ -57,6 +59,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
+            autoComplete="new-password"
             fullWidth
             inputProps={{
               inputMode: 'text',
@@ -75,6 +78,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
+            autoComplete="new-password"
             fullWidth
             inputProps={{
               inputMode: 'text',
