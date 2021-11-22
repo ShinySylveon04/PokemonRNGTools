@@ -1,5 +1,6 @@
 {
-  "name": "my-project",
+  "name": "pokemonrngtools",
+  "homepage": "https://chatot.pokemonrng.com",
   "source": "public/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
