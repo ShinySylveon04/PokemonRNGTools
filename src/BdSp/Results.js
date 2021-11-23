@@ -8,6 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
+import { natures } from '../natures';
+
 const ShowResults = ({ results }) => {
   return results.map((result, index) => (
     <TableRow
@@ -16,6 +18,15 @@ const ShowResults = ({ results }) => {
     >
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
+      <TableCell align="left">{natures[result.nature]}</TableCell>
+      <TableCell align="left">
+        {`${result.ivs[0]} /
+          ${result.ivs[1]} /
+          ${result.ivs[2]} /
+          ${result.ivs[3]} /
+          ${result.ivs[4]} /
+          ${result.ivs[5]}`}
+      </TableCell>
       <TableCell align="left">{result.pid.toString(16)}</TableCell>
       <TableCell align="left">{result.ec.toString(16)}</TableCell>
     </TableRow>
@@ -47,6 +58,8 @@ export const Results = ({ results }) => {
             <TableRow>
               <TableCell>Advances</TableCell>
               <TableCell align="left">Shiny</TableCell>
+              <TableCell align="left">Nature</TableCell>
+              <TableCell align="left">IVs</TableCell>
               <TableCell align="left">PID</TableCell>
               <TableCell align="left">EC</TableCell>
             </TableRow>

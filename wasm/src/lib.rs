@@ -212,14 +212,27 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
 fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     let mut is_shiny = false;
     let ec = rng.next();
-    let pid = rng.next();
+    let test_pid = rng.next();
     let rand = rng.next();
 
-    if (pid & 0xFFF0 ^ pid >> 0x10 ^ rand >> 0x10 ^ rand & 0xFFF0) < 0x10 {
+    if (test_pid & 0xFFF0 ^ test_pid >> 0x10 ^ rand >> 0x10 ^ rand & 0xFFF0) < 0x10 {
         is_shiny = true
     }
 
-    Pokemonbdsp { is_shiny, pid, ec }
+    let mut ivs = vec![32, 32, 32, 32, 32, 32];
+    for i in ivs.iter_mut() {
+        *i = rng.rand_max(32);
+    }
+    rng.advance(4);
+    let nature = rng.next() % 24; //nature
+
+    Pokemonbdsp {
+        is_shiny,
+        pid,
+        ec,
+        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
+        ivs,
+    }
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -231,11 +244,13 @@ pub struct Pokemon {
     ability: AbilityEnum,
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Pokemonbdsp {
     is_shiny: bool,
     pid: u32,
     ec: u32,
+    nature: NatureEnum,
+    ivs: Vec<u32>,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -330,6 +345,8 @@ pub struct ShinyResultBdsp {
     pub shiny_value: bool,
     pub pid: u32,
     pub ec: u32,
+    pub nature: NatureEnum,
+    pub ivs: Vec<u32>,
 }
 
 pub fn filter(
@@ -440,6 +457,8 @@ pub fn calculate_pokemon_bdsp(
                 pid: pokemon_results.pid,
                 shiny_value: pokemon_results.is_shiny,
                 ec: pokemon_results.ec,
+                nature: pokemon_results.nature,
+                ivs: pokemon_results.ivs,
             };
             shiny_results.push(result);
         }

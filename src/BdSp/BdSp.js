@@ -15,10 +15,10 @@ export function BdSp() {
     state1: 0xdbf9331d,
     state2: 0xb735d1c4,
     state3: 0xc97488a2,
-    shiny: false,
+    shiny: true,
     min: 0,
-    max: 1000000,
-    delay: 0,
+    max: 10000,
+    delay: 86,
     nature: 25,
     ability: 2,
   });
@@ -33,6 +33,7 @@ export function BdSp() {
       pid: 0,
       nature: 0,
       ability: 0,
+      ivs: [0, 0, 0, 0, 0, 0],
     },
   ]);
 
@@ -52,9 +53,6 @@ export function BdSp() {
     );
     setResults(shiny_result);
   };
-
-  console.log(state);
-  console.log(results);
 
   return (
     <Container>

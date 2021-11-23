@@ -50,4 +50,26 @@ impl Xorshift {
 
         Some(advances)
     }
+
+    fn get_mask(num: u32) -> u32 {
+        let mut result = num - 1;
+
+        for i in 0..5 {
+            let shift = 1 << i;
+            result |= result >> shift;
+        }
+
+        result
+    }
+
+    pub fn rand_max(&mut self, max: u32) -> u32 {
+        let mask = Self::get_mask(max);
+        let mut rand = self.next() & mask;
+
+        while max <= rand {
+            rand = self.next() & mask;
+        }
+
+        rand
+    }
 }
