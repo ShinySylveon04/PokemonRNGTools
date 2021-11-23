@@ -17,6 +17,7 @@ const ShowResults = ({ results }) => {
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
       <TableCell align="left">{result.pid.toString(16)}</TableCell>
+      <TableCell align="left">{result.ec.toString(16)}</TableCell>
     </TableRow>
   ));
 };
@@ -47,6 +48,7 @@ export const Results = ({ results }) => {
               <TableCell>Advances</TableCell>
               <TableCell align="left">Shiny</TableCell>
               <TableCell align="left">PID</TableCell>
+              <TableCell align="left">EC</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

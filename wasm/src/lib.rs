@@ -211,6 +211,7 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
 
 fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     let mut is_shiny = false;
+    let ec = rng.next();
     let pid = rng.next();
     let rand = rng.next();
 
@@ -218,7 +219,7 @@ fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
         is_shiny = true
     }
 
-    Pokemonbdsp { is_shiny, pid }
+    Pokemonbdsp { is_shiny, pid, ec }
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -234,6 +235,7 @@ pub struct Pokemon {
 pub struct Pokemonbdsp {
     is_shiny: bool,
     pid: u32,
+    ec: u32,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -327,6 +329,7 @@ pub struct ShinyResultBdsp {
     pub advances: u32,
     pub shiny_value: bool,
     pub pid: u32,
+    pub ec: u32,
 }
 
 pub fn filter(
@@ -436,6 +439,7 @@ pub fn calculate_pokemon_bdsp(
                 advances: value,
                 pid: pokemon_results.pid,
                 shiny_value: pokemon_results.is_shiny,
+                ec: pokemon_results.ec,
             };
             shiny_results.push(result);
         }

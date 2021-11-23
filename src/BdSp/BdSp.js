@@ -11,10 +11,10 @@ import { Results } from './Results';
 
 export function BdSp() {
   const [state, setState] = React.useState({
-    state0: 0x3ad6c1f0,
-    state1: 0x0ccea7a7,
-    state2: 0x3aa81fb1,
-    state3: 0xf423082b,
+    state0: 0x2967281b,
+    state1: 0xdbf9331d,
+    state2: 0xb735d1c4,
+    state3: 0xc97488a2,
     shiny: false,
     min: 0,
     max: 1000000,
