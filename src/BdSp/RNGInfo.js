@@ -21,14 +21,14 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
-            autoComplete="new-password"
             fullWidth
+            autoComplete="off"
             inputProps={{
               inputMode: 'text',
               maxLength: 8,
             }}
-            id="state0"
-            label="State 0"
+            id="seed0"
+            label="Seed 0"
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -40,14 +40,14 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
-            autoComplete="new-password"
+            autoComplete="off"
             fullWidth
             inputProps={{
               inputMode: 'text',
               maxLength: 8,
             }}
-            id="state1"
-            label="State 1"
+            id="seed1"
+            label="Seed 1"
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -59,14 +59,14 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
-            autoComplete="new-password"
+            autoComplete="off"
             fullWidth
             inputProps={{
               inputMode: 'text',
               maxLength: 8,
             }}
-            id="state2"
-            label="State 2"
+            id="seed2"
+            label="Seed 2"
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -78,14 +78,14 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
-            autoComplete="new-password"
+            autoComplete="off"
             fullWidth
             inputProps={{
               inputMode: 'text',
               maxLength: 8,
             }}
-            id="state3"
-            label="State 3"
+            id="seed3"
+            label="Seed 3"
             variant="outlined"
             onChange={event => {
               setState(state => ({
