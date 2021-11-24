@@ -212,10 +212,10 @@ fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: 
 fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     let mut is_shiny = false;
     let ec = rng.next();
-    let test_pid = rng.next();
-    let rand = rng.next();
+    let shiny_rand = rng.next();
+    let pid = rng.next();
 
-    if (test_pid & 0xFFF0 ^ test_pid >> 0x10 ^ rand >> 0x10 ^ rand & 0xFFF0) < 0x10 {
+    if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
         is_shiny = true
     }
 
@@ -225,6 +225,7 @@ fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     }
     rng.advance(4);
     let nature = rng.next() % 24; //nature
+    let ability = rng.rand_max(2);
 
     Pokemonbdsp {
         is_shiny,
