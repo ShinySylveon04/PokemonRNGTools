@@ -223,9 +223,12 @@ fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     for i in ivs.iter_mut() {
         *i = rng.rand_max(32);
     }
-    rng.advance(4);
-    let nature = rng.next() % 24; //nature
-    let ability = rng.rand_max(2);
+
+    let ability = rng.next();
+    let gender_rand = rng.next();
+    let gender = (gender_rand - (gender_rand / 252) * 252) + 1;
+    let nature_rand = rng.next(); //nature
+    let nature = nature_rand - (nature_rand / 25) * 25;
 
     Pokemonbdsp {
         is_shiny,
@@ -233,6 +236,8 @@ fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
         ec,
         nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
         ivs,
+        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
+        gender,
     }
 }
 
@@ -252,6 +257,8 @@ pub struct Pokemonbdsp {
     ec: u32,
     nature: NatureEnum,
     ivs: Vec<u32>,
+    ability: AbilityEnum,
+    gender: u32,
 }
 
 fn generate_dynamic_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
@@ -348,6 +355,8 @@ pub struct ShinyResultBdsp {
     pub ec: u32,
     pub nature: NatureEnum,
     pub ivs: Vec<u32>,
+    pub ability: AbilityEnum,
+    pub gender: u32,
 }
 
 pub fn filter(
@@ -461,6 +470,8 @@ pub fn calculate_pokemon_bdsp(
                 ec: pokemon_results.ec,
                 nature: pokemon_results.nature,
                 ivs: pokemon_results.ivs,
+                ability: pokemon_results.ability,
+                gender: pokemon_results.gender,
             };
             shiny_results.push(result);
         }
