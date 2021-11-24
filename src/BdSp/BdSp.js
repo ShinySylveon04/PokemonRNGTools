@@ -37,7 +37,8 @@ export function BdSp() {
     },
   ]);
 
-  const { state0, state1, state2, state3, shiny, min, max, delay } = state;
+  const { state0, state1, state2, state3, shiny, min, max, delay, nature } =
+    state;
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -50,6 +51,7 @@ export function BdSp() {
       min,
       max,
       delay,
+      nature,
     );
     setResults(shiny_result);
   };

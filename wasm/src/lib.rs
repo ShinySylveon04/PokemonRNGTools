@@ -343,7 +343,7 @@ pub struct ShinyResult {
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ShinyResultBdsp {
     pub state0: u32,
     pub state1: u32,
@@ -369,6 +369,18 @@ pub fn filter(
         && nature_filter == results.nature
         && ability_filter == results.ability
     {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+pub fn filter_bdsp(
+    results: &Pokemonbdsp,
+    shiny_filter: bool,
+    nature_filter: NatureFilterEnum,
+) -> bool {
+    if nature_filter == results.nature && shiny_filter == results.is_shiny {
         return true;
     } else {
         return false;
@@ -433,8 +445,19 @@ pub fn calculate_pokemon_bdsp_wasm(
     min: usize,
     max: usize,
     delay: usize,
+    nature_filter: NatureFilterEnum,
 ) -> Array {
-    calculate_pokemon_bdsp(seed1, seed2, seed3, seed4, shiny_filter, min, max, delay)
+    calculate_pokemon_bdsp(
+        seed1,
+        seed2,
+        seed3,
+        seed4,
+        shiny_filter,
+        min,
+        max,
+        delay,
+        nature_filter,
+    )
 }
 
 #[wasm_bindgen]
@@ -447,6 +470,7 @@ pub fn calculate_pokemon_bdsp(
     min: usize,
     max: usize,
     delay: usize,
+    nature_filter: NatureFilterEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -457,7 +481,7 @@ pub fn calculate_pokemon_bdsp(
     for value in values {
         pokemon_results = generate_bdsp_pokemon(rng.clone());
 
-        if pokemon_results.is_shiny == shiny_filter {
+        if filter_bdsp(&pokemon_results, shiny_filter, nature_filter) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {
                 state0: shiny_state[0],
