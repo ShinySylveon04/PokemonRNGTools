@@ -9,6 +9,8 @@ pub use xoroshiro::*;
 mod xorshift;
 pub use xorshift::*;
 
+mod swsh;
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AbilityFilterEnum {
@@ -151,62 +153,6 @@ fn check_is_shiny(tsv: u16, rand: u32) -> bool {
 
 fn calculate_shiny_value(first: u16, second: u16) -> u16 {
     first ^ second
-}
-
-fn generate_static_pokemon(mut rng: Xoroshiro, tid: u16, sid: u16, shiny_charm: bool) -> Pokemon {
-    rng.rand_max(100);
-    let tsv = calculate_shiny_value(tid, sid);
-    let mut is_shiny = false;
-
-    let shiny_rolls = if shiny_charm { 3 } else { 1 };
-
-    for _ in 0..shiny_rolls {
-        let rand = rng.next(); // mock pid
-        is_shiny = check_is_shiny(tsv, rand);
-        if is_shiny {
-            break;
-        }
-    }
-
-    rng.rand_max(2);
-    let nature = rng.rand_max(25); //nature
-    let ability = rng.rand_max(2); // ability
-    let mut seed = Xoroshiro::new(rng.next() as u64);
-    let ec = seed.next();
-    let mut pid = seed.next();
-
-    let tsv = tid ^ sid;
-    let psv = ((pid >> 16) ^ (pid & 0xFFFF)) as u16;
-    if !is_shiny {
-        if (psv ^ tsv) < 16 {
-            pid ^= 0x10000000; // force pid to not be shiny
-        }
-    } else {
-        // force pid to be shiny
-        if !((psv ^ tsv) < 16) {
-            let pid_high = (pid & 0xFFFF) ^ tsv as u32;
-            pid = (pid_high << 16) as u32 | (pid & 0xFFFF)
-        }
-    }
-
-    let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
-
-    let mut shiny_type = ShinyEnum::None;
-    if xor < 0x10 {
-        if xor == 0 {
-            shiny_type = ShinyEnum::Square;
-        } else {
-            shiny_type = ShinyEnum::Star;
-        }
-    }
-
-    Pokemon {
-        shiny_type,
-        ec,
-        pid,
-        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
-    }
 }
 
 fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
@@ -413,7 +359,7 @@ pub fn calculate_pokemon(
     for value in values {
         pokemon_results = match encounter_type {
             EncounterFilterEnum::Static => {
-                generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
+                swsh::generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
             EncounterFilterEnum::Dynamic => {
                 generate_dynamic_pokemon(rng.clone(), tid, sid, shiny_charm)
@@ -667,7 +613,7 @@ mod test {
         let mut pokemon_shininess;
 
         loop {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
@@ -702,7 +648,7 @@ mod test {
 
         let values = 0..10000;
         for value in values {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 assert_eq!(value, 5932);
@@ -737,7 +683,7 @@ mod test {
         let mut pokemon_shininess;
 
         loop {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
@@ -771,7 +717,7 @@ mod test {
         let mut pokemon_shininess;
 
         loop {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
@@ -805,7 +751,7 @@ mod test {
         let mut pokemon_shininess;
 
         loop {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
@@ -839,7 +785,7 @@ mod test {
         let mut pokemon_shininess;
 
         loop {
-            pokemon_shininess = generate_static_pokemon(rng.clone(), 32125, 00998, false);
+            pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
             if ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
