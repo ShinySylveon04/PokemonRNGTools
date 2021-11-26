@@ -18,9 +18,9 @@ export function BdSp() {
     shiny: true,
     min: 0,
     max: 10000,
-    delay: 85,
+    delay: 86,
     nature: 25,
-    ability: 2,
+    ability: 3,
   });
 
   const [results, setResults] = React.useState([
@@ -37,8 +37,18 @@ export function BdSp() {
     },
   ]);
 
-  const { state0, state1, state2, state3, shiny, min, max, delay, nature } =
-    state;
+  const {
+    state0,
+    state1,
+    state2,
+    state3,
+    shiny,
+    min,
+    max,
+    delay,
+    nature,
+    ability,
+  } = state;
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -52,6 +62,7 @@ export function BdSp() {
       max,
       delay,
       nature,
+      ability,
     );
     setResults(shiny_result);
   };

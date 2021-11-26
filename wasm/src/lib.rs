@@ -12,7 +12,7 @@ pub use xorshift::*;
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AbilityFilterEnum {
-    Any = 2,
+    Any = 3,
     Ability0 = 0,
     Ability1 = 1,
 }
@@ -224,10 +224,11 @@ fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
         *i = rng.rand_max(32);
     }
 
-    let ability = rng.next();
+    let ability_rand = rng.next();
+    let ability = ability_rand - (ability_rand / 2) * 2;
     let gender_rand = rng.next();
     let gender = (gender_rand - (gender_rand / 252) * 252) + 1;
-    let nature_rand = rng.next(); //nature
+    let nature_rand = rng.next();
     let nature = nature_rand - (nature_rand / 25) * 25;
 
     Pokemonbdsp {
@@ -379,8 +380,12 @@ pub fn filter_bdsp(
     results: &Pokemonbdsp,
     shiny_filter: bool,
     nature_filter: NatureFilterEnum,
+    ability_filter: AbilityFilterEnum,
 ) -> bool {
-    if nature_filter == results.nature && shiny_filter == results.is_shiny {
+    if ability_filter == results.ability
+        && nature_filter == results.nature
+        && shiny_filter == results.is_shiny
+    {
         return true;
     } else {
         return false;
@@ -446,6 +451,7 @@ pub fn calculate_pokemon_bdsp_wasm(
     max: usize,
     delay: usize,
     nature_filter: NatureFilterEnum,
+    ability_filter: AbilityFilterEnum,
 ) -> Array {
     calculate_pokemon_bdsp(
         seed1,
@@ -457,6 +463,7 @@ pub fn calculate_pokemon_bdsp_wasm(
         max,
         delay,
         nature_filter,
+        ability_filter,
     )
 }
 
@@ -471,6 +478,7 @@ pub fn calculate_pokemon_bdsp(
     max: usize,
     delay: usize,
     nature_filter: NatureFilterEnum,
+    ability_filter: AbilityFilterEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -481,7 +489,12 @@ pub fn calculate_pokemon_bdsp(
     for value in values {
         pokemon_results = generate_bdsp_pokemon(rng.clone());
 
-        if filter_bdsp(&pokemon_results, shiny_filter, nature_filter) {
+        if filter_bdsp(
+            &pokemon_results,
+            shiny_filter,
+            nature_filter,
+            ability_filter,
+        ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {
                 state0: shiny_state[0],
