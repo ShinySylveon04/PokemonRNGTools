@@ -84,8 +84,8 @@ export const Filters = ({ setState, state }) => {
               }
             >
               <MenuItem value={3}>Any</MenuItem>
-              <MenuItem value={1}>0</MenuItem>
-              <MenuItem value={0}>1</MenuItem>
+              <MenuItem value={0}>0</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
             </Select>
           </FormControl>
         </Grid>

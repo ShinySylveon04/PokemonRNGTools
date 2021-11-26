@@ -10,15 +10,6 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { natures } from '../natures';
 
-const abilityType = value => {
-  switch (value) {
-    case 1:
-      return 0;
-    default:
-      return 1;
-  }
-};
-
 const ShowResults = ({ results }) => {
   return results.map((result, index) => (
     <TableRow
@@ -28,7 +19,7 @@ const ShowResults = ({ results }) => {
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
-      <TableCell align="left">{abilityType(result.ability)}</TableCell>
+      <TableCell align="left">{result.ability}</TableCell>
       <TableCell align="left">
         {`${result.ivs[0]} /
           ${result.ivs[1]} /
