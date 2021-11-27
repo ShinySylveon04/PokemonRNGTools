@@ -24,7 +24,7 @@ export const Filters = ({ setState, state }) => {
             Filters
           </Typography>
         </Grid>
-        <Grid item sm={6} md={4} xs={12}>
+        <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
             <InputLabel id="shiny-type-label">Shiny</InputLabel>
             <Select
@@ -44,7 +44,7 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item sm={6} md={4} xs={12}>
+        <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
             <InputLabel id="nature-label">Nature</InputLabel>
             <Select
@@ -68,7 +68,7 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item sm={6} md={4} xs={12}>
+        <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
             <InputLabel id="ability-label">Ability</InputLabel>
             <Select
@@ -86,6 +86,37 @@ export const Filters = ({ setState, state }) => {
               <MenuItem value={3}>Any</MenuItem>
               <MenuItem value={0}>0</MenuItem>
               <MenuItem value={1}>1</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="encounter-label">Encounter Slot</InputLabel>
+            <Select
+              labelId="encounter-label"
+              id="encounter-slot"
+              value={state.encounter}
+              label="Encounter Slot"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  encounter: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={12}>Any</MenuItem>
+              <MenuItem value={0}>0</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={11}>11</MenuItem>
             </Select>
           </FormControl>
         </Grid>

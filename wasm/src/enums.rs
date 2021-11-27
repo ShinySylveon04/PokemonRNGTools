@@ -104,3 +104,40 @@ pub enum ShinyEnum {
     Star = 1,
     Square = 2,
 }
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum EncounterSlotFilterEnum {
+    Any = 12,
+    Slot0 = 0,
+    Slot1 = 1,
+    Slot2 = 2,
+    Slot3 = 3,
+    Slot4 = 4,
+    Slot5 = 5,
+    Slot6 = 6,
+    Slot7 = 7,
+    Slot8 = 8,
+    Slot9 = 9,
+    Slot10 = 10,
+    Slot11 = 11,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[repr(usize)]
+pub enum EncounterSlotEnum {
+    #[num_enum(default)]
+    Slot0 = 0,
+    Slot1 = 1,
+    Slot2 = 2,
+    Slot3 = 3,
+    Slot4 = 4,
+    Slot5 = 5,
+    Slot6 = 6,
+    Slot7 = 7,
+    Slot8 = 8,
+    Slot9 = 9,
+    Slot10 = 10,
+    Slot11 = 11,
+}

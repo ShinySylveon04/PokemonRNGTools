@@ -3,7 +3,7 @@ use super::{Pokemonbdsp, Xorshift};
 use std::convert::TryFrom;
 
 pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
-    let encounter = rng.rand_range(0, 100) as u8;
+    let encounter_rand = rng.rand_range(0, 100) as u8;
     rng.advance(84);
     let mut is_shiny = false;
     let ec = rng.next();
@@ -25,6 +25,13 @@ pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
     let gender = (gender_rand - (gender_rand / 252) * 252) + 1;
     let nature_rand = rng.next();
     let nature = nature_rand - (nature_rand / 25) * 25;
+
+    let encounter_slots: [u8; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
+
+    let encounter = encounter_slots
+        .iter()
+        .position(|enc| encounter_rand < *enc)
+        .unwrap_or(0) as u8;
 
     Pokemonbdsp {
         is_shiny,

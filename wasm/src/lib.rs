@@ -42,6 +42,15 @@ impl PartialEq<enums::ShinyEnum> for enums::ShinyFilterEnum {
     }
 }
 
+impl PartialEq<u8> for enums::EncounterSlotFilterEnum {
+    fn eq(&self, other: &u8) -> bool {
+        match (self, other) {
+            (enums::EncounterSlotFilterEnum::Any, _) => true,
+            (_, _) => (*self as u8) == (*other),
+        }
+    }
+}
+
 fn check_is_shiny(tsv: u16, rand: u32) -> bool {
     let psv = calculate_shiny_value((rand >> 0x10) as u16, (rand & 0xFFFF) as u16);
     (tsv ^ psv) < 0x10
@@ -123,9 +132,11 @@ pub fn filter_bdsp(
     shiny_filter: bool,
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
+    encounter_filter: enums::EncounterSlotFilterEnum,
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
+        && encounter_filter == results.encounter
         && shiny_filter == results.is_shiny
     {
         return true;
@@ -194,6 +205,7 @@ pub fn calculate_pokemon_bdsp(
     delay: usize,
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
+    encounter_filter: enums::EncounterSlotFilterEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -209,6 +221,7 @@ pub fn calculate_pokemon_bdsp(
             shiny_filter,
             nature_filter,
             ability_filter,
+            encounter_filter,
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {

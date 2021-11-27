@@ -21,6 +21,7 @@ export function BdSp() {
     delay: 1,
     nature: 25,
     ability: 3,
+    encounter: 12,
   });
 
   const [results, setResults] = React.useState([
@@ -49,6 +50,7 @@ export function BdSp() {
     delay,
     nature,
     ability,
+    encounter,
   } = state;
 
   const handleSubmit = event => {
@@ -64,6 +66,7 @@ export function BdSp() {
       delay,
       nature,
       ability,
+      encounter,
     );
     setResults(shiny_result);
   };
