@@ -3,6 +3,8 @@ use super::{Pokemonbdsp, Xorshift};
 use std::convert::TryFrom;
 
 pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
+    let encounter = rng.rand_range(0, 100) as u8;
+    rng.advance(84);
     let mut is_shiny = false;
     let ec = rng.next();
     let shiny_rand = rng.next();
@@ -32,5 +34,6 @@ pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
         ivs,
         ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
         gender,
+        encounter,
     }
 }

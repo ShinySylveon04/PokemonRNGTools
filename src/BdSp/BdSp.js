@@ -18,7 +18,7 @@ export function BdSp() {
     shiny: true,
     min: 0,
     max: 10000,
-    delay: 86,
+    delay: 1,
     nature: 25,
     ability: 3,
   });
@@ -31,6 +31,7 @@ export function BdSp() {
       state1: 0,
       ec: 0,
       pid: 0,
+      encounter: 0,
       nature: 0,
       ability: 0,
       ivs: [0, 0, 0, 0, 0, 0],

@@ -69,6 +69,7 @@ pub struct Pokemonbdsp {
     ivs: Vec<u32>,
     ability: enums::AbilityEnum,
     gender: u32,
+    encounter: u8,
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -98,6 +99,7 @@ pub struct ShinyResultBdsp {
     pub ivs: Vec<u32>,
     pub ability: enums::AbilityEnum,
     pub gender: u32,
+    pub encounter: u8,
 }
 
 pub fn filter(
@@ -222,6 +224,7 @@ pub fn calculate_pokemon_bdsp(
                 ivs: pokemon_results.ivs,
                 ability: pokemon_results.ability,
                 gender: pokemon_results.gender,
+                encounter: pokemon_results.encounter,
             };
             shiny_results.push(result);
         }

@@ -72,4 +72,20 @@ impl Xorshift {
 
         rand
     }
+
+    pub fn rand_range(&mut self, min: u32, max: u32) -> u32 {
+        let s0 = self.state[0];
+        self.state[0] = self.state[1];
+        self.state[1] = self.state[2];
+        self.state[2] = self.state[3];
+
+        let tmp = s0 ^ s0 << 11;
+        let tmp = tmp ^ tmp >> 8 ^ self.state[2] ^ self.state[2] >> 19;
+
+        self.state[3] = tmp;
+
+        let diff = max - min;
+
+        (tmp % diff).wrapping_add(min)
+    }
 }

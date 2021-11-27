@@ -10,6 +10,12 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { natures } from '../natures';
 
+const encounterSlots = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
+
+const convertEnc = enc => {
+  return encounterSlots.findIndex(slot => enc < slot);
+};
+
 const ShowResults = ({ results }) => {
   return results.map((result, index) => (
     <TableRow
@@ -18,6 +24,7 @@ const ShowResults = ({ results }) => {
     >
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
+      <TableCell align="left">{convertEnc(result.encounter)}</TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
       <TableCell align="left">{result.ability}</TableCell>
       <TableCell align="left">
@@ -59,6 +66,7 @@ export const Results = ({ results }) => {
             <TableRow>
               <TableCell>Advances</TableCell>
               <TableCell align="left">Shiny</TableCell>
+              <TableCell align="left">Slot</TableCell>
               <TableCell align="left">Nature</TableCell>
               <TableCell align="left">Ability</TableCell>
               <TableCell align="left">IVs</TableCell>
