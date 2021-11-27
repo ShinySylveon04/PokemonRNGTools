@@ -1,6 +1,4 @@
 use js_sys::Array;
-use num_enum::FromPrimitive;
-use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
 mod xoroshiro;
@@ -9,138 +7,36 @@ pub use xoroshiro::*;
 mod xorshift;
 pub use xorshift::*;
 
+mod bdsp;
+mod enums;
 mod swsh;
 
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum AbilityFilterEnum {
-    Any = 3,
-    Ability0 = 0,
-    Ability1 = 1,
-}
-
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
-#[repr(u32)]
-pub enum AbilityEnum {
-    #[num_enum(default)]
-    Ability0 = 0,
-    Ability1 = 1,
-}
-
-impl PartialEq<AbilityEnum> for AbilityFilterEnum {
-    fn eq(&self, other: &AbilityEnum) -> bool {
+impl PartialEq<enums::AbilityEnum> for enums::AbilityFilterEnum {
+    fn eq(&self, other: &enums::AbilityEnum) -> bool {
         match (self, other) {
-            (AbilityFilterEnum::Any, _) => true,
+            (enums::AbilityFilterEnum::Any, _) => true,
             (_, _) => (*self as u32) == (*other as u32),
         }
     }
 }
 
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum NatureFilterEnum {
-    Hardy = 0,
-    Lonely = 1,
-    Brave = 2,
-    Adamant = 3,
-    Naughty = 4,
-    Bold = 5,
-    Docile = 6,
-    Relaxed = 7,
-    Impish = 8,
-    Lax = 9,
-    Timid = 10,
-    Hasty = 11,
-    Serious = 12,
-    Jolly = 13,
-    Naive = 14,
-    Modest = 15,
-    Mild = 16,
-    Quiet = 17,
-    Bashful = 18,
-    Rash = 19,
-    Calm = 20,
-    Gentle = 21,
-    Sassy = 22,
-    Careful = 23,
-    Quirky = 24,
-    Any = 25,
-}
-
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
-#[repr(u32)]
-pub enum NatureEnum {
-    #[num_enum(default)]
-    Hardy = 0,
-    Lonely = 1,
-    Brave = 2,
-    Adamant = 3,
-    Naughty = 4,
-    Bold = 5,
-    Docile = 6,
-    Relaxed = 7,
-    Impish = 8,
-    Lax = 9,
-    Timid = 10,
-    Hasty = 11,
-    Serious = 12,
-    Jolly = 13,
-    Naive = 14,
-    Modest = 15,
-    Mild = 16,
-    Quiet = 17,
-    Bashful = 18,
-    Rash = 19,
-    Calm = 20,
-    Gentle = 21,
-    Sassy = 22,
-    Careful = 23,
-    Quirky = 24,
-}
-
-impl PartialEq<NatureEnum> for NatureFilterEnum {
-    fn eq(&self, other: &NatureEnum) -> bool {
+impl PartialEq<enums::NatureEnum> for enums::NatureFilterEnum {
+    fn eq(&self, other: &enums::NatureEnum) -> bool {
         match (self, other) {
-            (NatureFilterEnum::Any, _) => true,
+            (enums::NatureFilterEnum::Any, _) => true,
             (_, _) => (*self as u32) == (*other as u32),
         }
     }
 }
 
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum ShinyFilterEnum {
-    None = 0,
-    Star = 1,
-    Square = 2,
-    Any = 3,
-}
-
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum EncounterFilterEnum {
-    Static = 0,
-    Dynamic = 1,
-}
-
-#[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum ShinyEnum {
-    None = 0,
-    Star = 1,
-    Square = 2,
-}
-
-impl PartialEq<ShinyEnum> for ShinyFilterEnum {
-    fn eq(&self, other: &ShinyEnum) -> bool {
+impl PartialEq<enums::ShinyEnum> for enums::ShinyFilterEnum {
+    fn eq(&self, other: &enums::ShinyEnum) -> bool {
         match (self, other) {
-            (ShinyFilterEnum::Star, ShinyEnum::Star) => true,
-            (ShinyFilterEnum::Square, ShinyEnum::Square) => true,
-            (ShinyFilterEnum::None, ShinyEnum::None) => true,
-            (ShinyFilterEnum::Any, ShinyEnum::Square) => true,
-            (ShinyFilterEnum::Any, ShinyEnum::Star) => true,
+            (enums::ShinyFilterEnum::Star, enums::ShinyEnum::Star) => true,
+            (enums::ShinyFilterEnum::Square, enums::ShinyEnum::Square) => true,
+            (enums::ShinyFilterEnum::None, enums::ShinyEnum::None) => true,
+            (enums::ShinyFilterEnum::Any, enums::ShinyEnum::Square) => true,
+            (enums::ShinyFilterEnum::Any, enums::ShinyEnum::Star) => true,
             (_, _) => false,
         }
     }
@@ -155,46 +51,13 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
     first ^ second
 }
 
-fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
-    let mut is_shiny = false;
-    let ec = rng.next();
-    let shiny_rand = rng.next();
-    let pid = rng.next();
-
-    if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
-        is_shiny = true
-    }
-
-    let mut ivs = vec![32, 32, 32, 32, 32, 32];
-    for i in ivs.iter_mut() {
-        *i = rng.rand_max(32);
-    }
-
-    let ability_rand = rng.next();
-    let ability = ability_rand - (ability_rand / 2) * 2;
-    let gender_rand = rng.next();
-    let gender = (gender_rand - (gender_rand / 252) * 252) + 1;
-    let nature_rand = rng.next();
-    let nature = nature_rand - (nature_rand / 25) * 25;
-
-    Pokemonbdsp {
-        is_shiny,
-        pid,
-        ec,
-        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ivs,
-        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
-        gender,
-    }
-}
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
-    shiny_type: ShinyEnum,
+    shiny_type: enums::ShinyEnum,
     ec: u32,
     pid: u32,
-    nature: NatureEnum,
-    ability: AbilityEnum,
+    nature: enums::NatureEnum,
+    ability: enums::AbilityEnum,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -202,9 +65,9 @@ pub struct Pokemonbdsp {
     is_shiny: bool,
     pid: u32,
     ec: u32,
-    nature: NatureEnum,
+    nature: enums::NatureEnum,
     ivs: Vec<u32>,
-    ability: AbilityEnum,
+    ability: enums::AbilityEnum,
     gender: u32,
 }
 
@@ -213,11 +76,11 @@ pub struct ShinyResult {
     pub state0: u64,
     pub state1: u64,
     pub advances: u32,
-    pub shiny_value: ShinyEnum,
+    pub shiny_value: enums::ShinyEnum,
     pub ec: u32,
     pub pid: u32,
-    pub nature: NatureEnum,
-    pub ability: AbilityEnum,
+    pub nature: enums::NatureEnum,
+    pub ability: enums::AbilityEnum,
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -231,17 +94,17 @@ pub struct ShinyResultBdsp {
     pub shiny_value: bool,
     pub pid: u32,
     pub ec: u32,
-    pub nature: NatureEnum,
+    pub nature: enums::NatureEnum,
     pub ivs: Vec<u32>,
-    pub ability: AbilityEnum,
+    pub ability: enums::AbilityEnum,
     pub gender: u32,
 }
 
 pub fn filter(
     results: Pokemon,
-    shiny_filter: ShinyFilterEnum,
-    nature_filter: NatureFilterEnum,
-    ability_filter: AbilityFilterEnum,
+    shiny_filter: enums::ShinyFilterEnum,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
 ) -> bool {
     if shiny_filter == results.shiny_type
         && nature_filter == results.nature
@@ -256,8 +119,8 @@ pub fn filter(
 pub fn filter_bdsp(
     results: &Pokemonbdsp,
     shiny_filter: bool,
-    nature_filter: NatureFilterEnum,
-    ability_filter: AbilityFilterEnum,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
@@ -275,11 +138,11 @@ pub fn calculate_pokemon(
     seed2: u64,
     tid: u16,
     sid: u16,
-    shiny_filter: ShinyFilterEnum,
-    encounter_type: EncounterFilterEnum,
+    shiny_filter: enums::ShinyFilterEnum,
+    encounter_type: enums::EncounterFilterEnum,
     shiny_charm: bool,
-    nature_filter: NatureFilterEnum,
-    ability_filter: AbilityFilterEnum,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
     min: u32,
     max: u32,
 ) -> Array {
@@ -289,10 +152,10 @@ pub fn calculate_pokemon(
     let values = min..=max;
     for value in values {
         pokemon_results = match encounter_type {
-            EncounterFilterEnum::Static => {
+            enums::EncounterFilterEnum::Static => {
                 swsh::generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
-            EncounterFilterEnum::Dynamic => {
+            enums::EncounterFilterEnum::Dynamic => {
                 swsh::generate_dynamic_pokemon(rng.clone(), tid, sid, shiny_charm)
             }
         };
@@ -318,33 +181,6 @@ pub fn calculate_pokemon(
 }
 
 #[wasm_bindgen]
-pub fn calculate_pokemon_bdsp_wasm(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    shiny_filter: bool,
-    min: usize,
-    max: usize,
-    delay: usize,
-    nature_filter: NatureFilterEnum,
-    ability_filter: AbilityFilterEnum,
-) -> Array {
-    calculate_pokemon_bdsp(
-        seed1,
-        seed2,
-        seed3,
-        seed4,
-        shiny_filter,
-        min,
-        max,
-        delay,
-        nature_filter,
-        ability_filter,
-    )
-}
-
-#[wasm_bindgen]
 pub fn calculate_pokemon_bdsp(
     seed1: u32,
     seed2: u32,
@@ -354,8 +190,8 @@ pub fn calculate_pokemon_bdsp(
     min: usize,
     max: usize,
     delay: usize,
-    nature_filter: NatureFilterEnum,
-    ability_filter: AbilityFilterEnum,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -364,7 +200,7 @@ pub fn calculate_pokemon_bdsp(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        pokemon_results = generate_bdsp_pokemon(rng.clone());
+        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone());
 
         if filter_bdsp(
             &pokemon_results,
@@ -546,12 +382,12 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.shiny_type, ShinyEnum::Square)
+        assert_eq!(pokemon_shininess.shiny_type, enums::ShinyEnum::Square)
     }
 
     #[test]
@@ -563,12 +399,12 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.shiny_type, ShinyEnum::Square)
+        assert_eq!(pokemon_shininess.shiny_type, enums::ShinyEnum::Square)
     }
 
     #[test]
@@ -581,7 +417,7 @@ mod test {
         for value in values {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 assert_eq!(value, 5932);
                 break;
             }
@@ -599,7 +435,7 @@ mod test {
         for value in values {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 assert_eq!(value, 12259);
                 break;
             }
@@ -616,7 +452,7 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
@@ -633,7 +469,7 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
@@ -650,7 +486,7 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
@@ -667,7 +503,7 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
@@ -684,12 +520,12 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.nature, NatureEnum::Timid)
+        assert_eq!(pokemon_shininess.nature, enums::NatureEnum::Timid)
     }
 
     #[test]
@@ -701,12 +537,12 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.nature, NatureEnum::Brave)
+        assert_eq!(pokemon_shininess.nature, enums::NatureEnum::Brave)
     }
 
     #[test]
@@ -718,12 +554,12 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_static_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.ability, AbilityEnum::Ability0)
+        assert_eq!(pokemon_shininess.ability, enums::AbilityEnum::Ability0)
     }
 
     #[test]
@@ -735,38 +571,11 @@ mod test {
         loop {
             pokemon_shininess = swsh::generate_dynamic_pokemon(rng.clone(), 32125, 00998, false);
 
-            if ShinyEnum::Square == pokemon_shininess.shiny_type {
+            if enums::ShinyEnum::Square == pokemon_shininess.shiny_type {
                 break;
             }
             rng.next();
         }
-        assert_eq!(pokemon_shininess.ability, AbilityEnum::Ability1)
+        assert_eq!(pokemon_shininess.ability, enums::AbilityEnum::Ability1)
     }
-
-    // #[test]
-    // fn should_return_shiny_bdsp() {
-    //     let mut rng = Xorshift::from_state([0x3ad6c1f0, 0x0ccea7a7, 0x3aa81fb1, 0xf423082b]);
-
-    //     let results = calculate_pokemon_bdsp(
-    //         0x3ad6c1f0, 0x0ccea7a7, 0x3aa81fb1, 0xf423082b, true, 0, 10000,
-    //     );
-
-    //     let mut expected_results: Vec<ShinyResultBdsp> = Vec::new();
-
-    //     let expected_result = ShinyResultBdsp {
-    //         state0: 0x4271729c,
-    //         state1: 0xa55ea294,
-    //         state2: 0x5a84f134,
-    //         state3: 0xd7e1385,
-    //         advances: 253,
-    //         pid: 0,
-    //         shiny_value: true,
-    //     };
-
-    //     expected_results.push(expected_result);
-
-    //     let array = expected_results.into_iter().map(JsValue::from).collect();
-
-    //     assert_eq!(results, array)
-    // }
 }

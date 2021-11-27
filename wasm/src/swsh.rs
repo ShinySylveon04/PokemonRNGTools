@@ -1,6 +1,5 @@
-use super::{
-    calculate_shiny_value, check_is_shiny, AbilityEnum, NatureEnum, Pokemon, ShinyEnum, Xoroshiro,
-};
+use super::enums;
+use super::{calculate_shiny_value, check_is_shiny, Pokemon, Xoroshiro};
 use std::convert::TryFrom;
 
 pub fn generate_static_pokemon(
@@ -46,12 +45,12 @@ pub fn generate_static_pokemon(
 
     let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
 
-    let mut shiny_type = ShinyEnum::None;
+    let mut shiny_type = enums::ShinyEnum::None;
     if xor < 0x10 {
         if xor == 0 {
-            shiny_type = ShinyEnum::Square;
+            shiny_type = enums::ShinyEnum::Square;
         } else {
-            shiny_type = ShinyEnum::Star;
+            shiny_type = enums::ShinyEnum::Star;
         }
     }
 
@@ -59,8 +58,8 @@ pub fn generate_static_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
+        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
     }
 }
 
@@ -120,12 +119,12 @@ pub fn generate_dynamic_pokemon(
 
     let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
 
-    let mut shiny_type = ShinyEnum::None;
+    let mut shiny_type = enums::ShinyEnum::None;
     if xor < 0x10 {
         if xor == 0 {
-            shiny_type = ShinyEnum::Square;
+            shiny_type = enums::ShinyEnum::Square;
         } else {
-            shiny_type = ShinyEnum::Star;
+            shiny_type = enums::ShinyEnum::Star;
         }
     }
 
@@ -133,7 +132,7 @@ pub fn generate_dynamic_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: NatureEnum::try_from(nature).unwrap_or(NatureEnum::Hardy),
-        ability: AbilityEnum::try_from(ability).unwrap_or(AbilityEnum::Ability0),
+        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
     }
 }
