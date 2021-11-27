@@ -206,6 +206,7 @@ pub fn calculate_pokemon_bdsp(
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
+    gender_ratio: enums::GenderRatioEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -214,7 +215,7 @@ pub fn calculate_pokemon_bdsp(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone());
+        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone(), gender_ratio);
 
         if filter_bdsp(
             &pokemon_results,
@@ -236,7 +237,7 @@ pub fn calculate_pokemon_bdsp(
                 nature: pokemon_results.nature,
                 ivs: pokemon_results.ivs,
                 ability: pokemon_results.ability,
-                gender: pokemon_results.gender,
+                gender: gender_ratio as u32,
                 encounter: pokemon_results.encounter,
             };
             shiny_results.push(result);

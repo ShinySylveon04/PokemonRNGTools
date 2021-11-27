@@ -141,3 +141,38 @@ pub enum EncounterSlotEnum {
     Slot10 = 10,
     Slot11 = 11,
 }
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum GenderRatioEnum {
+    NoSetGender = 256,
+    Genderless = 255,
+    Male50Female50 = 127,
+    Male25Female75 = 191,
+    Male75Female25 = 63,
+    Male875Female125 = 31,
+    Male = 0,
+    Female = 254,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum GenderEnum {
+    NoSetGender = 256,
+    Genderless = 255,
+    Male50Female50 = 127,
+    Male25Female75 = 191,
+    Male75Female25 = 63,
+    Male875Female125 = 31,
+    Male = 0,
+    Female = 254,
+}
+
+    pub fn is_set_gender(filter: &GenderRatioEnum) -> bool {
+        match filter {
+            GenderRatioEnum::Male => true,
+            GenderRatioEnum::Female => true,
+            GenderRatioEnum::Genderless => true,
+            _ => false
+        }
+    }

@@ -2,7 +2,10 @@ use super::enums;
 use super::{Pokemonbdsp, Xorshift};
 use std::convert::TryFrom;
 
-pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
+pub fn generate_bdsp_pokemon(
+    mut rng: Xorshift,
+    gender_ratio: enums::GenderRatioEnum,
+) -> Pokemonbdsp {
     let encounter_rand = rng.rand_range(0, 100) as u8;
     rng.advance(84);
     let mut is_shiny = false;
@@ -21,8 +24,13 @@ pub fn generate_bdsp_pokemon(mut rng: Xorshift) -> Pokemonbdsp {
 
     let ability_rand = rng.next();
     let ability = ability_rand - (ability_rand / 2) * 2;
-    let gender_rand = rng.next();
-    let gender = (gender_rand - (gender_rand / 252) * 252) + 1;
+
+    let mut gender = 256;
+    if !enums::is_set_gender(&gender_ratio) {
+        let gender_rand = rng.next();
+        gender = (gender_rand - (gender_rand / 252) * 252) + 1;
+    };
+
     let nature_rand = rng.next();
     let nature = nature_rand - (nature_rand / 25) * 25;
 
