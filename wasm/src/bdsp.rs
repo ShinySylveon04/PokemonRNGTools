@@ -25,10 +25,13 @@ pub fn generate_bdsp_pokemon(
     let ability_rand = rng.next();
     let ability = ability_rand - (ability_rand / 2) * 2;
 
-    let mut gender = 256;
-    if !enums::is_set_gender(&gender_ratio) {
-        let gender_rand = rng.next();
-        gender = (gender_rand - (gender_rand / 252) * 252) + 1;
+    let gender = match enums::get_set_gender_from_ratio(&gender_ratio) {
+        Some(set_gender) => set_gender,
+        None => {
+            let gender_rand = rng.next();
+            let gender_num = (gender_rand - (gender_rand / 253) * 253) + 1;
+            enums::get_gender_from_ratio(&gender_ratio, gender_num)
+        }
     };
 
     let nature_rand = rng.next();
@@ -40,6 +43,7 @@ pub fn generate_bdsp_pokemon(
         .iter()
         .position(|enc| encounter_rand < *enc)
         .unwrap_or(0) as u8;
+
 
     Pokemonbdsp {
         is_shiny,

@@ -10,7 +10,20 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { natures } from '../natures';
 
-const ShowResults = ({ results }) => {
+const showGender = num => {
+  switch (num) {
+    case 0:
+      return '♂';
+    case 254:
+      return '♀';
+    case 255:
+      return '-';
+    default:
+      return '-';
+  }
+};
+
+const ShowResults = ({ results, state }) => {
   return results.map((result, index) => (
     <TableRow
       key={index}
@@ -21,6 +34,9 @@ const ShowResults = ({ results }) => {
       <TableCell align="left">{result.encounter}</TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
       <TableCell align="left">{result.ability}</TableCell>
+      <TableCell align="left">
+        {state.genderRatio === 256 ? '-' : showGender(result.gender)}
+      </TableCell>
       <TableCell align="left">
         {`${result.ivs[0]} /
           ${result.ivs[1]} /
@@ -35,7 +51,7 @@ const ShowResults = ({ results }) => {
   ));
 };
 
-export const Results = ({ results }) => {
+export const Results = ({ results, state }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
@@ -63,6 +79,7 @@ export const Results = ({ results }) => {
               <TableCell align="left">Slot</TableCell>
               <TableCell align="left">Nature</TableCell>
               <TableCell align="left">Ability</TableCell>
+              <TableCell align="left">Gender</TableCell>
               <TableCell align="left">IVs</TableCell>
               <TableCell align="left">PID</TableCell>
               <TableCell align="left">EC</TableCell>
@@ -78,6 +95,7 @@ export const Results = ({ results }) => {
                     )
                   : results
               }
+              state={state}
             />
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>

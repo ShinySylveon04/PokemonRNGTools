@@ -143,8 +143,10 @@ pub enum EncounterSlotEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, PartialOrd)]
+#[repr(u32)]
 pub enum GenderRatioEnum {
+    #[num_enum(default)]
     NoSetGender = 256,
     Genderless = 255,
     Male50Female50 = 127,
@@ -158,21 +160,32 @@ pub enum GenderRatioEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum GenderEnum {
-    NoSetGender = 256,
     Genderless = 255,
-    Male50Female50 = 127,
-    Male25Female75 = 191,
-    Male75Female25 = 63,
-    Male875Female125 = 31,
     Male = 0,
     Female = 254,
 }
 
-    pub fn is_set_gender(filter: &GenderRatioEnum) -> bool {
-        match filter {
-            GenderRatioEnum::Male => true,
-            GenderRatioEnum::Female => true,
-            GenderRatioEnum::Genderless => true,
-            _ => false
+pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatioEnum) -> Option<GenderEnum> {
+    match gender_ratio {
+        GenderRatioEnum::Male => Some(GenderEnum::Male),
+        GenderRatioEnum::Female => Some(GenderEnum::Female),
+        GenderRatioEnum::Genderless => Some(GenderEnum::Genderless),
+        _ => None
+    }
+}
+
+
+pub fn get_gender_from_ratio(gender_ratio: &GenderRatioEnum, gender_num: u32) -> GenderEnum {
+    match gender_ratio {
+        GenderRatioEnum::Male => GenderEnum::Male,
+        GenderRatioEnum::Female => GenderEnum::Female,
+        GenderRatioEnum::Genderless => GenderEnum::Genderless,
+        _ => {
+            if gender_num < *gender_ratio as u32 {
+                GenderEnum::Female
+            } else {
+                GenderEnum::Male
+            }
         }
     }
+}

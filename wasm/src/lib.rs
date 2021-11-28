@@ -77,7 +77,7 @@ pub struct Pokemonbdsp {
     nature: enums::NatureEnum,
     ivs: Vec<u32>,
     ability: enums::AbilityEnum,
-    gender: u32,
+    gender: enums::GenderEnum,
     encounter: u8,
 }
 
@@ -107,7 +107,7 @@ pub struct ShinyResultBdsp {
     pub nature: enums::NatureEnum,
     pub ivs: Vec<u32>,
     pub ability: enums::AbilityEnum,
-    pub gender: u32,
+    pub gender: enums::GenderEnum,
     pub encounter: u8,
 }
 
@@ -237,7 +237,7 @@ pub fn calculate_pokemon_bdsp(
                 nature: pokemon_results.nature,
                 ivs: pokemon_results.ivs,
                 ability: pokemon_results.ability,
-                gender: gender_ratio as u32,
+                gender: pokemon_results.gender,
                 encounter: pokemon_results.encounter,
             };
             shiny_results.push(result);
