@@ -3,6 +3,10 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 export const RNGInfo = ({ setState, state }) => {
   return (
@@ -182,6 +186,26 @@ export const RNGInfo = ({ setState, state }) => {
               }))
             }
           />
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="room-label">Room Size</InputLabel>
+            <Select
+              labelId="room-label"
+              id="room"
+              value={state.room}
+              label="Room Size"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  room: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={5}>Small</MenuItem>
+              <MenuItem value={7}>Large</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
     </Paper>

@@ -24,6 +24,7 @@ export function Underground() {
     genderRatio: 256,
     gender: 256,
     tiles: 0,
+    room: 5,
   });
 
   const [results, setResults] = React.useState([
@@ -57,6 +58,7 @@ export function Underground() {
     genderRatio,
     gender,
     tiles,
+    room,
   } = state;
 
   const handleSubmit = event => {
@@ -76,6 +78,7 @@ export function Underground() {
       genderRatio,
       gender,
       tiles,
+      room,
     );
     setResults(shiny_result);
   };
