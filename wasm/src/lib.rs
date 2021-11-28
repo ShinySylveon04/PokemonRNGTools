@@ -51,6 +51,15 @@ impl PartialEq<u8> for enums::EncounterSlotFilterEnum {
     }
 }
 
+impl PartialEq<enums::GenderEnum> for enums::GenderFilterEnum {
+    fn eq(&self, other: &enums::GenderEnum) -> bool {
+        match (self, other) {
+            (enums::GenderFilterEnum::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
+    }
+}
+
 fn check_is_shiny(tsv: u16, rand: u32) -> bool {
     let psv = calculate_shiny_value((rand >> 0x10) as u16, (rand & 0xFFFF) as u16);
     (tsv ^ psv) < 0x10
@@ -133,10 +142,12 @@ pub fn filter_bdsp(
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
+    gender_filter: enums::GenderFilterEnum
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
         && encounter_filter == results.encounter
+        && gender_filter == results.gender
         && shiny_filter == results.is_shiny
     {
         return true;
@@ -207,6 +218,7 @@ pub fn calculate_pokemon_bdsp(
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
+    gender_filter: enums::GenderFilterEnum
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -223,6 +235,7 @@ pub fn calculate_pokemon_bdsp(
             nature_filter,
             ability_filter,
             encounter_filter,
+            gender_filter
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {

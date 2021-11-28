@@ -146,6 +146,27 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="gender-label">Gender</InputLabel>
+            <Select
+              labelId="gender-label"
+              id="gender"
+              value={state.gender}
+              label="Gender"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  gender: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={256}>Any</MenuItem>
+              <MenuItem value={0}>♂</MenuItem>
+              <MenuItem value={254}>♀</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
     </Paper>
   );

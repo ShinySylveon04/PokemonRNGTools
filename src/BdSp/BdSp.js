@@ -23,6 +23,7 @@ export function BdSp() {
     ability: 3,
     encounter: 12,
     genderRatio: 256,
+    gender: 256,
   });
 
   const [results, setResults] = React.useState([
@@ -54,6 +55,7 @@ export function BdSp() {
     ability,
     encounter,
     genderRatio,
+    gender,
   } = state;
 
   const handleSubmit = event => {
@@ -71,6 +73,7 @@ export function BdSp() {
       ability,
       encounter,
       genderRatio,
+      gender,
     );
     setResults(shiny_result);
   };
