@@ -37,7 +37,7 @@ const ShowResults = ({ results, state }) => {
       <TableCell align="left">
         {state.genderRatio === 256 ? '-' : showGender(result.gender)}
       </TableCell>
-      <TableCell align="left">
+      <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
         {`${result.ivs[0]} /
           ${result.ivs[1]} /
           ${result.ivs[2]} /
