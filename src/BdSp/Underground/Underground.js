@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
-import { RNGInfo } from '../RNGInfo';
+import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
@@ -17,18 +17,19 @@ export function Underground() {
     shiny: true,
     min: 0,
     max: 10000,
-    delay: 1,
+    delay: 0,
     nature: 25,
     ability: 3,
     encounter: 12,
     genderRatio: 256,
     gender: 256,
+    tiles: 0,
   });
 
   const [results, setResults] = React.useState([
     {
       advances: 0,
-      shiny_value: 0,
+      is_shiny: 0,
       state0: 0,
       state1: 0,
       ec: 0,
@@ -55,6 +56,7 @@ export function Underground() {
     encounter,
     genderRatio,
     gender,
+    tiles,
   } = state;
 
   const handleSubmit = event => {
@@ -73,6 +75,7 @@ export function Underground() {
       encounter,
       genderRatio,
       gender,
+      tiles,
     );
     setResults(shiny_result);
   };
@@ -87,7 +90,7 @@ export function Underground() {
         onSubmit={handleSubmit}
         sx={{
           width: { sm: '75%' },
-          maxWidth: '800px',
+          maxWidth: '1000px',
           ml: 'auto',
           mr: 'auto',
           mb: '30px',

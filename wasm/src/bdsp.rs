@@ -119,6 +119,7 @@ pub fn generate_bdsp_pokemon_underground(
     mut rng: Xorshift,
     gender_ratio: enums::GenderRatioEnum,
     advances: usize,
+    tiles: usize,
 ) -> Vec<UndergroundResults> {
     let mut results: Vec<UndergroundResults> = Vec::new();
     let rare_check = rng.rand_range(0, 100);
@@ -127,13 +128,11 @@ pub fn generate_bdsp_pokemon_underground(
         rng.next();
     }
 
-    let secret_base_tiles_used = 0;
-
     let min_max_rand = rng.rand_range(0, 100);
 
     let mut poke_num = 5;
 
-    if 50 - secret_base_tiles_used <= min_max_rand {
+    if 50 - tiles as u32 <= min_max_rand {
         poke_num = 7;
     }
 

@@ -394,6 +394,7 @@ pub fn calculate_pokemon_bdsp_underground(
     _encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
     gender_filter: enums::GenderFilterEnum,
+    tiles: usize,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -401,7 +402,8 @@ pub fn calculate_pokemon_bdsp_underground(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        let mut result = bdsp::generate_bdsp_pokemon_underground(rng.clone(), gender_ratio, value);
+        let mut result =
+            bdsp::generate_bdsp_pokemon_underground(rng.clone(), gender_ratio, value, tiles);
 
         if result.iter().any(|pokemon| {
             filter_bdsp_underground(

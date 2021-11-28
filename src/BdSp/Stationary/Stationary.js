@@ -81,7 +81,7 @@ export function Stationary() {
         onSubmit={handleSubmit}
         sx={{
           width: { sm: '75%' },
-          maxWidth: '800px',
+          maxWidth: '1000px',
           ml: 'auto',
           mr: 'auto',
           mb: '30px',
