@@ -90,6 +90,17 @@ pub struct Pokemonbdsp {
     encounter: u8,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PokemonbdspStationary {
+    is_shiny: bool,
+    pid: u32,
+    ec: u32,
+    nature: enums::NatureEnum,
+    ivs: Vec<u32>,
+    ability: enums::AbilityEnum,
+    gender: enums::GenderEnum,
+}
+
 #[wasm_bindgen(getter_with_clone)]
 pub struct ShinyResult {
     pub state0: u64,
@@ -120,6 +131,23 @@ pub struct ShinyResultBdsp {
     pub encounter: u8,
 }
 
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, Debug)]
+pub struct ShinyResultBdspStationary {
+    pub state0: u32,
+    pub state1: u32,
+    pub state2: u32,
+    pub state3: u32,
+    pub advances: usize,
+    pub shiny_value: bool,
+    pub pid: u32,
+    pub ec: u32,
+    pub nature: enums::NatureEnum,
+    pub ivs: Vec<u32>,
+    pub ability: enums::AbilityEnum,
+    pub gender: enums::GenderEnum,
+}
+
 pub fn filter(
     results: Pokemon,
     shiny_filter: enums::ShinyFilterEnum,
@@ -142,11 +170,29 @@ pub fn filter_bdsp(
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
-    gender_filter: enums::GenderFilterEnum
+    gender_filter: enums::GenderFilterEnum,
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
         && encounter_filter == results.encounter
+        && gender_filter == results.gender
+        && shiny_filter == results.is_shiny
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+pub fn filter_bdsp_stationary(
+    results: &PokemonbdspStationary,
+    shiny_filter: bool,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
+    gender_filter: enums::GenderFilterEnum,
+) -> bool {
+    if ability_filter == results.ability
+        && nature_filter == results.nature
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
     {
@@ -218,7 +264,7 @@ pub fn calculate_pokemon_bdsp(
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
-    gender_filter: enums::GenderFilterEnum
+    gender_filter: enums::GenderFilterEnum,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -235,7 +281,7 @@ pub fn calculate_pokemon_bdsp(
             nature_filter,
             ability_filter,
             encounter_filter,
-            gender_filter
+            gender_filter,
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {
@@ -252,6 +298,60 @@ pub fn calculate_pokemon_bdsp(
                 ability: pokemon_results.ability,
                 gender: pokemon_results.gender,
                 encounter: pokemon_results.encounter,
+            };
+            shiny_results.push(result);
+        }
+        rng.next();
+    }
+
+    shiny_results.into_iter().map(JsValue::from).collect()
+}
+
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_stationary(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: bool,
+    min: usize,
+    max: usize,
+    delay: usize,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
+    gender_ratio: enums::GenderRatioEnum,
+    gender_filter: enums::GenderFilterEnum,
+) -> Array {
+    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    rng.advance(delay);
+    let mut pokemon_results;
+    let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
+    let values = min..=max;
+    rng.advance(min);
+    for value in values {
+        pokemon_results = bdsp::generate_bdsp_pokemon_stationary(rng.clone(), gender_ratio);
+
+        if filter_bdsp_stationary(
+            &pokemon_results,
+            shiny_filter,
+            nature_filter,
+            ability_filter,
+            gender_filter,
+        ) {
+            let shiny_state = rng.get_state();
+            let result = ShinyResultBdspStationary {
+                state0: shiny_state[0],
+                state1: shiny_state[1],
+                state2: shiny_state[2],
+                state3: shiny_state[3],
+                advances: value,
+                pid: pokemon_results.pid,
+                shiny_value: pokemon_results.is_shiny,
+                ec: pokemon_results.ec,
+                nature: pokemon_results.nature,
+                ivs: pokemon_results.ivs,
+                ability: pokemon_results.ability,
+                gender: pokemon_results.gender,
             };
             shiny_results.push(result);
         }

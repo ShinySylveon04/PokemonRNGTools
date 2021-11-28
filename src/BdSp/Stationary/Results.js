@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
-import { natures } from '../natures';
+import { natures } from '../../natures';
 
 const showGender = num => {
   switch (num) {
@@ -31,7 +31,6 @@ const ShowResults = ({ results, state }) => {
     >
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
-      <TableCell align="left">{result.encounter}</TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
       <TableCell align="left">{result.ability}</TableCell>
       <TableCell align="left">
@@ -76,7 +75,6 @@ export const Results = ({ results, state }) => {
             <TableRow>
               <TableCell>Advances</TableCell>
               <TableCell align="left">Shiny</TableCell>
-              <TableCell align="left">Slot</TableCell>
               <TableCell align="left">Nature</TableCell>
               <TableCell align="left">Ability</TableCell>
               <TableCell align="left">Gender</TableCell>

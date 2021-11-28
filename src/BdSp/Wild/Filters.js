@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
-import { natures } from '../natures';
+import { natures } from '../../natures';
 
 export const Filters = ({ setState, state }) => {
   return (

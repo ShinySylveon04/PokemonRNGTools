@@ -1,114 +1,62 @@
 import React from 'react';
-import { calculate_pokemon_bdsp } from '../../wasm/Cargo.toml';
-import Typography from '@mui/material/Typography';
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
-import { RNGInfo } from './RNGInfo';
-import { Filters } from './Filters';
-import { Results } from './Results';
+import { Wild } from './Wild/Wild';
+import { Stationary } from './Stationary/Stationary';
 
-export function BdSp() {
-  const [state, setState] = React.useState({
-    state0: 0,
-    state1: 0,
-    state2: 0,
-    state3: 0,
-    shiny: true,
-    min: 0,
-    max: 10000,
-    delay: 1,
-    nature: 25,
-    ability: 3,
-    encounter: 12,
-    genderRatio: 256,
-    gender: 256,
-  });
-
-  const [results, setResults] = React.useState([
-    {
-      advances: 0,
-      shiny_value: 0,
-      state0: 0,
-      state1: 0,
-      ec: 0,
-      pid: 0,
-      encounter: 0,
-      nature: 0,
-      ability: 0,
-      ivs: [0, 0, 0, 0, 0, 0],
-      gender: 256,
-    },
-  ]);
-
-  const {
-    state0,
-    state1,
-    state2,
-    state3,
-    shiny,
-    min,
-    max,
-    delay,
-    nature,
-    ability,
-    encounter,
-    genderRatio,
-    gender,
-  } = state;
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    const shiny_result = calculate_pokemon_bdsp(
-      state0,
-      state1,
-      state2,
-      state3,
-      shiny,
-      min,
-      max,
-      delay,
-      nature,
-      ability,
-      encounter,
-      genderRatio,
-      gender,
-    );
-    setResults(shiny_result);
+function a11yProps(index) {
+  return {
+    id: `bdsp-tab-${index}`,
+    'aria-controls': `bdsp-${index}`,
   };
+}
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <Container>
-      <Box
-        component="form"
-        autoComplete="off"
-        onSubmit={handleSubmit}
-        sx={{
-          width: { sm: '75%' },
-          maxWidth: '800px',
-          ml: 'auto',
-          mr: 'auto',
-          mb: '30px',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Typography variant="h3" gutterBottom align="center">
-          Brilliant Diamond & Shining Pearl RNG
-        </Typography>
-        <RNGInfo setState={setState} state={state} />
-        <Filters setState={setState} state={state} />
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
-        >
-          Search
-        </Button>
-        <Results results={results} state={state} />
-      </Box>
-    </Container>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`bdsp-tabpanel-${index}`}
+      aria-labelledby={`bdsp-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
   );
 }
+
+export const BdSp = () => {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  return (
+    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Typography variant="h3" gutterBottom align="center">
+        Brilliant Diamond & Shining Pearl RNG
+      </Typography>
+      <Tabs
+        centered
+        value={value}
+        onChange={handleChange}
+        aria-label="bdsp tabs"
+      >
+        <Tab label="Wild" {...a11yProps(0)} />
+        <Tab label="Stationary" {...a11yProps(1)} />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <Wild />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <Stationary />
+      </TabPanel>
+    </Box>
+  );
+};
