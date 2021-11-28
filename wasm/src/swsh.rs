@@ -76,7 +76,7 @@ pub fn generate_dynamic_pokemon(
     let max_level = 60;
     let min_level = 60;
     let level_diff = max_level - min_level;
-    let test = rng.rand_max(level_diff as u32 + 1);
+    let _test = rng.rand_max(level_diff as u32 + 1);
     rng.rand_max(100);
     rng.rand_max(50);
     rng.rand_max(50);

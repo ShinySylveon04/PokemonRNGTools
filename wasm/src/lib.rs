@@ -202,6 +202,24 @@ pub fn filter_bdsp_stationary(
     }
 }
 
+pub fn filter_bdsp_underground(
+    result: &bdsp::UndergroundResults,
+    shiny_filter: bool,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
+    gender_filter: enums::GenderFilterEnum,
+) -> bool {
+    if ability_filter == result.ability
+        && nature_filter == result.nature
+        && gender_filter == result.gender
+        && shiny_filter == result.is_shiny
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 #[wasm_bindgen]
 pub fn calculate_pokemon(
     seed1: u64,
@@ -359,6 +377,47 @@ pub fn calculate_pokemon_bdsp_stationary(
     }
 
     shiny_results.into_iter().map(JsValue::from).collect()
+}
+
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_underground(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: bool,
+    min: usize,
+    max: usize,
+    delay: usize,
+    nature_filter: enums::NatureFilterEnum,
+    ability_filter: enums::AbilityFilterEnum,
+    _encounter_filter: enums::EncounterSlotFilterEnum,
+    gender_ratio: enums::GenderRatioEnum,
+    gender_filter: enums::GenderFilterEnum,
+) -> Array {
+    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    rng.advance(delay);
+    let mut pokemon_results = Vec::new();
+    let values = min..=max;
+    rng.advance(min);
+    for value in values {
+        let mut result = bdsp::generate_bdsp_pokemon_underground(rng.clone(), gender_ratio, value);
+
+        if result.iter().any(|pokemon| {
+            filter_bdsp_underground(
+                &pokemon,
+                shiny_filter,
+                nature_filter,
+                ability_filter,
+                gender_filter,
+            )
+        }) {
+            pokemon_results.append(&mut result);
+        }
+        rng.next();
+    }
+
+    pokemon_results.into_iter().map(JsValue::from).collect()
 }
 
 #[cfg(test)]

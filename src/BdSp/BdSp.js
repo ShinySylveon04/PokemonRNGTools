@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 
 import { Wild } from './Wild/Wild';
 import { Stationary } from './Stationary/Stationary';
+import { Underground } from './Underground/Underground';
 
 function a11yProps(index) {
   return {
@@ -50,12 +51,16 @@ export const BdSp = () => {
       >
         <Tab label="Wild" {...a11yProps(0)} />
         <Tab label="Stationary" {...a11yProps(1)} />
+        <Tab label="Underground" {...a11yProps(2)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <Wild />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Stationary />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Underground />
       </TabPanel>
     </Box>
   );
