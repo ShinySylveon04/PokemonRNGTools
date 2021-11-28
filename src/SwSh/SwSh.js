@@ -24,7 +24,7 @@ export function SwSh() {
     badgeCount: 0,
     min: 0,
     max: 1000000,
-    ability: 2,
+    ability: 3,
   });
 
   React.useEffect(() => {

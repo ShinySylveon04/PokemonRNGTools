@@ -53,7 +53,7 @@ const ShowResults = ({ results }) => {
 };
 
 export const Results = ({ results }) => {
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
   const handleChangePage = (event, newPage) => {
@@ -105,7 +105,7 @@ export const Results = ({ results }) => {
         </Table>
         <TablePagination
           sx={{ overflow: 'initial' }}
-          rowsPerPageOptions={[5, 10, 15]}
+          rowsPerPageOptions={[10, 25, 50, 100]}
           component="div"
           count={results.length}
           rowsPerPage={rowsPerPage}

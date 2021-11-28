@@ -92,7 +92,7 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={2}>Any</MenuItem>
+              <MenuItem value={3}>Any</MenuItem>
               <MenuItem value={1}>0</MenuItem>
               <MenuItem value={0}>1</MenuItem>
             </Select>
