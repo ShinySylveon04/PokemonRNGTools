@@ -25,6 +25,7 @@ export function Underground() {
     gender: 256,
     tiles: 0,
     large_room: false,
+    diglett_boost: false,
   });
 
   const [results, setResults] = React.useState([
@@ -59,6 +60,7 @@ export function Underground() {
     gender,
     tiles,
     large_room,
+    diglett_boost,
   } = state;
 
   const handleSubmit = event => {
@@ -79,6 +81,7 @@ export function Underground() {
       gender,
       tiles,
       large_room,
+      diglett_boost,
     );
     setResults(shiny_result);
   };

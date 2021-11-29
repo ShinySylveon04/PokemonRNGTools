@@ -7,8 +7,15 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 export const RNGInfo = ({ setState, state }) => {
+  const [checked, setChecked] = React.useState(false);
+  const handleChange = event => {
+    setState({ ...state, diglett_boost: event.target.checked });
+    setChecked(event.target.checked);
+  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -206,6 +213,27 @@ export const RNGInfo = ({ setState, state }) => {
               <MenuItem value={true}>Large</MenuItem>
             </Select>
           </FormControl>
+        </Grid>
+        <Grid
+          container
+          item
+          sm={6}
+          md={3}
+          xs={12}
+          sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}
+        >
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label="Diglett Boost"
+            />
+          </Grid>
         </Grid>
       </Grid>
     </Paper>

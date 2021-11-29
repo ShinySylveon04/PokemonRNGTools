@@ -122,6 +122,7 @@ pub fn generate_bdsp_pokemon_underground(
     advances: usize,
     tiles: usize,
     large_room: bool,
+    diglett_boost: bool,
 ) -> Vec<UndergroundResults> {
     let mut results: Vec<UndergroundResults> = Vec::new();
     let rare_check = rng.rand_range(0, 100);
@@ -137,7 +138,16 @@ pub fn generate_bdsp_pokemon_underground(
         poke_num = 7;
     }
 
-    if 50 - tiles as u32 <= min_max_rand {
+    let tile_boost = match tiles {
+        0 => 0,
+        1..=15 => 5,
+        16..=30 => 10,
+        31..=45 => 15,
+        tiles if tiles > 60 => 30,
+        _ => 20,
+    };
+
+    if 50 - tile_boost as u32 <= min_max_rand {
         if large_room {
             poke_num = 10;
         } else {
@@ -154,12 +164,14 @@ pub fn generate_bdsp_pokemon_underground(
     let values = 0..poke_num;
 
     for _ in values {
-        let pokemon_results = generate_underground_pokemon(&mut rng, gender_ratio, advances);
+        let pokemon_results =
+            generate_underground_pokemon(&mut rng, gender_ratio, advances, diglett_boost);
         results.push(pokemon_results);
     }
 
     if rare_check < 50 {
-        let pokemon_results = generate_rare_underground_pokemon(&mut rng, gender_ratio, advances);
+        let pokemon_results =
+            generate_rare_underground_pokemon(&mut rng, gender_ratio, advances, diglett_boost);
         results.push(pokemon_results);
     }
 
@@ -167,16 +179,24 @@ pub fn generate_bdsp_pokemon_underground(
         rng: &mut Xorshift,
         gender_ratio: enums::GenderRatioEnum,
         advances: usize,
+        diglett_boost: bool,
     ) -> UndergroundResults {
         rng.next(); // slot weight call?
         rng.next(); // level
         let mut is_shiny = false;
         let ec = rng.next();
-        let shiny_rand = rng.next();
-        let pid = rng.next();
 
-        if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
-            is_shiny = true
+        let shiny_rolls = if diglett_boost { 2 } else { 1 };
+        let mut pid = 0;
+
+        let shiny_rand = rng.next();
+        for _ in 0..shiny_rolls {
+            pid = rng.next();
+            is_shiny =
+                (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10;
+            if is_shiny {
+                break;
+            }
         }
 
         let mut ivs = vec![32, 32, 32, 32, 32, 32];
@@ -223,15 +243,23 @@ pub fn generate_bdsp_pokemon_underground(
         rng: &mut Xorshift,
         gender_ratio: enums::GenderRatioEnum,
         advances: usize,
+        diglett_boost: bool,
     ) -> UndergroundResults {
         rng.next(); // level
         let mut is_shiny = false;
         let ec = rng.next();
-        let shiny_rand = rng.next();
-        let pid = rng.next();
 
-        if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
-            is_shiny = true
+        let shiny_rolls = if diglett_boost { 2 } else { 1 };
+        let mut pid = 0;
+
+        let shiny_rand = rng.next();
+        for _ in 0..shiny_rolls {
+            pid = rng.next();
+            is_shiny =
+                (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10;
+            if is_shiny {
+                break;
+            }
         }
 
         let mut ivs = vec![32, 32, 32, 32, 32, 32];
