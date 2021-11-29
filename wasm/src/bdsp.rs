@@ -121,7 +121,7 @@ pub fn generate_bdsp_pokemon_underground(
     gender_ratio: enums::GenderRatioEnum,
     advances: usize,
     tiles: usize,
-    spawn_num: usize,
+    large_room: bool,
 ) -> Vec<UndergroundResults> {
     let mut results: Vec<UndergroundResults> = Vec::new();
     let rare_check = rng.rand_range(0, 100);
@@ -131,10 +131,18 @@ pub fn generate_bdsp_pokemon_underground(
     }
 
     let min_max_rand = rng.rand_range(0, 100);
-    let mut poke_num = spawn_num;
+
+    let mut poke_num = 5;
+    if large_room {
+        poke_num = 7;
+    }
 
     if 50 - tiles as u32 <= min_max_rand {
-        poke_num = 7;
+        if large_room {
+            poke_num = 10;
+        } else {
+            poke_num = 7;
+        }
     }
 
     if rare_check < 50 {

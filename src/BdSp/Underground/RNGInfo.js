@@ -193,17 +193,17 @@ export const RNGInfo = ({ setState, state }) => {
             <Select
               labelId="room-label"
               id="room"
-              value={state.room}
+              value={state.large_room}
               label="Room Size"
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  room: event.target.value,
+                  large_room: event.target.value,
                 }))
               }
             >
-              <MenuItem value={5}>Small</MenuItem>
-              <MenuItem value={7}>Large</MenuItem>
+              <MenuItem value={false}>Small</MenuItem>
+              <MenuItem value={true}>Large</MenuItem>
             </Select>
           </FormControl>
         </Grid>

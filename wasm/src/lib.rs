@@ -395,7 +395,7 @@ pub fn calculate_pokemon_bdsp_underground(
     gender_ratio: enums::GenderRatioEnum,
     gender_filter: enums::GenderFilterEnum,
     tiles: usize,
-    spawn_num: usize,
+    large_room: bool,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -408,7 +408,7 @@ pub fn calculate_pokemon_bdsp_underground(
             gender_ratio,
             value,
             tiles,
-            spawn_num,
+            large_room,
         );
 
         if result.iter().any(|pokemon| {
