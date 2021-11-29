@@ -113,6 +113,7 @@ pub struct UndergroundResults {
     pub gender: enums::GenderEnum,
     pub encounter: u8,
     pub advances: usize,
+    pub is_rare: bool,
 }
 
 pub fn generate_bdsp_pokemon_underground(
@@ -206,6 +207,7 @@ pub fn generate_bdsp_pokemon_underground(
             gender,
             encounter,
             advances,
+            is_rare: false,
         }
     }
 
@@ -260,6 +262,7 @@ pub fn generate_bdsp_pokemon_underground(
             gender,
             encounter,
             advances,
+            is_rare: true,
         }
     }
 

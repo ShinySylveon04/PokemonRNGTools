@@ -31,7 +31,9 @@ const ShowResults = ({ results, state }) => {
     >
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.is_shiny}`}</TableCell>
-      <TableCell align="left">{result.encounter}</TableCell>
+      <TableCell align="left">
+        {result.is_rare ? 'Rare' : result.encounter}
+      </TableCell>
       <TableCell align="left">{natures[result.nature]}</TableCell>
       <TableCell align="left">{result.ability}</TableCell>
       <TableCell align="left">
