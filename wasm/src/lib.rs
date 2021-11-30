@@ -1,3 +1,4 @@
+#![feature(iter_order_by)]
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
@@ -171,12 +172,16 @@ pub fn filter_bdsp(
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_filter: enums::GenderFilterEnum,
+    minIVs: &Vec<u32>,
+    maxIVs: &Vec<u32>,
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
         && encounter_filter == results.encounter
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
+        && results.ivs.iter().eq_by(minIVs, |&iv, &minIV| iv > minIV)
+        && results.ivs.iter().eq_by(maxIVs, |&iv, &maxIV| iv < maxIV)
     {
         return true;
     } else {
@@ -283,6 +288,8 @@ pub fn calculate_pokemon_bdsp(
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
     gender_filter: enums::GenderFilterEnum,
+    minIVs: Vec<u32>,
+    maxIVs: Vec<u32>,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -300,6 +307,8 @@ pub fn calculate_pokemon_bdsp(
             ability_filter,
             encounter_filter,
             gender_filter,
+            &minIVs,
+            &maxIVs,
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {

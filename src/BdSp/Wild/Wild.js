@@ -10,10 +10,10 @@ import { Results } from './Results';
 
 export function Wild() {
   const [state, setState] = React.useState({
-    state0: 0,
-    state1: 0,
-    state2: 0,
-    state3: 0,
+    state0: 0x41e3a1cb,
+    state1: 0x39f7a401,
+    state2: 0x32bcc45e,
+    state3: 0x564639f7,
     shiny: true,
     min: 0,
     max: 10000,
@@ -23,6 +23,8 @@ export function Wild() {
     encounter: 12,
     genderRatio: 256,
     gender: 256,
+    minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+    maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
   });
 
   const [results, setResults] = React.useState([
@@ -55,6 +57,8 @@ export function Wild() {
     encounter,
     genderRatio,
     gender,
+    minIVs,
+    maxIVs,
   } = state;
 
   const handleSubmit = event => {
@@ -73,6 +77,22 @@ export function Wild() {
       encounter,
       genderRatio,
       gender,
+      [
+        parseInt(minIVs.hp),
+        parseInt(minIVs.atk),
+        parseInt(minIVs.def),
+        parseInt(minIVs.spa),
+        parseInt(minIVs.spd),
+        parseInt(minIVs.spe),
+      ],
+      [
+        parseInt(maxIVs.hp),
+        parseInt(maxIVs.atk),
+        parseInt(maxIVs.def),
+        parseInt(maxIVs.spa),
+        parseInt(maxIVs.spd),
+        parseInt(maxIVs.spe),
+      ],
     );
     setResults(shiny_result);
   };
