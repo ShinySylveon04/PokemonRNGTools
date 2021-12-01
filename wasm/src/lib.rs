@@ -183,11 +183,11 @@ pub fn filter_bdsp(
         && results
             .ivs
             .iter()
-            .eq_by(min_ivs, |&iv, &min_iv| iv > min_iv)
+            .eq_by(min_ivs, |&iv, &min_iv| iv >= min_iv)
         && results
             .ivs
             .iter()
-            .eq_by(max_ivs, |&iv, &max_iv| iv < max_iv)
+            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv)
     {
         return true;
     } else {
