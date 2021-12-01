@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
-import { RNGInfo } from '../RNGInfo';
+import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
@@ -22,6 +22,7 @@ export function Stationary() {
     ability: 3,
     genderRatio: 256,
     gender: 256,
+    set_ivs: false,
   });
 
   const [results, setResults] = React.useState([
@@ -52,6 +53,7 @@ export function Stationary() {
     ability,
     genderRatio,
     gender,
+    set_ivs,
   } = state;
 
   const handleSubmit = event => {
@@ -69,6 +71,7 @@ export function Stationary() {
       ability,
       genderRatio,
       gender,
+      set_ivs,
     );
     setResults(shiny_result);
   };

@@ -60,8 +60,10 @@ pub fn generate_bdsp_pokemon(
 pub fn generate_bdsp_pokemon_stationary(
     mut rng: Xorshift,
     gender_ratio: enums::GenderRatioEnum,
+    set_ivs: bool,
 ) -> PokemonbdspStationary {
     let mut is_shiny = false;
+
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
@@ -71,8 +73,25 @@ pub fn generate_bdsp_pokemon_stationary(
     }
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
+
+    if set_ivs {
+        for _ in 0..3 {
+            let mut index = 0;
+            loop {
+                let iv_rand = rng.next();
+                index = iv_rand - (iv_rand / 6) * 6;
+                if ivs[index as usize] == 32 {
+                    break;
+                }
+            }
+            ivs[index as usize] = 31;
+        }
+    }
+
     for i in ivs.iter_mut() {
-        *i = rng.rand_max(32);
+        if *i == 32 {
+            *i = rng.rand_max(32)
+        };
     }
 
     let ability_rand = rng.next();

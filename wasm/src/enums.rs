@@ -178,10 +178,9 @@ pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatioEnum) -> Option<Gende
         GenderRatioEnum::Male => Some(GenderEnum::Male),
         GenderRatioEnum::Female => Some(GenderEnum::Female),
         GenderRatioEnum::Genderless => Some(GenderEnum::Genderless),
-        _ => None
+        _ => None,
     }
 }
-
 
 pub fn get_gender_from_ratio(gender_ratio: &GenderRatioEnum, gender_num: u32) -> GenderEnum {
     match gender_ratio {
