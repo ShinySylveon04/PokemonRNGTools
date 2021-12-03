@@ -20,7 +20,7 @@ export const IVFilters = ({ state, setState }) => {
         xs={12}
         sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}
       >
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -42,7 +42,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -64,7 +64,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -86,7 +86,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -108,7 +108,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -130,7 +130,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -167,7 +167,7 @@ export const IVFilters = ({ state, setState }) => {
         xs={12}
         sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}
       >
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -189,7 +189,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -211,7 +211,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -233,7 +233,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -255,7 +255,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',
@@ -277,7 +277,7 @@ export const IVFilters = ({ state, setState }) => {
             }
           />
         </Grid>
-        <Grid item sm={6} md={2} xs={2}>
+        <Grid item sm={6} md={2} xs={4}>
           <TextField
             inputProps={{
               inputMode: 'numeric',

@@ -20,7 +20,7 @@ export function Stationary() {
     delay: 64,
     nature: 25,
     ability: 3,
-    genderRatio: 256,
+    genderRatio: 255,
     gender: 256,
     set_ivs: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
