@@ -201,11 +201,21 @@ pub fn filter_bdsp_stationary(
     nature_filter: enums::NatureFilterEnum,
     ability_filter: enums::AbilityFilterEnum,
     gender_filter: enums::GenderFilterEnum,
+    min_ivs: &Vec<u32>,
+    max_ivs: &Vec<u32>,
 ) -> bool {
     if ability_filter == results.ability
         && nature_filter == results.nature
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
+        && results
+            .ivs
+            .iter()
+            .eq_by(min_ivs, |&iv, &min_iv| iv >= min_iv)
+        && results
+            .ivs
+            .iter()
+            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv)
     {
         return true;
     } else {
@@ -355,6 +365,8 @@ pub fn calculate_pokemon_bdsp_stationary(
     gender_ratio: enums::GenderRatioEnum,
     gender_filter: enums::GenderFilterEnum,
     set_ivs: bool,
+    min_ivs: Vec<u32>,
+    max_ivs: Vec<u32>,
 ) -> Array {
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -372,6 +384,8 @@ pub fn calculate_pokemon_bdsp_stationary(
             nature_filter,
             ability_filter,
             gender_filter,
+            &min_ivs,
+            &max_ivs,
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdspStationary {

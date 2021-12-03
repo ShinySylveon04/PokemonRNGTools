@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import { natures } from '../../natures';
+import { IVFilters } from './IVFilters';
 
 export const Filters = ({ setState, state }) => {
   return (
@@ -136,6 +137,7 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
+        <IVFilters state={state} setState={setState} />
       </Grid>
     </Paper>
   );
