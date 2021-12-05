@@ -19,8 +19,10 @@ pub enum AbilityEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[repr(u32)]
 pub enum NatureFilterEnum {
+    #[num_enum(default)]
     Hardy = 0,
     Lonely = 1,
     Brave = 2,

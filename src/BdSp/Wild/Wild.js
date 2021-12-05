@@ -18,7 +18,7 @@ export function Wild() {
     min: 0,
     max: 10000,
     delay: 1,
-    nature: 25,
+    nature: [25],
     ability: 3,
     encounter: 12,
     genderRatio: 256,

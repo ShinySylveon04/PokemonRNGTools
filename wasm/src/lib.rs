@@ -1,5 +1,6 @@
 #![feature(iter_order_by)]
 use js_sys::Array;
+use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
 mod xoroshiro;
@@ -168,7 +169,7 @@ pub fn filter(
 pub fn filter_bdsp(
     results: &Pokemonbdsp,
     shiny_filter: bool,
-    nature_filter: enums::NatureFilterEnum,
+    natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_filter: enums::GenderFilterEnum,
@@ -176,7 +177,7 @@ pub fn filter_bdsp(
     max_ivs: &Vec<u32>,
 ) -> bool {
     if ability_filter == results.ability
-        && nature_filter == results.nature
+        && natures.iter().any(|nature| *nature == results.nature)
         && encounter_filter == results.encounter
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
@@ -299,7 +300,7 @@ pub fn calculate_pokemon_bdsp(
     min: usize,
     max: usize,
     delay: usize,
-    nature_filter: enums::NatureFilterEnum,
+    nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilterEnum,
     encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
@@ -307,6 +308,12 @@ pub fn calculate_pokemon_bdsp(
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
 ) -> Array {
+    let natures = nature_filter
+        .iter()
+        .map(|nature| {
+            enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
+        })
+        .collect();
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results;
@@ -319,7 +326,7 @@ pub fn calculate_pokemon_bdsp(
         if filter_bdsp(
             &pokemon_results,
             shiny_filter,
-            nature_filter,
+            &natures,
             ability_filter,
             encounter_filter,
             gender_filter,

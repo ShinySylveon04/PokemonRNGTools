@@ -1,1 +1,32 @@
-export const natures = [ "Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky" ];
+export const natures = [
+  'Hardy',
+  'Lonely',
+  'Brave',
+  'Adamant',
+  'Naughty',
+  'Bold',
+  'Docile',
+  'Relaxed',
+  'Impish',
+  'Lax',
+  'Timid',
+  'Hasty',
+  'Serious',
+  'Jolly',
+  'Naive',
+  'Modest',
+  'Mild',
+  'Quiet',
+  'Bashful',
+  'Rash',
+  'Calm',
+  'Gentle',
+  'Sassy',
+  'Careful',
+  'Quirky',
+];
+
+export const natureOptions = [
+  { name: 'Any', value: 25 },
+  ...natures.map((nature, index) => ({ name: nature, value: index })),
+];
