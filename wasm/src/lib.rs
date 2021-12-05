@@ -225,16 +225,16 @@ pub fn filter_bdsp_stationary(
 }
 
 pub fn filter_bdsp_underground(
-    result: &bdsp::UndergroundResults,
+    results: &bdsp::UndergroundResults,
     shiny_filter: bool,
-    nature_filter: enums::NatureFilterEnum,
+    natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     gender_filter: enums::GenderFilterEnum,
 ) -> bool {
-    if ability_filter == result.ability
-        && nature_filter == result.nature
-        && gender_filter == result.gender
-        && shiny_filter == result.is_shiny
+    if ability_filter == results.ability
+        && natures.iter().any(|nature| *nature == results.nature)
+        && gender_filter == results.gender
+        && shiny_filter == results.is_shiny
     {
         return true;
     } else {
@@ -433,7 +433,7 @@ pub fn calculate_pokemon_bdsp_underground(
     min: usize,
     max: usize,
     delay: usize,
-    nature_filter: enums::NatureFilterEnum,
+    nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilterEnum,
     _encounter_filter: enums::EncounterSlotFilterEnum,
     gender_ratio: enums::GenderRatioEnum,
@@ -442,6 +442,12 @@ pub fn calculate_pokemon_bdsp_underground(
     large_room: bool,
     diglett_boost: bool,
 ) -> Array {
+    let natures = nature_filter
+        .iter()
+        .map(|nature| {
+            enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
+        })
+        .collect();
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results = Vec::new();
@@ -461,7 +467,7 @@ pub fn calculate_pokemon_bdsp_underground(
             filter_bdsp_underground(
                 &pokemon,
                 shiny_filter,
-                nature_filter,
+                &natures,
                 ability_filter,
                 gender_filter,
             )

@@ -6,8 +6,10 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
 
-import { natures } from '../../natures';
+import { natureOptions } from '../../natures';
 
 export const Filters = ({ setState, state }) => {
   return (
@@ -48,10 +50,21 @@ export const Filters = ({ setState, state }) => {
           <FormControl fullWidth>
             <InputLabel id="nature-label">Nature</InputLabel>
             <Select
+              multiple
               labelId="nature-label"
               id="nature"
               value={state.nature}
               label="Nature"
+              renderValue={selected =>
+                selected
+                  .map(
+                    nature =>
+                      natureOptions.find(
+                        natureOption => natureOption.value === nature,
+                      ).name,
+                  )
+                  .join(', ')
+              }
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -59,10 +72,10 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={25}>Any</MenuItem>
-              {natures.map((nature, index) => (
-                <MenuItem value={index} key={nature}>
-                  {nature}
+              {natureOptions.map(nature => (
+                <MenuItem value={nature.value} key={nature.value}>
+                  <Checkbox checked={state.nature.indexOf(nature.value) > -1} />
+                  <ListItemText primary={nature.name} />
                 </MenuItem>
               ))}
             </Select>

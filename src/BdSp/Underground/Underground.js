@@ -10,15 +10,15 @@ import { Results } from './Results';
 
 export function Underground() {
   const [state, setState] = React.useState({
-    state0: 0x41e3a1cb,
-    state1: 0x39f7a401,
-    state2: 0x32bcc45e,
-    state3: 0x564639f7,
+    state0: 0,
+    state1: 0,
+    state2: 0,
+    state3: 0,
     shiny: true,
     min: 0,
     max: 10000,
     delay: 0,
-    nature: 25,
+    nature: [25],
     ability: 3,
     encounter: 12,
     genderRatio: 256,
@@ -85,8 +85,6 @@ export function Underground() {
     );
     setResults(shiny_result);
   };
-
-  console.log(results);
 
   return (
     <Container>
