@@ -18,7 +18,7 @@ export function Stationary() {
     min: 0,
     max: 10000,
     delay: 64,
-    nature: 25,
+    nature: [25],
     ability: 3,
     genderRatio: 255,
     gender: 256,
