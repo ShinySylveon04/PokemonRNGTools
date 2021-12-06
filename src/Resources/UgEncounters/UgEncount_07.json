@@ -1,0 +1,209 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": -8190477647332049517
+  },
+  "m_Name": "UgEncount_07",
+  "table": [
+    {
+      "monsno": 1,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 10,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 13,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 23,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 29,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 30,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 32,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 33,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 41,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 42,
+      "version": 1,
+      "zukanflag": 2
+    },
+    {
+      "monsno": 43,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 44,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 46,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 48,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 49,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 69,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 70,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 72,
+      "version": 1,
+      "zukanflag": 4
+    },
+    {
+      "monsno": 73,
+      "version": 1,
+      "zukanflag": 4
+    },
+    {
+      "monsno": 88,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 110,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 114,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 166,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 168,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 194,
+      "version": 1,
+      "zukanflag": 3
+    },
+    {
+      "monsno": 195,
+      "version": 1,
+      "zukanflag": 3
+    },
+    {
+      "monsno": 204,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 211,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 315,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 331,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 332,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 335,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 336,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 339,
+      "version": 1,
+      "zukanflag": 2
+    },
+    {
+      "monsno": 340,
+      "version": 1,
+      "zukanflag": 5
+    },
+    {
+      "monsno": 357,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 451,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 453,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 465,
+      "version": 1,
+      "zukanflag": 6
+    }
+  ]
+}

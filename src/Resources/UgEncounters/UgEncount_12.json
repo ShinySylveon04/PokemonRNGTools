@@ -1,0 +1,124 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": -8190477647332049517
+  },
+  "m_Name": "UgEncount_12",
+  "table": [
+    {
+      "monsno": 4,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 27,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 28,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 37,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 58,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 77,
+      "version": 1,
+      "zukanflag": 2
+    },
+    {
+      "monsno": 95,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 111,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 112,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 155,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 218,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 219,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 229,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 240,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 255,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 322,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 323,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 324,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 328,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 390,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 449,
+      "version": 1,
+      "zukanflag": 3
+    },
+    {
+      "monsno": 451,
+      "version": 1,
+      "zukanflag": 1
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": -8190477647332049517
+  },
+  "m_Name": "UgEncount_05",
+  "table": [
+    {
+      "monsno": 27,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 28,
+      "version": 3,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 74,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 75,
+      "version": 1,
+      "zukanflag": 3
+    },
+    {
+      "monsno": 95,
+      "version": 1,
+      "zukanflag": 1
+    },
+    {
+      "monsno": 104,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 111,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 112,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 128,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 161,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 162,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 207,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 213,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 231,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 246,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 247,
+      "version": 2,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 263,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 304,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 305,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 322,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 323,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 328,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 329,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 331,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 332,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 343,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 374,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 436,
+      "version": 1,
+      "zukanflag": 2
+    },
+    {
+      "monsno": 449,
+      "version": 1,
+      "zukanflag": 3
+    },
+    {
+      "monsno": 451,
+      "version": 1,
+      "zukanflag": 1
+    }
+  ]
+}

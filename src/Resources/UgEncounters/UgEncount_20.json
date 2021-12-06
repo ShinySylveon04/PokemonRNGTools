@@ -1,0 +1,24 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": -8190477647332049517
+  },
+  "m_Name": "UgEncount_20",
+  "table": [
+    {
+      "monsno": 50,
+      "version": 1,
+      "zukanflag": 6
+    },
+    {
+      "monsno": 51,
+      "version": 1,
+      "zukanflag": 6
+    }
+  ]
+}

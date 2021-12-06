@@ -242,6 +242,7 @@ pub fn generate_bdsp_pokemon_underground(
         rng.next(); // weight 2
         rng.next(); // item
         rng.next(); // egg move
+                    // randNum between 0 and max egg moves, then use as index for egg move
         let encounter = 0;
 
         UndergroundResults {
