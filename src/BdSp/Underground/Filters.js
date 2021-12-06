@@ -10,6 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 
 import { natureOptions } from '../../natures';
+import { IVFilters } from './IVFilters';
 
 export const Filters = ({ setState, state }) => {
   return (
@@ -180,6 +181,7 @@ export const Filters = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
+        <IVFilters state={state} setState={setState} />
       </Grid>
     </Paper>
   );

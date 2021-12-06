@@ -26,6 +26,8 @@ export function Underground() {
     tiles: 0,
     large_room: false,
     diglett_boost: false,
+    minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+    maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
   });
 
   const [results, setResults] = React.useState([
@@ -61,6 +63,8 @@ export function Underground() {
     tiles,
     large_room,
     diglett_boost,
+    minIVs,
+    maxIVs,
   } = state;
 
   const handleSubmit = event => {
@@ -82,6 +86,22 @@ export function Underground() {
       tiles,
       large_room,
       diglett_boost,
+      [
+        parseInt(minIVs.hp),
+        parseInt(minIVs.atk),
+        parseInt(minIVs.def),
+        parseInt(minIVs.spa),
+        parseInt(minIVs.spd),
+        parseInt(minIVs.spe),
+      ],
+      [
+        parseInt(maxIVs.hp),
+        parseInt(maxIVs.atk),
+        parseInt(maxIVs.def),
+        parseInt(maxIVs.spa),
+        parseInt(maxIVs.spd),
+        parseInt(maxIVs.spe),
+      ],
     );
     setResults(shiny_result);
   };

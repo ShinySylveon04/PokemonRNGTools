@@ -232,11 +232,21 @@ pub fn filter_bdsp_underground(
     natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     gender_filter: enums::GenderFilterEnum,
+    min_ivs: &Vec<u32>,
+    max_ivs: &Vec<u32>,
 ) -> bool {
     if ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
+        && results
+            .ivs
+            .iter()
+            .eq_by(min_ivs, |&iv, &min_iv| iv >= min_iv)
+        && results
+            .ivs
+            .iter()
+            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv)
     {
         return true;
     } else {
@@ -450,6 +460,8 @@ pub fn calculate_pokemon_bdsp_underground(
     tiles: usize,
     large_room: bool,
     diglett_boost: bool,
+    min_ivs: Vec<u32>,
+    max_ivs: Vec<u32>,
 ) -> Array {
     let natures = nature_filter
         .iter()
@@ -479,6 +491,8 @@ pub fn calculate_pokemon_bdsp_underground(
                 &natures,
                 ability_filter,
                 gender_filter,
+                &min_ivs,
+                &max_ivs,
             )
         }) {
             pokemon_results.append(&mut result);
