@@ -107,6 +107,7 @@ export const Filters = ({ setState, state }) => {
           <FormControl fullWidth>
             <InputLabel id="encounter-label">Encounter Slot</InputLabel>
             <Select
+              multiple
               labelId="encounter-label"
               id="encounter-slot"
               value={state.encounter}

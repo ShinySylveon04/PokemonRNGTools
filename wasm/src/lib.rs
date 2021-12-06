@@ -171,14 +171,16 @@ pub fn filter_bdsp(
     shiny_filter: bool,
     natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
-    encounter_filter: enums::EncounterSlotFilterEnum,
+    encounters: &Vec<enums::EncounterSlotFilterEnum>,
     gender_filter: enums::GenderFilterEnum,
     min_ivs: &Vec<u32>,
     max_ivs: &Vec<u32>,
 ) -> bool {
     if ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
-        && encounter_filter == results.encounter
+        && encounters
+            .iter()
+            .any(|encounter| *encounter == results.encounter)
         && gender_filter == results.gender
         && shiny_filter == results.is_shiny
         && results
@@ -302,7 +304,7 @@ pub fn calculate_pokemon_bdsp(
     delay: usize,
     nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilterEnum,
-    encounter_filter: enums::EncounterSlotFilterEnum,
+    encounter_filter: Vec<usize>,
     gender_ratio: enums::GenderRatioEnum,
     gender_filter: enums::GenderFilterEnum,
     min_ivs: Vec<u32>,
@@ -312,6 +314,13 @@ pub fn calculate_pokemon_bdsp(
         .iter()
         .map(|nature| {
             enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
+        })
+        .collect();
+    let encounters = encounter_filter
+        .iter()
+        .map(|encounter| {
+            enums::EncounterSlotFilterEnum::try_from(*encounter)
+                .unwrap_or(enums::EncounterSlotFilterEnum::Slot0)
         })
         .collect();
     let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
@@ -328,7 +337,7 @@ pub fn calculate_pokemon_bdsp(
             shiny_filter,
             &natures,
             ability_filter,
-            encounter_filter,
+            &encounters,
             gender_filter,
             &min_ivs,
             &max_ivs,

@@ -108,8 +108,10 @@ pub enum ShinyEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[repr(usize)]
 pub enum EncounterSlotFilterEnum {
+    #[num_enum(default)]
     Any = 12,
     Slot0 = 0,
     Slot1 = 1,
