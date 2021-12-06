@@ -8,18 +8,27 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
-import { natures } from '../../natures';
-
 const showGender = num => {
   switch (num) {
-    case 0:
+    case 'Male':
       return '♂';
-    case 254:
+    case 'Female':
       return '♀';
-    case 255:
+    case 'Genderless':
       return '-';
     default:
       return '-';
+  }
+};
+
+const showAbility = ability => {
+  switch (ability) {
+    case 'Ability0':
+      return '0';
+    case 'Ability1':
+      return '1';
+    default:
+      return '0';
   }
 };
 
@@ -32,8 +41,8 @@ const ShowResults = ({ results, state }) => {
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{`${result.shiny_value}`}</TableCell>
       <TableCell align="left">{result.encounter}</TableCell>
-      <TableCell align="left">{natures[result.nature]}</TableCell>
-      <TableCell align="left">{result.ability}</TableCell>
+      <TableCell align="left">{result.nature}</TableCell>
+      <TableCell align="left">{showAbility(result.ability)}</TableCell>
       <TableCell align="left">
         {state.genderRatio === 256 ? '-' : showGender(result.gender)}
       </TableCell>

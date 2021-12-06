@@ -1,4 +1,5 @@
 use num_enum::FromPrimitive;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -10,7 +11,7 @@ pub enum AbilityFilterEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum AbilityEnum {
     #[num_enum(default)]
@@ -52,7 +53,7 @@ pub enum NatureFilterEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum NatureEnum {
     #[num_enum(default)]
@@ -162,7 +163,7 @@ pub enum GenderRatioEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum GenderEnum {
     Genderless = 255,
     Male = 0,
