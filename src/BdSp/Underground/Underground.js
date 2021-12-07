@@ -1,14 +1,19 @@
 import React from 'react';
-import { calculate_pokemon_bdsp_underground } from '../../../wasm/Cargo.toml';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import { wrap } from 'comlink';
 
 import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
+const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
+
 export function Underground() {
+  const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
     state0: 0,
     state1: 0,
@@ -69,7 +74,9 @@ export function Underground() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const shiny_result = calculate_pokemon_bdsp_underground(
+    setSearching(true);
+
+    return calculatePokemon(
       state0,
       state1,
       state2,
@@ -102,8 +109,9 @@ export function Underground() {
         parseInt(maxIVs.spd),
         parseInt(maxIVs.spe),
       ],
-    );
-    setResults(shiny_result);
+    ).then(data => {
+      setResults(data), setSearching(false);
+    });
   };
 
   return (
@@ -125,12 +133,13 @@ export function Underground() {
         <RNGInfo setState={setState} state={state} />
         <Filters setState={setState} state={state} />
         <Button
+          disabled={searching}
           type="submit"
           variant="contained"
           fullWidth
           sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
         >
-          Search
+          {searching ? <CircularProgress size={24} /> : 'Search'}
         </Button>
         <Results results={results} state={state} />
       </Box>

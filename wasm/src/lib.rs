@@ -467,7 +467,7 @@ pub fn calculate_pokemon_bdsp_underground(
     diglett_boost: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
-) -> Array {
+) -> JsValue {
     let natures = nature_filter
         .iter()
         .map(|nature| {
@@ -505,7 +505,9 @@ pub fn calculate_pokemon_bdsp_underground(
         rng.next();
     }
 
-    pokemon_results.into_iter().map(JsValue::from).collect()
+    let results: Vec<bdsp::UndergroundResults> = pokemon_results.into_iter().collect();
+
+    JsValue::from_serde(&results).unwrap()
 }
 
 #[cfg(test)]

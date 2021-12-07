@@ -1,5 +1,6 @@
 use super::enums;
 use super::{Pokemonbdsp, PokemonbdspStationary, Xorshift};
+use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
@@ -121,7 +122,7 @@ pub fn generate_bdsp_pokemon_stationary(
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UndergroundResults {
     pub is_shiny: bool,
     pub pid: u32,
