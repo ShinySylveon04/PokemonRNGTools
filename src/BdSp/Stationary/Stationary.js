@@ -1,14 +1,19 @@
 import React from 'react';
-import { calculate_pokemon_bdsp_stationary } from '../../../wasm/Cargo.toml';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import { wrap } from 'comlink';
 
 import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
+const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
+
 export function Stationary() {
+  const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
     state0: 0,
     state1: 0,
@@ -62,7 +67,10 @@ export function Stationary() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const shiny_result = calculate_pokemon_bdsp_stationary(
+
+    setSearching(true);
+
+    return calculatePokemon(
       state0,
       state1,
       state2,
@@ -92,8 +100,9 @@ export function Stationary() {
         parseInt(maxIVs.spd),
         parseInt(maxIVs.spe),
       ],
-    );
-    setResults(shiny_result);
+    ).then(data => {
+      setResults(data), setSearching(false);
+    });
   };
 
   return (
@@ -115,12 +124,13 @@ export function Stationary() {
         <RNGInfo setState={setState} state={state} />
         <Filters setState={setState} state={state} />
         <Button
+          disabled={searching}
           type="submit"
           variant="contained"
           fullWidth
           sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
         >
-          Search
+          {searching ? <CircularProgress size={24} /> : 'Search'}
         </Button>
         <Results results={results} state={state} />
       </Box>

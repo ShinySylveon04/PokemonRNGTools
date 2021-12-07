@@ -93,7 +93,7 @@ pub struct Pokemonbdsp {
     encounter: u8,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct PokemonbdspStationary {
     is_shiny: bool,
     pid: u32,
@@ -135,7 +135,7 @@ pub struct ShinyResultBdsp {
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ShinyResultBdspStationary {
     pub state0: u32,
     pub state1: u32,
@@ -396,7 +396,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     set_ivs: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
-) -> Array {
+) -> JsValue {
     let natures = nature_filter
         .iter()
         .map(|nature| {
@@ -442,7 +442,9 @@ pub fn calculate_pokemon_bdsp_stationary(
         rng.next();
     }
 
-    shiny_results.into_iter().map(JsValue::from).collect()
+    let results: Vec<ShinyResultBdspStationary> = shiny_results.into_iter().collect();
+
+    JsValue::from_serde(&results).unwrap()
 }
 
 #[wasm_bindgen]
