@@ -6,7 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { wrap } from 'comlink';
 
-import { RNGInfo } from '../RNGInfo';
+import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
@@ -30,6 +30,7 @@ export function Wild() {
     gender: 256,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+    lead: 0,
   });
 
   const [results, setResults] = React.useState([
@@ -64,6 +65,7 @@ export function Wild() {
     gender,
     minIVs,
     maxIVs,
+    lead,
   } = state;
 
   const handleSubmit = event => {
@@ -101,6 +103,7 @@ export function Wild() {
         parseInt(maxIVs.spd),
         parseInt(maxIVs.spe),
       ],
+      lead,
     ).then(data => {
       setResults(data), setSearching(false);
     });

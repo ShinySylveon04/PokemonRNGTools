@@ -321,6 +321,7 @@ pub fn calculate_pokemon_bdsp(
     gender_filter: enums::GenderFilterEnum,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
+    lead: enums::LeadFilterEnum,
 ) -> JsValue {
     let natures = nature_filter
         .iter()
@@ -342,7 +343,7 @@ pub fn calculate_pokemon_bdsp(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone(), gender_ratio);
+        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone(), gender_ratio, lead);
 
         if filter_bdsp(
             &pokemon_results,

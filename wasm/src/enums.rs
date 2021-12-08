@@ -4,6 +4,13 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum LeadFilterEnum {
+    None = 0,
+    Synchronize = 1,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AbilityFilterEnum {
     Any = 3,
     Ability0 = 0,
@@ -82,6 +89,7 @@ pub enum NatureEnum {
     Sassy = 22,
     Careful = 23,
     Quirky = 24,
+    Synchronize = 25,
 }
 
 #[wasm_bindgen]

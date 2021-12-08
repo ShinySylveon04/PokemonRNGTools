@@ -7,6 +7,7 @@ use wasm_bindgen::prelude::*;
 pub fn generate_bdsp_pokemon(
     mut rng: Xorshift,
     gender_ratio: enums::GenderRatioEnum,
+    lead: enums::LeadFilterEnum,
 ) -> Pokemonbdsp {
     let encounter_rand = rng.rand_range(0, 100) as u8;
     rng.advance(84);
@@ -42,8 +43,13 @@ pub fn generate_bdsp_pokemon(
         }
     };
 
-    let nature_rand = rng.next();
-    let nature = nature_rand - (nature_rand / 25) * 25;
+    let mut nature = 0;
+    if lead != enums::LeadFilterEnum::Synchronize {
+        let nature_rand = rng.next();
+        nature = nature_rand - (nature_rand / 25) * 25;
+    } else {
+        nature = 25;
+    }
 
     let encounter_slots: [u8; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
 
