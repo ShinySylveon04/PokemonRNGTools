@@ -85,12 +85,13 @@ pub enum NatureEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum ShinyFilterEnum {
     None = 0,
     Star = 1,
     Square = 2,
-    Any = 3,
+    Both = 3,
+    Any = 4,
 }
 
 #[wasm_bindgen]
@@ -101,11 +102,13 @@ pub enum EncounterFilterEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum ShinyEnum {
     None = 0,
     Star = 1,
     Square = 2,
+    Both = 3,
+    All = 4,
 }
 
 #[wasm_bindgen]

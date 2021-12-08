@@ -19,7 +19,7 @@ export function Wild() {
     state1: 0x39f7a401,
     state2: 0x32bcc45e,
     state3: 0x564639f7,
-    shiny: true,
+    shiny: 4,
     min: 0,
     max: 10000,
     delay: 1,

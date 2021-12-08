@@ -19,7 +19,7 @@ export function Underground() {
     state1: 0,
     state2: 0,
     state3: 0,
-    shiny: true,
+    shiny: 4,
     min: 0,
     max: 10000,
     delay: 0,
@@ -38,7 +38,7 @@ export function Underground() {
   const [results, setResults] = React.useState([
     {
       advances: 0,
-      is_shiny: 0,
+      shiny_value: 0,
       state0: 0,
       state1: 0,
       ec: 0,

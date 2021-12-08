@@ -42,8 +42,10 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={false}>No</MenuItem>
-              <MenuItem value={true}>Yes</MenuItem>
+              <MenuItem value={4}>Any</MenuItem>
+              <MenuItem value={1}>Star</MenuItem>
+              <MenuItem value={2}>Square</MenuItem>
+              <MenuItem value={3}>Star/Square</MenuItem>
             </Select>
           </FormControl>
         </Grid>

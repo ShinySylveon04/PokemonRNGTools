@@ -38,8 +38,9 @@ impl PartialEq<enums::ShinyEnum> for enums::ShinyFilterEnum {
             (enums::ShinyFilterEnum::Star, enums::ShinyEnum::Star) => true,
             (enums::ShinyFilterEnum::Square, enums::ShinyEnum::Square) => true,
             (enums::ShinyFilterEnum::None, enums::ShinyEnum::None) => true,
-            (enums::ShinyFilterEnum::Any, enums::ShinyEnum::Square) => true,
-            (enums::ShinyFilterEnum::Any, enums::ShinyEnum::Star) => true,
+            (enums::ShinyFilterEnum::Both, enums::ShinyEnum::Square) => true,
+            (enums::ShinyFilterEnum::Both, enums::ShinyEnum::Star) => true,
+            (enums::ShinyFilterEnum::Any, _) => true,
             (_, _) => false,
         }
     }
@@ -83,7 +84,7 @@ pub struct Pokemon {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemonbdsp {
-    is_shiny: bool,
+    shiny: enums::ShinyEnum,
     pid: u32,
     ec: u32,
     nature: enums::NatureEnum,
@@ -95,7 +96,7 @@ pub struct Pokemonbdsp {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct PokemonbdspStationary {
-    is_shiny: bool,
+    shiny: enums::ShinyEnum,
     pid: u32,
     ec: u32,
     nature: enums::NatureEnum,
@@ -124,7 +125,7 @@ pub struct ShinyResultBdsp {
     pub state2: u32,
     pub state3: u32,
     pub advances: usize,
-    pub shiny_value: bool,
+    pub shiny_value: enums::ShinyEnum,
     pub pid: u32,
     pub ec: u32,
     pub nature: enums::NatureEnum,
@@ -142,7 +143,7 @@ pub struct ShinyResultBdspStationary {
     pub state2: u32,
     pub state3: u32,
     pub advances: usize,
-    pub shiny_value: bool,
+    pub shiny_value: enums::ShinyEnum,
     pub pid: u32,
     pub ec: u32,
     pub nature: enums::NatureEnum,
@@ -169,7 +170,7 @@ pub fn filter(
 
 pub fn filter_bdsp(
     results: &Pokemonbdsp,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     encounters: &Vec<enums::EncounterSlotFilterEnum>,
@@ -183,7 +184,7 @@ pub fn filter_bdsp(
             .iter()
             .any(|encounter| *encounter == results.encounter)
         && gender_filter == results.gender
-        && shiny_filter == results.is_shiny
+        && shiny_filter == results.shiny
         && results
             .ivs
             .iter()
@@ -201,7 +202,7 @@ pub fn filter_bdsp(
 
 pub fn filter_bdsp_stationary(
     results: &PokemonbdspStationary,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     gender_filter: enums::GenderFilterEnum,
@@ -211,7 +212,7 @@ pub fn filter_bdsp_stationary(
     if ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
         && gender_filter == results.gender
-        && shiny_filter == results.is_shiny
+        && shiny_filter == results.shiny
         && results
             .ivs
             .iter()
@@ -229,7 +230,7 @@ pub fn filter_bdsp_stationary(
 
 pub fn filter_bdsp_underground(
     results: &bdsp::UndergroundResults,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     natures: &Vec<enums::NatureFilterEnum>,
     ability_filter: enums::AbilityFilterEnum,
     gender_filter: enums::GenderFilterEnum,
@@ -239,7 +240,7 @@ pub fn filter_bdsp_underground(
     if ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
         && gender_filter == results.gender
-        && shiny_filter == results.is_shiny
+        && shiny_filter == results.shiny_value
         && results
             .ivs
             .iter()
@@ -309,7 +310,7 @@ pub fn calculate_pokemon_bdsp(
     seed2: u32,
     seed3: u32,
     seed4: u32,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     min: usize,
     max: usize,
     delay: usize,
@@ -361,7 +362,7 @@ pub fn calculate_pokemon_bdsp(
                 state3: shiny_state[3],
                 advances: value,
                 pid: pokemon_results.pid,
-                shiny_value: pokemon_results.is_shiny,
+                shiny_value: pokemon_results.shiny,
                 ec: pokemon_results.ec,
                 nature: pokemon_results.nature,
                 ivs: pokemon_results.ivs,
@@ -385,7 +386,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     seed2: u32,
     seed3: u32,
     seed4: u32,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     min: usize,
     max: usize,
     delay: usize,
@@ -430,7 +431,7 @@ pub fn calculate_pokemon_bdsp_stationary(
                 state3: shiny_state[3],
                 advances: value,
                 pid: pokemon_results.pid,
-                shiny_value: pokemon_results.is_shiny,
+                shiny_value: pokemon_results.shiny,
                 ec: pokemon_results.ec,
                 nature: pokemon_results.nature,
                 ivs: pokemon_results.ivs,
@@ -453,7 +454,7 @@ pub fn calculate_pokemon_bdsp_underground(
     seed2: u32,
     seed3: u32,
     seed4: u32,
-    shiny_filter: bool,
+    shiny_filter: enums::ShinyFilterEnum,
     min: usize,
     max: usize,
     delay: usize,

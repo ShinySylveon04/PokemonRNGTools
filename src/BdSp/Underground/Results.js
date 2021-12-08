@@ -39,7 +39,7 @@ const ShowResults = ({ results, state }) => {
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{`${result.is_shiny}`}</TableCell>
+      <TableCell align="left">{`${result.shiny_value}`}</TableCell>
       <TableCell align="left">
         {result.is_rare ? 'Rare' : result.encounter}
       </TableCell>

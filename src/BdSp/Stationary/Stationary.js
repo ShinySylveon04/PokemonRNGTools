@@ -19,7 +19,7 @@ export function Stationary() {
     state1: 0,
     state2: 0,
     state3: 0,
-    shiny: true,
+    shiny: 4,
     min: 0,
     max: 10000,
     delay: 64,

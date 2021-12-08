@@ -10,13 +10,19 @@ pub fn generate_bdsp_pokemon(
 ) -> Pokemonbdsp {
     let encounter_rand = rng.rand_range(0, 100) as u8;
     rng.advance(84);
-    let mut is_shiny = false;
+    let mut shiny = enums::ShinyEnum::None;
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
 
-    if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
-        is_shiny = true
+    let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+    let tsv = pid >> 0x10 ^ pid & 0xFFFF;
+    if (psv ^ tsv) < 0x10 {
+        if (psv ^ tsv) == 0 {
+            shiny = enums::ShinyEnum::Square
+        } else {
+            shiny = enums::ShinyEnum::Star
+        }
     }
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
@@ -47,7 +53,7 @@ pub fn generate_bdsp_pokemon(
         .unwrap_or(0) as u8;
 
     Pokemonbdsp {
-        is_shiny,
+        shiny,
         pid,
         ec,
         nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
@@ -63,14 +69,20 @@ pub fn generate_bdsp_pokemon_stationary(
     gender_ratio: enums::GenderRatioEnum,
     set_ivs: bool,
 ) -> PokemonbdspStationary {
-    let mut is_shiny = false;
+    let mut shiny = enums::ShinyEnum::None;
 
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
 
-    if (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10 {
-        is_shiny = true
+    let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+    let tsv = pid >> 0x10 ^ pid & 0xFFFF;
+    if (psv ^ tsv) < 0x10 {
+        if (psv ^ tsv) == 0 {
+            shiny = enums::ShinyEnum::Square
+        } else {
+            shiny = enums::ShinyEnum::Star
+        }
     }
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
@@ -111,7 +123,7 @@ pub fn generate_bdsp_pokemon_stationary(
     let nature = nature_rand - (nature_rand / 25) * 25;
 
     PokemonbdspStationary {
-        is_shiny,
+        shiny,
         pid,
         ec,
         nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
@@ -124,7 +136,7 @@ pub fn generate_bdsp_pokemon_stationary(
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UndergroundResults {
-    pub is_shiny: bool,
+    pub shiny_value: enums::ShinyEnum,
     pub pid: u32,
     pub ec: u32,
     pub nature: enums::NatureEnum,
@@ -203,7 +215,7 @@ pub fn generate_bdsp_pokemon_underground(
     ) -> UndergroundResults {
         rng.next(); // slot weight call?
         rng.next(); // level
-        let mut is_shiny = false;
+        let mut shiny = enums::ShinyEnum::None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -212,9 +224,15 @@ pub fn generate_bdsp_pokemon_underground(
         let shiny_rand = rng.next();
         for _ in 0..shiny_rolls {
             pid = rng.next();
-            is_shiny =
-                (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10;
-            if is_shiny {
+            let psv = shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10;
+            let tsv = pid >> 0x10 ^ pid & 0xFFF0;
+            if (psv ^ tsv) < 0x10 {
+                shiny = enums::ShinyEnum::Star;
+                break;
+            }
+
+            if (psv ^ tsv) == 0 {
+                shiny = enums::ShinyEnum::Square;
                 break;
             }
         }
@@ -247,7 +265,7 @@ pub fn generate_bdsp_pokemon_underground(
         let encounter = 0;
 
         UndergroundResults {
-            is_shiny,
+            shiny_value: shiny,
             pid,
             ec,
             nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
@@ -267,7 +285,7 @@ pub fn generate_bdsp_pokemon_underground(
         diglett_boost: bool,
     ) -> UndergroundResults {
         rng.next(); // level
-        let mut is_shiny = false;
+        let mut shiny = enums::ShinyEnum::None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -276,9 +294,15 @@ pub fn generate_bdsp_pokemon_underground(
         let shiny_rand = rng.next();
         for _ in 0..shiny_rolls {
             pid = rng.next();
-            is_shiny =
-                (shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10 ^ pid >> 0x10 ^ pid & 0xFFF0) < 0x10;
-            if is_shiny {
+            let psv = shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10;
+            let tsv = pid >> 0x10 ^ pid & 0xFFF0;
+            if (psv ^ tsv) < 0x10 {
+                shiny = enums::ShinyEnum::Star;
+                break;
+            }
+
+            if (psv ^ tsv) == 0 {
+                shiny = enums::ShinyEnum::Square;
                 break;
             }
         }
@@ -310,7 +334,7 @@ pub fn generate_bdsp_pokemon_underground(
         let encounter = 0;
 
         UndergroundResults {
-            is_shiny,
+            shiny_value: shiny,
             pid,
             ec,
             nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
