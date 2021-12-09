@@ -13,6 +13,37 @@ import { natureOptions } from '../../natures';
 import { IVFilters } from './IVFilters';
 
 export const Filters = ({ setState, state }) => {
+  const handleNatureChange = event => {
+    // If Any is selected, then a nature is selected, deselect Any
+    if (state.nature.includes(25) && event.target.value.length > 1) {
+      const index = event.target.value.indexOf(25);
+      if (index > -1) {
+        event.target.value.splice(index, 1);
+      }
+      setState(state => ({
+        ...state,
+        nature: event.target.value,
+      }));
+    }
+    // If nature(s) are selected, then select Any, deselect all other natures
+    // Or if all natures are unselected set to Any by default
+    else if (
+      (!state.nature.includes(25) && event.target.value.includes(25)) ||
+      event.target.value.length === 0
+    ) {
+      setState(state => ({
+        ...state,
+        nature: [25],
+      }));
+    }
+    // Otherwise, add natures selected
+    else {
+      setState(state => ({
+        ...state,
+        nature: event.target.value,
+      }));
+    }
+  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -68,12 +99,7 @@ export const Filters = ({ setState, state }) => {
                   )
                   .join(', ')
               }
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  nature: event.target.value,
-                }))
-              }
+              onChange={event => handleNatureChange(event)}
             >
               {natureOptions.map(nature => (
                 <MenuItem value={nature.value} key={nature.value}>
