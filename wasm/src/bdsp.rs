@@ -43,7 +43,7 @@ pub fn generate_bdsp_pokemon(
         }
     };
 
-    let mut nature = 0;
+    let nature;
     if lead != enums::LeadFilterEnum::Synchronize {
         let nature_rand = rng.next();
         nature = nature_rand - (nature_rand / 25) * 25;
@@ -95,7 +95,7 @@ pub fn generate_bdsp_pokemon_stationary(
 
     if set_ivs {
         for _ in 0..3 {
-            let mut index = 0;
+            let mut index;
             loop {
                 let iv_rand = rng.next();
                 index = iv_rand - (iv_rand / 6) * 6;
