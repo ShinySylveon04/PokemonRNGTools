@@ -6,17 +6,18 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
-const NavItems = ({ handleDrawerClose }) => (
+const NavItems = ({ handleDrawerClose, location }) => (
   <Box sx={{ overflow: 'auto' }}>
     <List>
       <ListItem>
         <ListItemText primary="Sword & Shield" />
       </ListItem>
       <ListItemButton
+        selected={location === '/swsh'}
         onClick={handleDrawerClose}
         component={Link}
         to="swsh"
@@ -28,6 +29,7 @@ const NavItems = ({ handleDrawerClose }) => (
         <ListItemText primary="Brilliant Diamond & Shining Pearl" />
       </ListItem>
       <ListItemButton
+        selected={location === '/bdsp'}
         onClick={handleDrawerClose}
         component={Link}
         to="bdsp"
@@ -36,6 +38,7 @@ const NavItems = ({ handleDrawerClose }) => (
         <ListItemText primary="Wild" />
       </ListItemButton>
       <ListItemButton
+        selected={location === '/bdsp/stationary'}
         onClick={handleDrawerClose}
         component={Link}
         to="bdsp/stationary"
@@ -44,6 +47,7 @@ const NavItems = ({ handleDrawerClose }) => (
         <ListItemText primary="Stationary" />
       </ListItemButton>
       <ListItemButton
+        selected={location === '/bdsp/underground'}
         onClick={handleDrawerClose}
         component={Link}
         to="bdsp/underground"
@@ -56,6 +60,7 @@ const NavItems = ({ handleDrawerClose }) => (
 );
 
 export const NavDrawer = ({ isopen, isLargerScreen, handleDrawerClose }) => {
+  const location = useLocation().pathname;
   return (
     <Box
       component="nav"
@@ -76,7 +81,7 @@ export const NavDrawer = ({ isopen, isLargerScreen, handleDrawerClose }) => {
         }}
       >
         <Toolbar />
-        <NavItems handleDrawerClose={handleDrawerClose} />
+        <NavItems handleDrawerClose={handleDrawerClose} location={location} />
       </Drawer>
     </Box>
   );
