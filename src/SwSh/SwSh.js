@@ -1,9 +1,8 @@
 import React from 'react';
 import { calculate_pokemon } from '../../wasm/Cargo.toml';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
 
 import { TrainerInfo } from './TrainerInfo';
 import { RNGInfo } from './RNGInfo';
@@ -134,49 +133,45 @@ export function SwSh() {
   };
 
   return (
-    <Container>
-      <Box
-        component="form"
-        autoComplete="off"
-        onSubmit={handleSubmit}
-        sx={{
-          width: { sm: '75%' },
-          maxWidth: '800px',
-          ml: 'auto',
-          mr: 'auto',
-          mb: '30px',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+    <Box
+      component="form"
+      autoComplete="off"
+      onSubmit={handleSubmit}
+      sx={{
+        width: { sm: '75%' },
+        maxWidth: '800px',
+        ml: 'auto',
+        mr: 'auto',
+        mb: '30px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Toolbar />
+      <TrainerInfo
+        setState={setState}
+        state={state}
+        saveProfile={saveProfile}
+        setProfile={setProfile}
+      />
+      <RNGInfo
+        setState={setState}
+        state={state}
+        state0Error={state0Error}
+        state1Error={state1Error}
+        setState0Error={setState0Error}
+        setState1Error={setState1Error}
+      />
+      <Filters setState={setState} state={state} />
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
       >
-        <Typography variant="h3" gutterBottom align="center">
-          Sword & Shield RNG
-        </Typography>
-        <TrainerInfo
-          setState={setState}
-          state={state}
-          saveProfile={saveProfile}
-          setProfile={setProfile}
-        />
-        <RNGInfo
-          setState={setState}
-          state={state}
-          state0Error={state0Error}
-          state1Error={state1Error}
-          setState0Error={setState0Error}
-          setState1Error={setState1Error}
-        />
-        <Filters setState={setState} state={state} />
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
-        >
-          Search
-        </Button>
-        <Results results={results} />
-      </Box>
-    </Container>
+        Search
+      </Button>
+      <Results results={results} />
+    </Box>
   );
 }
