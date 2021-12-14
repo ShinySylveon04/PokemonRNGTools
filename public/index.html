@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="Chatot.png" />
+    <link rel="shortcut icon" href="Chatot.png" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1565c0">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
     <meta charset="utf-8" />
     <title>Pokemon RNG</title>
     <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -14,6 +19,19 @@
         gtag('js', new Date());
 
         gtag('config', 'G-4ZMFTTTDQV');
+    </script>
+    <script>
+        // Check for browser support of service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register("service-worker.js")
+                    .then(function (registration) {
+                        // Successful registration
+                        console.log('Hooray. Registration successful, scope is:', registration.scope);
+                    }).catch(function (error) {
+                        // Failed registration, service worker won’t be installed
+                        console.log('Whoops. Service worker registration failed, error:', error);
+                    });
+            }
     </script>
 </head>
 
