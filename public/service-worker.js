@@ -14,17 +14,21 @@ async function activate() {
 addEventListener('activate', e => e.waitUntil(activate()));
 
 addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(resp => {
-      return (
-        resp ||
-        fetch(event.request).then(response => {
-          return caches.open(version).then(cache => {
-            cache.put(event.request, response.clone());
-            return response;
-          });
-        })
-      );
-    }),
-  );
+  if (!event.request.url.startsWith('http')) {
+    return;
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(resp => {
+        return (
+          resp ||
+          fetch(event.request).then(response => {
+            return caches.open(version).then(cache => {
+              cache.put(event.request, response.clone());
+              return response;
+            });
+          })
+        );
+      }),
+    );
+  }
 });
