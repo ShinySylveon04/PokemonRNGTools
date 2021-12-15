@@ -189,6 +189,16 @@ pub enum GenderFilterEnum {
     Female = 254,
 }
 
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub enum IDFilterEnum {
+    TID = "TID",
+    SID = "SID",
+    TSV = "TSV",
+    G8TID = "G8TID",
+    None = "None",
+}
+
 pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatioEnum) -> Option<GenderEnum> {
     match gender_ratio {
         GenderRatioEnum::Male => Some(GenderEnum::Male),

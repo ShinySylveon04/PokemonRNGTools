@@ -105,6 +105,14 @@ pub struct PokemonbdspStationary {
     gender: enums::GenderEnum,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct TIDbdsp {
+    tid: u16,
+    tsv: u16,
+    g8tid: u32,
+    sid: u16,
+}
+
 #[wasm_bindgen(getter_with_clone)]
 pub struct ShinyResult {
     pub state0: u64,
@@ -150,6 +158,21 @@ pub struct ShinyResultBdspStationary {
     pub ivs: Vec<u32>,
     pub ability: enums::AbilityEnum,
     pub gender: enums::GenderEnum,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct TIDResult {
+    pub state0: u32,
+    pub state1: u32,
+    pub state2: u32,
+    pub state3: u32,
+    pub advances: usize,
+    pub tid: u16,
+    pub tsv: u16,
+    pub g8tid: u32,
+    pub sid: u16,
+    pub filter_type: enums::IDFilterEnum,
 }
 
 pub fn filter(
@@ -253,6 +276,23 @@ pub fn filter_bdsp_underground(
         return true;
     } else {
         return false;
+    }
+}
+
+pub fn filter_tid(results: &TIDbdsp, id: &Vec<u32>, filter_type: enums::IDFilterEnum) -> bool {
+    if filter_type == enums::IDFilterEnum::None {
+        return true;
+    } else {
+        let filter_id = match filter_type {
+            enums::IDFilterEnum::G8TID => results.g8tid,
+            enums::IDFilterEnum::SID => results.sid as u32,
+            enums::IDFilterEnum::TID => results.tid as u32,
+            enums::IDFilterEnum::TSV => results.tsv as u32,
+            enums::IDFilterEnum::None => 0, // shouldn't hit this value because of if above
+            _ => 0,
+        };
+
+        return id.contains(&filter_id);
     }
 }
 
@@ -508,6 +548,49 @@ pub fn calculate_pokemon_bdsp_underground(
     }
 
     let results: Vec<bdsp::UndergroundResults> = pokemon_results.into_iter().collect();
+
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn calculate_tid(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    min: usize,
+    max: usize,
+    id: Vec<u32>,
+    filter_type: enums::IDFilterEnum,
+) -> JsValue {
+    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut tid_results;
+    let mut results: Vec<TIDResult> = Vec::new();
+    let values = min..=max;
+    rng.advance(min);
+    for value in values {
+        tid_results = bdsp::generate_tid(rng.clone());
+
+        if filter_tid(&tid_results, &id, filter_type) {
+            let result_state = rng.get_state();
+            let result = TIDResult {
+                state0: result_state[0],
+                state1: result_state[1],
+                state2: result_state[2],
+                state3: result_state[3],
+                advances: value,
+                tid: tid_results.tid,
+                tsv: tid_results.tsv,
+                g8tid: tid_results.g8tid,
+                sid: tid_results.sid,
+                filter_type: filter_type,
+            };
+            results.push(result);
+        }
+        rng.next();
+    }
+
+    let results: Vec<TIDResult> = results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }

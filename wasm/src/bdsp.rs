@@ -1,5 +1,5 @@
 use super::enums;
-use super::{Pokemonbdsp, PokemonbdspStationary, Xorshift};
+use super::{Pokemonbdsp, PokemonbdspStationary, TIDbdsp, Xorshift};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
@@ -230,8 +230,8 @@ pub fn generate_bdsp_pokemon_underground(
         let shiny_rand = rng.next();
         for _ in 0..shiny_rolls {
             pid = rng.next();
-            let psv = shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10;
-            let tsv = pid >> 0x10 ^ pid & 0xFFF0;
+            let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+            let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
                 shiny = enums::ShinyEnum::Star;
                 break;
@@ -300,8 +300,8 @@ pub fn generate_bdsp_pokemon_underground(
         let shiny_rand = rng.next();
         for _ in 0..shiny_rolls {
             pid = rng.next();
-            let psv = shiny_rand & 0xFFF0 ^ shiny_rand >> 0x10;
-            let tsv = pid >> 0x10 ^ pid & 0xFFF0;
+            let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+            let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
                 shiny = enums::ShinyEnum::Star;
                 break;
@@ -354,4 +354,20 @@ pub fn generate_bdsp_pokemon_underground(
     }
 
     results
+}
+
+pub fn generate_tid(mut rng: Xorshift) -> TIDbdsp {
+    let sidtid = rng.next();
+    let tid = sidtid & 0xFFFF;
+    let sid = sidtid >> 0x10;
+
+    let tsv = ((tid ^ sid) >> 4) as u16;
+    let g8tid = sidtid % 1000000;
+
+    TIDbdsp {
+        tid: (tid as u16),
+        tsv,
+        g8tid,
+        sid: (sid as u16),
+    }
 }
