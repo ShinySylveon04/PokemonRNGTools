@@ -1196,6 +1196,6 @@ var t,e="/home/runner/work/PokemonRNGTools/PokemonRNGTools/node_modules/parcel-p
 },{"fs":"rDCW"}],"Yi9z":[function(require,module,exports) {
 module.exports=function(n){return new Promise(function(e,o){var r=document.createElement("script");r.async=!0,r.type="text/javascript",r.charset="utf-8",r.src=n,r.onerror=function(n){r.onerror=r.onload=null,o(n)},r.onload=function(){r.onerror=r.onload=null,e()},document.getElementsByTagName("head")[0].appendChild(r)})};
 },{}],0:[function(require,module,exports) {
-var b=require("TUK3");b.register("wasm",require("fISM"));b.register("js",require("Yi9z"));b.load([["wasm_bg.9c594cbd.wasm","lGJG"]]).then(function(){require("uBxZ");});
+var b=require("TUK3");b.register("wasm",require("fISM"));b.register("js",require("Yi9z"));b.load([["wasm_bg.c6ac75d1.wasm","lGJG"]]).then(function(){require("uBxZ");});
 },{}]},{},[0], null)
 //# sourceMappingURL=/src.3b3703b1.js.map
