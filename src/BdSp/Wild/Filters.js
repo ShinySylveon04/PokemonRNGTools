@@ -44,6 +44,42 @@ export const Filters = ({ setState, state }) => {
       }));
     }
   };
+
+  const handleEncounterChange = event => {
+    // setState(state => ({
+    //   ...state,
+    //   encounter: event.target.value,
+    // }));
+    // If Any is selected, then a slot is selected, deselect Any
+    if (state.encounter.includes(12) && event.target.value.length > 1) {
+      const index = event.target.value.indexOf(12);
+      if (index > -1) {
+        event.target.value.splice(index, 1);
+      }
+      setState(state => ({
+        ...state,
+        encounter: event.target.value,
+      }));
+    }
+    // If slot(s) are selected, then select Any, deselect all other slots
+    // Or if all slots are unselected set to Any by default
+    else if (
+      (!state.encounter.includes(12) && event.target.value.includes(12)) ||
+      event.target.value.length === 0
+    ) {
+      setState(state => ({
+        ...state,
+        encounter: [12],
+      }));
+    }
+    // Otherwise, add slots selected
+    else {
+      setState(state => ({
+        ...state,
+        encounter: event.target.value,
+      }));
+    }
+  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -140,12 +176,7 @@ export const Filters = ({ setState, state }) => {
               id="encounter-slot"
               value={state.encounter}
               label="Encounter Slot"
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  encounter: event.target.value,
-                }))
-              }
+              onChange={event => handleEncounterChange(event)}
             >
               <MenuItem value={12}>Any</MenuItem>
               <MenuItem value={0}>0</MenuItem>
