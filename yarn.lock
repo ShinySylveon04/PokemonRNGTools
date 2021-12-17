@@ -1140,11 +1140,6 @@
     ora "^2.1.0"
     strip-ansi "^4.0.0"
 
-"@parcel/service-worker@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@parcel/service-worker/-/service-worker-2.0.1.tgz#7470185b8e1e01b3eb2a13b963b349b8ab5cb106"
-  integrity sha512-Gx6HmBWnoLoxBS36p/xl8se3kaLtH91QDltYxQGmbg0MrmmYK/6L21fZPMLqC5KlzHDuk1zhjOPS9bV4MGs9mQ==
-
 "@parcel/utils@^1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@parcel/utils/-/utils-1.11.0.tgz#539e08fff8af3b26eca11302be80b522674b51ea"
@@ -3092,6 +3087,11 @@ icss-replace-symbols@1.1.0, icss-replace-symbols@^1.1.0:
   resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.1.0.tgz#06ea6f83679a7749e386cfe1fe812ae5db223ded"
   integrity sha1-Bupvg2ead0njhs/h/oEq5dsiPe0=
 
+idb@^6.1.4:
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-6.1.5.tgz#dbc53e7adf1ac7c59f9b2bf56e00b4ea4fce8c7b"
+  integrity sha512-IJtugpKkiVXQn5Y+LteyBCNk1N8xpGV3wWZk9EVtZWH8DYkjBn0bX1XnGP9RkyZF0sAcywa6unHqSWKe7q4LGw==
+
 ieee754@^1.1.4:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
@@ -4087,6 +4087,13 @@ parcel-bundler@^1.12.5:
     terser "^3.7.3"
     v8-compile-cache "^2.0.0"
     ws "^5.1.1"
+
+parcel-plugin-service-worker-manifest@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/parcel-plugin-service-worker-manifest/-/parcel-plugin-service-worker-manifest-1.2.1.tgz#4b23997d5c5f7989eedcb0f58cfe0e285251f644"
+  integrity sha512-ApZHCqFNU3ZsoKJGdK48X5ZWpJYImtDjC2LrKUHoHKUcnVla+dvF6wpoyByXmjHQqTvZCBXtLb59FO204ufAvA==
+  dependencies:
+    tslib "^1.9.0"
 
 parcel-plugin-wasm.rs@^1.3.0:
   version "1.3.0"
@@ -5541,6 +5548,11 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+tslib@^1.9.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
 tty-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"
@@ -5823,6 +5835,49 @@ word-wrap@~1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
+
+workbox-cacheable-response@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-cacheable-response/-/workbox-cacheable-response-6.4.2.tgz#ebcabb3667019da232e986a9927af97871e37ccb"
+  integrity sha512-9FE1W/cKffk1AJzImxgEN0ceWpyz1tqNjZVtA3/LAvYL3AC5SbIkhc7ZCO82WmO9IjTfu8Vut2X/C7ViMSF7TA==
+  dependencies:
+    workbox-core "6.4.2"
+
+workbox-core@6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-6.4.2.tgz#f99fd36a211cc01dce90aa7d5f2c255e8fe9d6bc"
+  integrity sha512-1U6cdEYPcajRXiboSlpJx6U7TvhIKbxRRerfepAJu2hniKwJ3DHILjpU/zx3yvzSBCWcNJDoFalf7Vgd7ey/rw==
+
+workbox-expiration@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-expiration/-/workbox-expiration-6.4.2.tgz#61613459fd6ddd1362730767618d444c6b9c9139"
+  integrity sha512-0hbpBj0tDnW+DZOUmwZqntB/8xrXOgO34i7s00Si/VlFJvvpRKg1leXdHHU8ykoSBd6+F2KDcMP3swoCi5guLw==
+  dependencies:
+    idb "^6.1.4"
+    workbox-core "6.4.2"
+
+workbox-precaching@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-precaching/-/workbox-precaching-6.4.2.tgz#8d87c05d54f32ac140f549faebf3b4d42d63621e"
+  integrity sha512-CZ6uwFN/2wb4noHVlALL7UqPFbLfez/9S2GAzGAb0Sk876ul9ukRKPJJ6gtsxfE2HSTwqwuyNVa6xWyeyJ1XSA==
+  dependencies:
+    workbox-core "6.4.2"
+    workbox-routing "6.4.2"
+    workbox-strategies "6.4.2"
+
+workbox-routing@6.4.2, workbox-routing@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-routing/-/workbox-routing-6.4.2.tgz#65b1c61e8ca79bb9152f93263c26b1f248d09dcc"
+  integrity sha512-0ss/n9PAcHjTy4Ad7l2puuod4WtsnRYu9BrmHcu6Dk4PgWeJo1t5VnGufPxNtcuyPGQ3OdnMdlmhMJ57sSrrSw==
+  dependencies:
+    workbox-core "6.4.2"
+
+workbox-strategies@6.4.2, workbox-strategies@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/workbox-strategies/-/workbox-strategies-6.4.2.tgz#50c02bf2d116918e1a8052df5f2c1e4103c62d5d"
+  integrity sha512-YXh9E9dZGEO1EiPC3jPe2CbztO5WT8Ruj8wiYZM56XqEJp5YlGTtqRjghV+JovWOqkWdR+amJpV31KPWQUvn1Q==
+  dependencies:
+    workbox-core "6.4.2"
 
 wrappy@1:
   version "1.0.2"

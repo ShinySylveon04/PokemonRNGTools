@@ -1,34 +1,75 @@
-import { manifest, version } from '@parcel/service-worker';
-import 'regenerator-runtime/runtime';
+import { registerRoute } from 'workbox-routing';
+import {
+  NetworkFirst,
+  StaleWhileRevalidate,
+  CacheFirst,
+} from 'workbox-strategies';
 
-async function install() {
-  const cache = await caches.open(version);
-  await cache.addAll(manifest);
-}
-addEventListener('install', e => e.waitUntil(install()));
+// Used for filtering matches based on status code, header, or both
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+// Used to limit entries in cache, remove entries after a certain period of time
+import { ExpirationPlugin } from 'workbox-expiration';
 
-async function activate() {
-  const keys = await caches.keys();
-  await Promise.all(keys.map(key => key !== version && caches.delete(key)));
-}
-addEventListener('activate', e => e.waitUntil(activate()));
+import { precacheAndRoute } from 'workbox-precaching';
 
-addEventListener('fetch', event => {
-  if (!event.request.url.startsWith('http')) {
-    return;
-  } else {
-    event.respondWith(
-      caches.match(event.request).then(resp => {
-        return (
-          resp ||
-          fetch(event.request).then(response => {
-            return caches.open(version).then(cache => {
-              cache.put(event.request, response.clone());
-              return response;
-            });
-          })
-        );
+// Use with precache injection
+precacheAndRoute(self.__precacheManifest);
+
+// Cache page navigations (html) with a Network First strategy
+registerRoute(
+  // Check to see if the request is a navigation to a new page
+  ({ request }) => request.mode === 'navigate',
+  // Use a Network First caching strategy
+  new NetworkFirst({
+    // Put all cached files in a cache named 'pages'
+    cacheName: 'pages',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
       }),
-    );
-  }
-});
+    ],
+  }),
+);
+
+// Cache CSS, JS, and Web Worker requests with a Stale While Revalidate strategy
+registerRoute(
+  // Check to see if the request's destination is style for stylesheets, script for JavaScript, or worker for web worker
+  ({ request }) =>
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'worker',
+  // Use a Stale While Revalidate caching strategy
+  new StaleWhileRevalidate({
+    // Put all cached files in a cache named 'assets'
+    cacheName: 'assets',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  }),
+);
+
+// Cache images with a Cache First strategy
+registerRoute(
+  // Check to see if the request's destination is style for an image
+  ({ request }) => request.destination === 'image',
+  // Use a Cache First caching strategy
+  new CacheFirst({
+    // Put all cached files in a cache named 'images'
+    cacheName: 'images',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+      // Don't cache more than 50 items, and expire them after 30 days
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+      }),
+    ],
+  }),
+);
