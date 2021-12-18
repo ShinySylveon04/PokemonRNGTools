@@ -12,9 +12,6 @@ import { ExpirationPlugin } from 'workbox-expiration';
 
 import { precacheAndRoute } from 'workbox-precaching';
 
-// Use with precache injection
-precacheAndRoute(self.__precacheManifest);
-
 // Cache page navigations (html) with a Network First strategy
 registerRoute(
   // Check to see if the request is a navigation to a new page
@@ -73,3 +70,7 @@ registerRoute(
     ],
   }),
 );
+
+// Use with precache injection
+// Make sure runs after above routes
+precacheAndRoute(self.__precacheManifest);
