@@ -1,5 +1,5 @@
 use super::enums;
-use super::{Pokemonbdsp, PokemonbdspStationary, TIDbdsp, Xorshift};
+use super::{Pokemonbdsp, PokemonbdspStationary, TIDbdsp, Xoroshiro, Xorshift};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
@@ -369,5 +369,75 @@ pub fn generate_tid(mut rng: Xorshift) -> TIDbdsp {
         tsv,
         g8tid,
         sid: (sid as u16),
+    }
+}
+
+pub fn generate_bdsp_pokemon_roamer(
+    mut seed_rng: Xorshift,
+    gender_ratio: enums::GenderRatioEnum,
+    set_ivs: bool,
+) -> PokemonbdspStationary {
+    let mut shiny = enums::ShinyEnum::None;
+
+    let seed = seed_rng.next();
+    let ec = seed;
+
+    let mut rng = Xoroshiro::new_bdsp(seed);
+
+    let shiny_rand = rng.next_bdsp();
+    let pid = rng.next_bdsp();
+
+    let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+    let tsv = pid >> 0x10 ^ pid & 0xFFFF;
+    if (psv ^ tsv) < 0x10 {
+        if (psv ^ tsv) == 0 {
+            shiny = enums::ShinyEnum::Square
+        } else {
+            shiny = enums::ShinyEnum::Star
+        }
+    }
+
+    let mut ivs = vec![32, 32, 32, 32, 32, 32];
+
+    if set_ivs {
+        for _ in 0..3 {
+            let mut index: usize;
+            loop {
+                index = (rng.next_bdsp() % 6) as usize;
+                if ivs[index] == 32 {
+                    break;
+                }
+            }
+            ivs[index] = 31;
+        }
+    }
+
+    for i in ivs.iter_mut() {
+        if *i == 32 {
+            *i = rng.next_bdsp() % 32
+        };
+    }
+
+    let ability = rng.next_bdsp() & 1;
+
+    let gender = match enums::get_set_gender_from_ratio(&gender_ratio) {
+        Some(set_gender) => set_gender,
+        None => {
+            let gender_rand = rng.next_bdsp();
+            let gender_num = (gender_rand - (gender_rand / 253) * 253) + 1;
+            enums::get_gender_from_ratio(&gender_ratio, gender_num)
+        }
+    };
+
+    let nature = rng.next_bdsp() % 25;
+
+    PokemonbdspStationary {
+        shiny,
+        pid,
+        ec,
+        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        ivs,
+        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        gender,
     }
 }

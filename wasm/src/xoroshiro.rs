@@ -15,6 +15,22 @@ impl Xoroshiro {
         }
     }
 
+    pub fn new_bdsp(seed: u32) -> Self {
+        let mut s0 = u64::from(seed).wrapping_sub(0x61C8864680B583EB);
+        let mut s1 = u64::from(seed).wrapping_add(0x3C6EF372FE94F82A);
+
+        s0 = (s0 ^ (s0 >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+        s1 = (s1 ^ (s1 >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+
+        s0 = (s0 ^ (s0 >> 27)).wrapping_mul(0x94D049BB133111EB);
+        s1 = (s1 ^ (s1 >> 27)).wrapping_mul(0x94D049BB133111EB);
+
+        Self {
+            s0: s0 ^ (s0 >> 31),
+            s1: s1 ^ (s1 >> 31),
+        }
+    }
+
     pub fn from_state(s0: u64, s1: u64) -> Self {
         Self { s0, s1 }
     }
@@ -31,6 +47,10 @@ impl Xoroshiro {
 
     pub fn next(&mut self) -> u32 {
         self.next_u64() as u32
+    }
+
+    pub fn next_bdsp(&mut self) -> u32 {
+        (self.next_u64() >> 32) as u32
     }
 
     pub fn get_state(&self) -> (u64, u64) {

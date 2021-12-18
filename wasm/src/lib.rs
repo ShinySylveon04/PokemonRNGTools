@@ -595,6 +595,73 @@ pub fn calculate_tid(
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_roamer(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: enums::ShinyFilterEnum,
+    min: usize,
+    max: usize,
+    delay: usize,
+    nature_filter: Vec<u32>,
+    ability_filter: enums::AbilityFilterEnum,
+    gender_ratio: enums::GenderRatioEnum,
+    gender_filter: enums::GenderFilterEnum,
+    set_ivs: bool,
+    min_ivs: Vec<u32>,
+    max_ivs: Vec<u32>,
+) -> JsValue {
+    let natures = nature_filter
+        .iter()
+        .map(|nature| {
+            enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
+        })
+        .collect();
+    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    rng.advance(delay);
+    let mut pokemon_results;
+    let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
+    let values = min..=max;
+    rng.advance(min);
+    for value in values {
+        pokemon_results = bdsp::generate_bdsp_pokemon_roamer(rng.clone(), gender_ratio, set_ivs);
+
+        if filter_bdsp_stationary(
+            &pokemon_results,
+            shiny_filter,
+            &natures,
+            ability_filter,
+            gender_filter,
+            &min_ivs,
+            &max_ivs,
+        ) {
+            let shiny_state = rng.get_state();
+            let result = ShinyResultBdspStationary {
+                state0: shiny_state[0],
+                state1: shiny_state[1],
+                state2: shiny_state[2],
+                state3: shiny_state[3],
+                advances: value,
+                pid: pokemon_results.pid,
+                shiny_value: pokemon_results.shiny,
+                ec: pokemon_results.ec,
+                nature: pokemon_results.nature,
+                ivs: pokemon_results.ivs,
+                ability: pokemon_results.ability,
+                gender: pokemon_results.gender,
+            };
+            shiny_results.push(result);
+        }
+        rng.next();
+    }
+
+    let results: Vec<ShinyResultBdspStationary> = shiny_results.into_iter().collect();
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
