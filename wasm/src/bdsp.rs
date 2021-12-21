@@ -219,7 +219,7 @@ pub fn generate_bdsp_pokemon_underground(
         advances: usize,
         diglett_boost: bool,
     ) -> UndergroundResults {
-        rng.next(); // slot weight call?
+        let encounter_rand = rng.rand_range(0, 100) as u8; // slot weight call
         rng.next(); // level
         let mut shiny = enums::ShinyEnum::None;
         let ec = rng.next();
@@ -268,7 +268,14 @@ pub fn generate_bdsp_pokemon_underground(
         rng.next(); // item
         rng.next(); // egg move
                     // randNum between 0 and max egg moves, then use as index for egg move
-        let encounter = 0;
+                    // let encounter = 0;
+
+        let encounter_slots: [u8; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
+
+        let encounter = encounter_slots
+            .iter()
+            .position(|enc| encounter_rand < *enc)
+            .unwrap_or(0) as u8;
 
         UndergroundResults {
             shiny_value: shiny,
@@ -290,7 +297,8 @@ pub fn generate_bdsp_pokemon_underground(
         advances: usize,
         diglett_boost: bool,
     ) -> UndergroundResults {
-        rng.next(); // level
+        // rng.next(); // level
+        let rare_slot = rng.rand_range(0, 1000);
         let mut shiny = enums::ShinyEnum::None;
         let ec = rng.next();
 

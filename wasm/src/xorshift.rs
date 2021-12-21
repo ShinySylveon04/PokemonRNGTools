@@ -1,6 +1,3 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
 pub struct Xorshift {
     state: [u32; 4],

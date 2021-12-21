@@ -214,6 +214,86 @@ export const RNGInfo = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="room-name-label">Room Name</InputLabel>
+            <Select
+              labelId="room-name-label"
+              id="room-name"
+              value={state.room_name}
+              label="Room Name"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  room_name: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={2}>Spacious Cave</MenuItem>
+              <MenuItem value={3}>Grassland Cave</MenuItem>
+              <MenuItem value={4}>Fountainspring Cave</MenuItem>
+              <MenuItem value={5}>Rocky Cave</MenuItem>
+              <MenuItem value={6}>Volcanic Cave</MenuItem>
+              <MenuItem value={7}>Swampy Cave</MenuItem>
+              <MenuItem value={8}>Dazzling Cave</MenuItem>
+              <MenuItem value={9}>Whiteout Cave</MenuItem>
+              <MenuItem value={10}>Icy Cave</MenuItem>
+              <MenuItem value={11}>Riverbank Cave</MenuItem>
+              <MenuItem value={12}>Sandsear Cave</MenuItem>
+              <MenuItem value={13}>Still-Water Cavern</MenuItem>
+              <MenuItem value={14}>Sunlit Cavern</MenuItem>
+              <MenuItem value={15}>Big Bluff Cavern</MenuItem>
+              <MenuItem value={16}>Stargleam Cavern</MenuItem>
+              <MenuItem value={17}>Glacial Cavern</MenuItem>
+              <MenuItem value={18}>Bogsunk Cavern</MenuItem>
+              <MenuItem value={19}>Typhlo Cavern</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="version-label">Game Version</InputLabel>
+            <Select
+              labelId="version-label"
+              id="version"
+              value={state.version}
+              label="Game Version"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  version: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={'DIAMOND'}>Brilliant Diamond</MenuItem>
+              <MenuItem value={'PEARL'}>Shining Pearl</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="progress-label">Game Progress</InputLabel>
+            <Select
+              labelId="progress-label"
+              id="progress"
+              value={state.game_progress}
+              label="Game Progress"
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  game_progress: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={1}>Underground Unlocked</MenuItem>
+              <MenuItem value={2}>Stregth Obtained</MenuItem>
+              <MenuItem value={3}>Defog Obtained</MenuItem>
+              <MenuItem value={4}>7 Badges</MenuItem>
+              <MenuItem value={5}>Waterfall Obtained</MenuItem>
+              <MenuItem value={6}>National Dex Obtained</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         <Grid
           container
           item

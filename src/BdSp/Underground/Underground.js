@@ -10,17 +10,19 @@ import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
+import { ROOM_1 } from '../../../SpaciousCave';
+
 const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
 
 export function Underground() {
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 0,
-    state1: 0,
-    state2: 0,
-    state3: 0,
+    state0: 0xecf2e8e2,
+    state1: 0x5fa6e2a3,
+    state2: 0x7f9b8d2f,
+    state3: 0x1eabcc34,
     shiny: 4,
-    min: 0,
+    min: 201,
     max: 10000,
     delay: 0,
     nature: [25],
@@ -30,10 +32,19 @@ export function Underground() {
     gender: 256,
     tiles: 0,
     large_room: false,
+    room_name: 1,
+    version: 'DIAMOND',
+    game_progress: 1,
     diglett_boost: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
   });
+
+  const availablePokemon = ROOM_1[state.version].filter(
+    pokemon => pokemon.zukanflag <= state.game_progress,
+  );
+
+  console.log(availablePokemon);
 
   const [results, setResults] = React.useState([
     {
