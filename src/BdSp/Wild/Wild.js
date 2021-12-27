@@ -15,10 +15,10 @@ const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
 export function Wild() {
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 0x41e3a1cb,
-    state1: 0x39f7a401,
-    state2: 0x32bcc45e,
-    state3: 0x564639f7,
+    state0: '',
+    state1: '',
+    state2: '',
+    state3: '',
     shiny: 4,
     min: 0,
     max: 10000,
