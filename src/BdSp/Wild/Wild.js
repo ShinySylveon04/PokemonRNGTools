@@ -42,7 +42,7 @@ export function Wild() {
       ec: 0,
       pid: 0,
       encounter: 0,
-      nature: 0,
+      nature: 'Any',
       ability: 0,
       ivs: [0, 0, 0, 0, 0, 0],
       gender: 256,

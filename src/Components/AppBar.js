@@ -7,6 +7,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+import { Translate } from './Translate';
+
 export const AppBar = ({ handleDrawerToggle, isLargerScreen }) => {
   return (
     <Box sx={{ display: 'flex' }}>
@@ -30,6 +32,7 @@ export const AppBar = ({ handleDrawerToggle, isLargerScreen }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} noWrap>
             Pokemon RNG
           </Typography>
+          <Translate />
         </Toolbar>
       </MuiAppBar>
     </Box>

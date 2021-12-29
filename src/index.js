@@ -12,6 +12,8 @@ import { Roamers } from './BdSp/Roamers/Roamers';
 
 import { MetaTags } from './Components/MetaTags';
 
+import './i18n';
+
 const app = document.getElementById('app');
 ReactDOM.render(
   <React.Fragment>
