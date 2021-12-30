@@ -74,6 +74,7 @@ pub fn generate_bdsp_pokemon_stationary(
     mut rng: Xorshift,
     gender_ratio: enums::GenderRatioEnum,
     set_ivs: bool,
+    lead: enums::LeadFilterEnum,
 ) -> PokemonbdspStationary {
     let mut shiny = enums::ShinyEnum::None;
 
@@ -125,8 +126,13 @@ pub fn generate_bdsp_pokemon_stationary(
         }
     };
 
-    let nature_rand = rng.next();
-    let nature = nature_rand - (nature_rand / 25) * 25;
+    let nature;
+    if lead != enums::LeadFilterEnum::Synchronize {
+        let nature_rand = rng.next();
+        nature = nature_rand - (nature_rand / 25) * 25;
+    } else {
+        nature = 25;
+    }
 
     PokemonbdspStationary {
         shiny,

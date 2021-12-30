@@ -5,6 +5,10 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
 import { useTranslation } from 'react-i18next';
 
@@ -188,6 +192,26 @@ export const RNGInfo = ({ setState, state }) => {
               }))
             }
           />
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="lead-type-label">{t('Lead')}</InputLabel>
+            <Select
+              labelId="lead-type-label"
+              id="lead"
+              value={state.lead}
+              label={t('Lead')}
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  lead: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={0}>{t('None')}</MenuItem>
+              <MenuItem value={1}>{t('Synchronize')}</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid
           container

@@ -438,6 +438,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     set_ivs: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
+    lead: enums::LeadFilterEnum,
 ) -> JsValue {
     let natures = nature_filter
         .iter()
@@ -453,7 +454,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     rng.advance(min);
     for value in values {
         pokemon_results =
-            bdsp::generate_bdsp_pokemon_stationary(rng.clone(), gender_ratio, set_ivs);
+            bdsp::generate_bdsp_pokemon_stationary(rng.clone(), gender_ratio, set_ivs, lead);
 
         if filter_bdsp_stationary(
             &pokemon_results,
