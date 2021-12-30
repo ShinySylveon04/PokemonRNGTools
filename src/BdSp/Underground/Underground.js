@@ -15,10 +15,10 @@ const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
 export function Underground() {
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 0,
-    state1: 0,
-    state2: 0,
-    state3: 0,
+    state0: '',
+    state1: '',
+    state2: '',
+    state3: '',
     shiny: 4,
     min: 0,
     max: 10000,
@@ -77,10 +77,10 @@ export function Underground() {
     setSearching(true);
 
     return calculatePokemon(
-      state0,
-      state1,
-      state2,
-      state3,
+      parseInt(state0),
+      parseInt(state1),
+      parseInt(state2),
+      parseInt(state3),
       shiny,
       min,
       max,
