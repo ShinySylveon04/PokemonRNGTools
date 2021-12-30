@@ -5,6 +5,17 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 export const RNGInfo = ({ setState, state }) => {
+  const handlePaste = event => {
+    const text = event.clipboardData.getData('Text').split('\n');
+
+    setState(state => ({
+      ...state,
+      state0: text[0],
+      state1: text[1],
+      state2: text[2],
+      state3: text[3],
+    }));
+  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -21,19 +32,21 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
           <TextField
+            onPaste={event => handlePaste(event)}
             fullWidth
             autoComplete="off"
             inputProps={{
               inputMode: 'text',
               maxLength: 8,
             }}
+            value={state.state0}
             id="seed0"
             label="Seed 0"
             variant="outlined"
             onChange={event => {
               setState(state => ({
                 ...state,
-                state0: parseInt(event.target.value, 16),
+                state0: event.target.value,
               }));
             }}
           />
@@ -46,13 +59,14 @@ export const RNGInfo = ({ setState, state }) => {
               inputMode: 'text',
               maxLength: 8,
             }}
+            value={state.state1}
             id="seed1"
             label="Seed 1"
             variant="outlined"
             onChange={event => {
               setState(state => ({
                 ...state,
-                state1: parseInt(event.target.value, 16),
+                state1: event.target.value,
               }));
             }}
           />
@@ -65,13 +79,14 @@ export const RNGInfo = ({ setState, state }) => {
               inputMode: 'text',
               maxLength: 8,
             }}
+            value={state.state2}
             id="seed2"
             label="Seed 2"
             variant="outlined"
             onChange={event => {
               setState(state => ({
                 ...state,
-                state2: parseInt(event.target.value, 16),
+                state2: event.target.value,
               }));
             }}
           />
@@ -84,13 +99,14 @@ export const RNGInfo = ({ setState, state }) => {
               inputMode: 'text',
               maxLength: 8,
             }}
+            value={state.state3}
             id="seed3"
             label="Seed 3"
             variant="outlined"
             onChange={event => {
               setState(state => ({
                 ...state,
-                state3: parseInt(event.target.value, 16),
+                state3: event.target.value,
               }));
             }}
           />

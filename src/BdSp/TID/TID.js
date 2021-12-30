@@ -15,10 +15,10 @@ const calculateTID = wrap(new Worker('./workers/getResults.js'));
 export function TID() {
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 0x12345678,
-    state1: 0x12345678,
-    state2: 0x12345678,
-    state3: 0x12345678,
+    state0: '',
+    state1: '',
+    state2: '',
+    state3: '',
     min: 0,
     max: 10000,
     id: '',
@@ -45,10 +45,10 @@ export function TID() {
     setSearching(true);
 
     return calculateTID(
-      state0,
-      state1,
-      state2,
-      state3,
+      parseInt(state0),
+      parseInt(state1),
+      parseInt(state2),
+      parseInt(state3),
       min,
       max,
       id.split('\n'),
