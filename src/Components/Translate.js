@@ -24,6 +24,9 @@ export const Translate = () => {
   const handleMenuItemClick = (event, option) => {
     setAnchorEl(null);
     i18n.changeLanguage(option);
+    window.gtag('event', 'change_language', {
+      language_chose: option,
+    });
   };
   const handleClose = () => {
     setAnchorEl(null);
