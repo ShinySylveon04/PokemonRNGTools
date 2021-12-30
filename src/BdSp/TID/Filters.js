@@ -8,7 +8,11 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 
+import { useTranslation } from 'react-i18next';
+
 export const Filters = ({ setState, state }) => {
+  const { t } = useTranslation();
+
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -20,17 +24,17 @@ export const Filters = ({ setState, state }) => {
       >
         <Grid item xs={12}>
           <Typography variant="h6" align="left" color="primary">
-            Filters
+            {t('Filters')}
           </Typography>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="id-type-label">ID Filter</InputLabel>
+            <InputLabel id="id-type-label">{t('ID Filter')}</InputLabel>
             <Select
               labelId="id-type-label"
               id="id-type"
               value={state.id_filter}
-              label="ID Filter"
+              label={t('ID Filter')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -38,11 +42,11 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={'None'}>None</MenuItem>
-              <MenuItem value={'TID'}>TID</MenuItem>
-              <MenuItem value={'SID'}>SID</MenuItem>
-              <MenuItem value={'TSV'}>TSV</MenuItem>
-              <MenuItem value={'G8TID'}>Gen 8 TID</MenuItem>
+              <MenuItem value={'None'}>{t('None')}</MenuItem>
+              <MenuItem value={'TID'}>{t('TID')}</MenuItem>
+              <MenuItem value={'SID'}>{t('SID')}</MenuItem>
+              <MenuItem value={'TSV'}>{t('TSV')}</MenuItem>
+              <MenuItem value={'G8TID'}>{t('Gen 8 TID')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>

@@ -10,12 +10,16 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import { useTranslation } from 'react-i18next';
+
 export const RNGInfo = ({ setState, state }) => {
   const [checked, setChecked] = React.useState(false);
   const handleChange = event => {
     setState({ ...state, diglett_boost: event.target.checked });
     setChecked(event.target.checked);
   };
+
+  const { t } = useTranslation();
 
   const handlePaste = event => {
     const text = event.clipboardData.getData('Text').split('\n');
@@ -39,7 +43,7 @@ export const RNGInfo = ({ setState, state }) => {
       >
         <Grid item xs={12}>
           <Typography variant="h6" align="left" color="primary">
-            RNG Info
+            {t('RNG Info')}
           </Typography>
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
@@ -53,7 +57,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state0}
             id="seed0"
-            label="Seed 0"
+            label={t('Seed 0')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -73,7 +77,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state1}
             id="seed1"
-            label="Seed 1"
+            label={t('Seed 1')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -93,7 +97,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state2}
             id="seed2"
-            label="Seed 2"
+            label={t('Seed 2')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -113,7 +117,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state3}
             id="seed3"
-            label="Seed 3"
+            label={t('Seed 3')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -131,7 +135,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="min"
-            label="Min Advances"
+            label={t('Min Advances')}
             variant="outlined"
             value={state.min}
             onChange={event =>
@@ -153,7 +157,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="max"
-            label="Max Advances"
+            label={t('Max Advances')}
             variant="outlined"
             value={state.max}
             onChange={event =>
@@ -175,7 +179,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="delay"
-            label="Delay"
+            label={t('Delay')}
             variant="outlined"
             value={state.delay}
             onChange={event =>
@@ -197,7 +201,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="tiles"
-            label="Statue Tiles"
+            label={t('Statue Tiles')}
             variant="outlined"
             value={state.tiles}
             onChange={event =>
@@ -213,12 +217,12 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="room-label">Room Size</InputLabel>
+            <InputLabel id="room-label">{t('Room Size')}</InputLabel>
             <Select
               labelId="room-label"
               id="room"
               value={state.large_room}
-              label="Room Size"
+              label={t('Room Size')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -226,8 +230,8 @@ export const RNGInfo = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={false}>Small</MenuItem>
-              <MenuItem value={true}>Large</MenuItem>
+              <MenuItem value={false}>{t('Small')}</MenuItem>
+              <MenuItem value={true}>{t('Large')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -248,7 +252,7 @@ export const RNGInfo = ({ setState, state }) => {
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
               }
-              label="Diglett Boost"
+              label={t('Diglett Boost')}
             />
           </Grid>
         </Grid>

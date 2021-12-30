@@ -8,6 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
+import { useTranslation } from 'react-i18next';
+
 const showGender = num => {
   switch (num) {
     case 'Male':
@@ -32,18 +34,18 @@ const showAbility = ability => {
   }
 };
 
-const ShowResults = ({ results, state }) => {
+const ShowResults = ({ results, state, t }) => {
   return results.map((result, index) => (
     <TableRow
       key={index}
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{`${result.shiny_value}`}</TableCell>
+      <TableCell align="left">{t(`${result.shiny_value}`)}</TableCell>
       <TableCell align="left">
-        {result.is_rare ? 'Rare' : result.encounter}
+        {result.is_rare ? t('Rare') : result.encounter}
       </TableCell>
-      <TableCell align="left">{result.nature}</TableCell>
+      <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
       <TableCell align="left">{showAbility(result.ability)}</TableCell>
       <TableCell align="left">
         {state.genderRatio === 256 ? '-' : showGender(result.gender)}
@@ -63,6 +65,8 @@ const ShowResults = ({ results, state }) => {
 };
 
 export const Results = ({ results, state }) => {
+  const { t } = useTranslation();
+
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
@@ -85,15 +89,15 @@ export const Results = ({ results, state }) => {
         <Table sx={{ minWidth: 650 }} aria-label="results table">
           <TableHead>
             <TableRow>
-              <TableCell>Advances</TableCell>
-              <TableCell align="left">Shiny</TableCell>
-              <TableCell align="left">Slot</TableCell>
-              <TableCell align="left">Nature</TableCell>
-              <TableCell align="left">Ability</TableCell>
-              <TableCell align="left">Gender</TableCell>
-              <TableCell align="left">IVs</TableCell>
-              <TableCell align="left">PID</TableCell>
-              <TableCell align="left">EC</TableCell>
+              <TableCell>{t('Advances')}</TableCell>
+              <TableCell align="left">{t('Shiny')}</TableCell>
+              <TableCell align="left">{t('Slot')}</TableCell>
+              <TableCell align="left">{t('Nature')}</TableCell>
+              <TableCell align="left">{t('Ability')}</TableCell>
+              <TableCell align="left">{t('Gender')}</TableCell>
+              <TableCell align="left">{t('IVs')}</TableCell>
+              <TableCell align="left">{t('PID')}</TableCell>
+              <TableCell align="left">{t('EC')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -107,6 +111,7 @@ export const Results = ({ results, state }) => {
                   : results
               }
               state={state}
+              t={t}
             />
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>

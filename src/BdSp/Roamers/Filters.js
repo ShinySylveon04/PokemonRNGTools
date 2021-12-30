@@ -9,10 +9,14 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 
+import { useTranslation } from 'react-i18next';
+
 import { natureOptions } from '../../natures';
 import { IVFilters } from './IVFilters';
 
 export const Filters = ({ setState, state }) => {
+  const { t } = useTranslation();
+
   const handleNatureChange = event => {
     // If Any is selected, then a nature is selected, deselect Any
     if (state.nature.includes(25) && event.target.value.length > 1) {
@@ -55,17 +59,17 @@ export const Filters = ({ setState, state }) => {
       >
         <Grid item xs={12}>
           <Typography variant="h6" align="left" color="primary">
-            Filters
+            {t('Filters')}
           </Typography>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="shiny-type-label">Shiny</InputLabel>
+            <InputLabel id="shiny-type-label">{t('Shiny')}</InputLabel>
             <Select
               labelId="shiny-type-label"
               id="shiny-type"
               value={state.shiny}
-              label="Shiny"
+              label={t('Shiny')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -73,29 +77,32 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={4}>Any</MenuItem>
-              <MenuItem value={1}>Star</MenuItem>
-              <MenuItem value={2}>Square</MenuItem>
-              <MenuItem value={3}>Star/Square</MenuItem>
+              <MenuItem value={4}>{t('Any')}</MenuItem>
+              <MenuItem value={1}>{t('Star')}</MenuItem>
+              <MenuItem value={2}>{t('Square')}</MenuItem>
+              <MenuItem value={3}>{t('Star/Square')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="nature-label">Nature</InputLabel>
+            <InputLabel id="nature-label">{t('Nature')}</InputLabel>
             <Select
               multiple
               labelId="nature-label"
               id="nature"
               value={state.nature}
-              label="Nature"
+              label={t('Nature')}
               renderValue={selected =>
                 selected
-                  .map(
-                    nature =>
-                      natureOptions.find(
-                        natureOption => natureOption.value === nature,
-                      ).name,
+                  .map(nature =>
+                    t(
+                      `nature.${
+                        natureOptions.find(
+                          natureOption => natureOption.value === nature,
+                        ).name
+                      }`,
+                    ),
                   )
                   .join(', ')
               }
@@ -104,7 +111,7 @@ export const Filters = ({ setState, state }) => {
               {natureOptions.map(nature => (
                 <MenuItem value={nature.value} key={nature.value}>
                   <Checkbox checked={state.nature.indexOf(nature.value) > -1} />
-                  <ListItemText primary={nature.name} />
+                  <ListItemText primary={t(`nature.${nature.name}`)} />
                 </MenuItem>
               ))}
             </Select>
@@ -112,12 +119,12 @@ export const Filters = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="ability-label">Ability</InputLabel>
+            <InputLabel id="ability-label">{t('Ability')}</InputLabel>
             <Select
               labelId="ability-label"
               id="ability"
               value={state.ability}
-              label="Ability"
+              label={t('Ability')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -125,7 +132,7 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={3}>Any</MenuItem>
+              <MenuItem value={3}>{t('Any')}</MenuItem>
               <MenuItem value={0}>0</MenuItem>
               <MenuItem value={1}>1</MenuItem>
             </Select>
@@ -133,12 +140,12 @@ export const Filters = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="genderRatio-label">Gender Ratio</InputLabel>
+            <InputLabel id="genderRatio-label">{t('Gender Ratio')}</InputLabel>
             <Select
               labelId="genderRatio-label"
               id="genderRatio"
               value={state.genderRatio}
-              label="Gender Ratio"
+              label={t('Gender Ratio')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -146,8 +153,8 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={256}>No Set Gender</MenuItem>
-              <MenuItem value={255}>Genderless</MenuItem>
+              <MenuItem value={256}>{t('No Set Gender')}</MenuItem>
+              <MenuItem value={255}>{t('Genderless')}</MenuItem>
               <MenuItem value={127}>50% ♂ / 50% ♀</MenuItem>
               <MenuItem value={191}>25% ♂ / 75% ♀</MenuItem>
               <MenuItem value={63}>75% ♂ / 25% ♀</MenuItem>
@@ -159,12 +166,12 @@ export const Filters = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="gender-label">Gender</InputLabel>
+            <InputLabel id="gender-label">{t('Gender')}</InputLabel>
             <Select
               labelId="gender-label"
               id="gender"
               value={state.gender}
-              label="Gender"
+              label={t('Gender')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -172,7 +179,7 @@ export const Filters = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={256}>Any</MenuItem>
+              <MenuItem value={256}>{t('Any')}</MenuItem>
               <MenuItem value={0}>♂</MenuItem>
               <MenuItem value={254}>♀</MenuItem>
             </Select>

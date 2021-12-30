@@ -3,12 +3,15 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 
+import { useTranslation } from 'react-i18next';
+
 export const IVFilters = ({ state, setState }) => {
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       <Grid item sm={12} md={12} xs={12}>
         <Typography variant="body1" align="left" color="primary">
-          Min IVs
+          {t('Min IVs')}
         </Typography>
       </Grid>
       <Grid
@@ -28,7 +31,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="hp"
-            label="HP"
+            label={t('HP')}
             variant="outlined"
             value={state.minIVs.hp}
             onChange={event =>
@@ -50,7 +53,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="atk"
-            label="Attack"
+            label={t('Attack')}
             variant="outlined"
             value={state.minIVs.atk}
             onChange={event =>
@@ -72,7 +75,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="def"
-            label="Defense"
+            label={t('Defense')}
             variant="outlined"
             value={state.minIVs.def}
             onChange={event =>
@@ -94,7 +97,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spa"
-            label="Special Attack"
+            label={t('Special Attack')}
             variant="outlined"
             value={state.minIVs.spa}
             onChange={event =>
@@ -116,7 +119,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spd"
-            label="Special Defense"
+            label={t('Special Defense')}
             variant="outlined"
             value={state.minIVs.spd}
             onChange={event =>
@@ -138,7 +141,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spe"
-            label="Speed"
+            label={t('Speed')}
             variant="outlined"
             value={state.minIVs.spe}
             onChange={event =>
@@ -155,7 +158,7 @@ export const IVFilters = ({ state, setState }) => {
       </Grid>
       <Grid item sm={12} md={12} xs={12}>
         <Typography variant="body1" align="left" color="primary">
-          Max IVs
+          {t('Max IVs')}
         </Typography>
       </Grid>
       <Grid
@@ -175,7 +178,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="hp"
-            label="HP"
+            label={t('HP')}
             variant="outlined"
             value={state.maxIVs.hp}
             onChange={event =>
@@ -197,7 +200,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="atk"
-            label="Attack"
+            label={t('Attack')}
             variant="outlined"
             value={state.maxIVs.atk}
             onChange={event =>
@@ -219,7 +222,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="def"
-            label="Defense"
+            label={t('Defense')}
             variant="outlined"
             value={state.maxIVs.def}
             onChange={event =>
@@ -241,7 +244,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spa"
-            label="Special Attack"
+            label={t('Special Attack')}
             variant="outlined"
             value={state.maxIVs.spa}
             onChange={event =>
@@ -263,7 +266,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spd"
-            label="Special Defense"
+            label={t('Special Defense')}
             variant="outlined"
             value={state.maxIVs.spd}
             onChange={event =>
@@ -285,7 +288,7 @@ export const IVFilters = ({ state, setState }) => {
             }}
             fullWidth
             id="spe"
-            label="Speed"
+            label={t('Speed')}
             variant="outlined"
             value={state.maxIVs.spe}
             onChange={event =>

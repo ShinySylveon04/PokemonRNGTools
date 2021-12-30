@@ -8,6 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
+import { useTranslation } from 'react-i18next';
+
 const ShowResults = ({ results, state }) => {
   return results.map((result, index) => (
     <TableRow
@@ -24,6 +26,8 @@ const ShowResults = ({ results, state }) => {
 };
 
 export const Results = ({ results, state }) => {
+  const { t } = useTranslation();
+
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
@@ -46,11 +50,11 @@ export const Results = ({ results, state }) => {
         <Table sx={{ minWidth: 650 }} aria-label="results table">
           <TableHead>
             <TableRow>
-              <TableCell>Advances</TableCell>
-              <TableCell>Gen 8 TID</TableCell>
-              <TableCell>TID</TableCell>
-              <TableCell>SID</TableCell>
-              <TableCell>TSV</TableCell>
+              <TableCell>{t('Advances')}</TableCell>
+              <TableCell>{t('Gen 8 TID')}</TableCell>
+              <TableCell>{t('TID')}</TableCell>
+              <TableCell>{t('SID')}</TableCell>
+              <TableCell>{t('TSV')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -8,18 +8,22 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 
+import { useTranslation } from 'react-i18next';
+
 export const RNGInfo = ({ setState, state }) => {
+  const { t } = useTranslation();
+
   const handlePaste = event => {
-    const text = event.clipboardData.getData('Text').split("\n");
+    const text = event.clipboardData.getData('Text').split('\n');
 
     setState(state => ({
-      ...state, 
+      ...state,
       state0: text[0],
       state1: text[1],
       state2: text[2],
-      state3: text[3]
-    }))
-  }
+      state3: text[3],
+    }));
+  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -31,7 +35,7 @@ export const RNGInfo = ({ setState, state }) => {
       >
         <Grid item xs={12}>
           <Typography variant="h6" align="left" color="primary">
-            RNG Info
+            {t('RNG Info')}
           </Typography>
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
@@ -45,7 +49,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state0}
             id="seed0"
-            label="Seed 0"
+            label={t('Seed 0')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -65,7 +69,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state1}
             id="seed1"
-            label="Seed 1"
+            label={t('Seed 1')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -85,7 +89,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state2}
             id="seed2"
-            label="Seed 2"
+            label={t('Seed 2')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -105,7 +109,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             value={state.state3}
             id="seed3"
-            label="Seed 3"
+            label={t('Seed 3')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -124,7 +128,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="min"
-            label="Min Advances"
+            label={t('Min Advances')}
             variant="outlined"
             value={state.min}
             onChange={event =>
@@ -146,7 +150,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="max"
-            label="Max Advances"
+            label={t('Max Advances')}
             variant="outlined"
             value={state.max}
             onChange={event =>
@@ -168,7 +172,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="delay"
-            label="Delay"
+            label={t('Delay')}
             variant="outlined"
             value={state.delay}
             onChange={event =>
@@ -184,12 +188,12 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="lead-type-label">Lead</InputLabel>
+            <InputLabel id="lead-type-label">{t('Lead')}</InputLabel>
             <Select
               labelId="lead-type-label"
               id="lead"
               value={state.lead}
-              label="Lead"
+              label={t('Lead')}
               onChange={event =>
                 setState(state => ({
                   ...state,
@@ -197,8 +201,8 @@ export const RNGInfo = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={0}>None</MenuItem>
-              <MenuItem value={1}>Synchronize</MenuItem>
+              <MenuItem value={0}>{t('None')}</MenuItem>
+              <MenuItem value={1}>{t('Synchronize')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
