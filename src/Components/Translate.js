@@ -3,6 +3,7 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import { Link } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
@@ -54,6 +55,13 @@ export const Translate = () => {
             {option.name}
           </MenuItem>
         ))}
+        <MenuItem
+          component={Link}
+          to="translate"
+          onClick={() => setAnchorEl(null)}
+        >
+          Help Translate
+        </MenuItem>
       </Menu>
     </React.Fragment>
   );

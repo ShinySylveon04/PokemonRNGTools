@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './Layouts/Main';
 import { Home } from './Pages/Home';
+import { Translate } from './Pages/Translate';
 import { SwSh } from './SwSh/SwSh';
 import { Wild } from './BdSp/Wild/Wild';
 import { Stationary } from './BdSp/Stationary/Stationary';
@@ -22,6 +23,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="translate" element={<Translate />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
           <Route path="bdsp/stationary" element={<Stationary />} />
