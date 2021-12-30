@@ -9,13 +9,18 @@ This is a repository of web based Pokemon RNG tools hosted on https://chatot.pok
 ## How do I use these tools?
 
 The tools are hosted on https://chatot.pokemonrng.com under these pages:
-- https://chatot.pokemonrng.com/#/swsh: Sword & Shield Overworld Generator
+- Sword & Shield
+  - Overworld Generator: https://chatot.pokemonrng.com/#/swsh
 - Brilliant Diamond & Shining Pearl RNG Generator
   - Wild: https://chatot.pokemonrng.com/#/bdsp
   - Stationary: https://chatot.pokemonrng.com/#/bdsp/stationary
   - Underground: https://chatot.pokemonrng.com/#/bdsp/underground
   - TID: https://chatot.pokemonrng.com/#/bdsp/tid
   - Roamers: https://chatot.pokemonrng.com/#/bdsp/roamers
+
+For help with RNG, or to report issues using Chatot, join the Pokemon RNG Discord
+
+[<img src="https://discord.com/api/guilds/285269328469950464/widget.png?style=banner2">](https://www.discord.gg/d8JuAvg)
 
 ## Building
 
