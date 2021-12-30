@@ -76,10 +76,10 @@ export function Wild() {
     setSearching(true);
 
     return calculatePokemon(
-      state0,
-      state1,
-      state2,
-      state3,
+      parseInt(state0, 16),
+      parseInt(state1, 16),
+      parseInt(state2, 16),
+      parseInt(state3, 16),
       shiny,
       min,
       max,

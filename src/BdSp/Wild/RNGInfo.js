@@ -54,7 +54,7 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event => {
               setState(state => ({
                 ...state,
-                state0: parseInt(event.target.value, 16),
+                state0: event.target.value,
               }));
             }}
           />
@@ -74,7 +74,7 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event => {
               setState(state => ({
                 ...state,
-                state1: parseInt(event.target.value, 16),
+                state1: event.target.value,
               }));
             }}
           />
@@ -94,7 +94,7 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event => {
               setState(state => ({
                 ...state,
-                state2: parseInt(event.target.value, 16),
+                state2: event.target.value,
               }));
             }}
           />
@@ -114,7 +114,7 @@ export const RNGInfo = ({ setState, state }) => {
             onChange={event => {
               setState(state => ({
                 ...state,
-                state3: parseInt(event.target.value, 16),
+                state3: event.target.value,
               }));
             }}
           />

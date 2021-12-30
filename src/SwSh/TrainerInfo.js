@@ -104,7 +104,6 @@ export const TrainerInfo = ({ setState, state, saveProfile, setProfile }) => {
                 variant="outlined"
                 value={state.tid || ''}
                 onChange={event => {
-                  console.log(event.target.value),
                     setState(state => ({
                       ...state,
                       tid: parseInt(event.target.value),

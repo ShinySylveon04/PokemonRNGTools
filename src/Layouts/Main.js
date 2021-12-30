@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useLocation } from 'react-router-dom';
 
 import { AppBar } from '../Components/AppBar';
 import { NavDrawer } from '../Components/NavDrawer';
@@ -17,6 +18,8 @@ export const MainLayout = () => {
   const theme = useTheme();
   const isLargerScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [isopen, setOpen] = React.useState(false);
+
+  window.gtag('event', 'page_view', { page_location: useLocation().pathname });
 
   React.useEffect(() => {
     if (isLargerScreen) {

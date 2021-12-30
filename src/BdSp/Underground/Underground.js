@@ -17,10 +17,10 @@ export function Underground() {
   const { t } = useTranslation();
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 0,
-    state1: 0,
-    state2: 0,
-    state3: 0,
+    state0: '',
+    state1: '',
+    state2: '',
+    state3: '',
     shiny: 4,
     min: 0,
     max: 10000,
@@ -79,10 +79,10 @@ export function Underground() {
     setSearching(true);
 
     return calculatePokemon(
-      state0,
-      state1,
-      state2,
-      state3,
+      parseInt(state0, 16),
+      parseInt(state1, 16),
+      parseInt(state2, 16),
+      parseInt(state3, 16),
       shiny,
       min,
       max,
