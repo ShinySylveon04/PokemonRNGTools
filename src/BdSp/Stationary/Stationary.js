@@ -38,12 +38,12 @@ export function Stationary() {
   const [results, setResults] = React.useState([
     {
       advances: 0,
-      shiny_value: 0,
+      shiny_value: 'None',
       state0: 0,
       state1: 0,
       ec: 0,
       pid: 0,
-      nature: 0,
+      nature: 'Any',
       ability: 0,
       ivs: [0, 0, 0, 0, 0, 0],
       gender: 256,
