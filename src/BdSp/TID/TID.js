@@ -45,10 +45,10 @@ export function TID() {
     setSearching(true);
 
     return calculateTID(
-      parseInt(state0),
-      parseInt(state1),
-      parseInt(state2),
-      parseInt(state3),
+      parseInt(state0, 16),
+      parseInt(state1, 16),
+      parseInt(state2, 16),
+      parseInt(state3, 16),
       min,
       max,
       id.split('\n'),
