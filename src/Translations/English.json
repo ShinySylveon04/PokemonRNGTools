@@ -43,6 +43,11 @@
   "Large": "Large",
   "Diglett Boost": "Diglett Boost",
   "Rare": "Rare",
+  "ID Filter": "ID Filter",
+  "TID": "TID",
+  "SID": "SID",
+  "TSV": "TSV",
+  "Gen 8 TID": "Gen 8 TID",
   "nature": {
     "Any": "Any",
     "Hardy": "Hardy",

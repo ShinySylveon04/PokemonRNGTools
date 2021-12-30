@@ -5,6 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Toolbar from '@mui/material/Toolbar';
 
 import { wrap } from 'comlink';
+import { useTranslation } from 'react-i18next';
 
 import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
@@ -13,6 +14,8 @@ import { Results } from './Results';
 const calculateTID = wrap(new Worker('./workers/getResults.js'));
 
 export function TID() {
+  const { t } = useTranslation();
+
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
     state0: 0x12345678,
@@ -83,7 +86,7 @@ export function TID() {
         fullWidth
         sx={{ margin: '10px', ml: 'auto', mr: 'auto', maxWidth: '300px' }}
       >
-        {searching ? <CircularProgress size={24} /> : 'Search'}
+        {searching ? <CircularProgress size={24} /> : t('Search')}
       </Button>
       <Results results={results} state={state} />
     </Box>
