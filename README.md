@@ -20,7 +20,7 @@ The tools are hosted on https://chatot.pokemonrng.com under these pages:
 
 For help with RNG, or to report issues using Chatot, join the Pokemon RNG Discord
 
-https://discord.gg/ditto
+[<img src="https://discord.com/api/guilds/285269328469950464/widget.png?style=banner2">](https://www.discord.gg/d8JuAvg)
 
 ## Building
 
