@@ -37,6 +37,12 @@
   "Special Attack": "Special Attack",
   "Special Defense": "Special Defense",
   "Speed": "Speed",
+  "Statue Tiles": "Statue Tiles",
+  "Room Size": "Room Size",
+  "Small": "Small",
+  "Large": "Large",
+  "Diglett Boost": "Diglett Boost",
+  "Rare": "Rare",
   "nature": {
     "Any": "Any",
     "Hardy": "Hardy",
