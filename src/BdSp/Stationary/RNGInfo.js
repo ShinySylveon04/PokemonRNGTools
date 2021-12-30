@@ -6,7 +6,11 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import { useTranslation } from 'react-i18next';
+
 export const RNGInfo = ({ setState, state }) => {
+  const { t } = useTranslation();
+
   const [checked, setChecked] = React.useState(false);
   const handleChange = event => {
     setState({ ...state, set_ivs: event.target.checked });
@@ -23,7 +27,7 @@ export const RNGInfo = ({ setState, state }) => {
       >
         <Grid item xs={12}>
           <Typography variant="h6" align="left" color="primary">
-            RNG Info
+            {t('RNG Info')}
           </Typography>
         </Grid>
         <Grid container item sm={6} xs={12} justifyContent="center">
@@ -35,7 +39,7 @@ export const RNGInfo = ({ setState, state }) => {
               maxLength: 8,
             }}
             id="seed0"
-            label="Seed 0"
+            label={t('Seed 0')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -54,7 +58,7 @@ export const RNGInfo = ({ setState, state }) => {
               maxLength: 8,
             }}
             id="seed1"
-            label="Seed 1"
+            label={t('Seed 1')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -73,7 +77,7 @@ export const RNGInfo = ({ setState, state }) => {
               maxLength: 8,
             }}
             id="seed2"
-            label="Seed 2"
+            label={t('Seed 2')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -92,7 +96,7 @@ export const RNGInfo = ({ setState, state }) => {
               maxLength: 8,
             }}
             id="seed3"
-            label="Seed 3"
+            label={t('Seed 3')}
             variant="outlined"
             onChange={event => {
               setState(state => ({
@@ -110,7 +114,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="min"
-            label="Min Advances"
+            label={t('Min Advances')}
             variant="outlined"
             value={state.min}
             onChange={event =>
@@ -132,7 +136,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="max"
-            label="Max Advances"
+            label={t('Max Advances')}
             variant="outlined"
             value={state.max}
             onChange={event =>
@@ -154,7 +158,7 @@ export const RNGInfo = ({ setState, state }) => {
             }}
             fullWidth
             id="delay"
-            label="Delay"
+            label={t('Delay')}
             variant="outlined"
             value={state.delay}
             onChange={event =>
@@ -185,7 +189,7 @@ export const RNGInfo = ({ setState, state }) => {
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
               }
-              label="Set IVs"
+              label={t('Set IVs')}
             />
           </Grid>
         </Grid>
