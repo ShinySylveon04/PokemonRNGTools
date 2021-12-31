@@ -10,20 +10,12 @@ import InputLabel from '@mui/material/InputLabel';
 
 import { useTranslation } from 'react-i18next';
 
+import { setRngStateFromClipboard } from '../../Utils/setRngState';
+
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
+  const handlePaste = event => setRngStateFromClipboard(event, setState);
 
-  const handlePaste = event => {
-    const text = event.clipboardData.getData('Text').split('\n');
-
-    setState(state => ({
-      ...state,
-      state0: text[0],
-      state1: text[1],
-      state2: text[2],
-      state3: text[3],
-    }));
-  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
