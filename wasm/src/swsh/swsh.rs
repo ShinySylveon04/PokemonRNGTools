@@ -46,12 +46,12 @@ pub fn generate_static_pokemon(
 
     let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
 
-    let mut shiny_type = enums::ShinyEnum::None;
+    let mut shiny_type = enums::Shiny::None;
     if xor < 0x10 {
         if xor == 0 {
-            shiny_type = enums::ShinyEnum::Square;
+            shiny_type = enums::Shiny::Square;
         } else {
-            shiny_type = enums::ShinyEnum::Star;
+            shiny_type = enums::Shiny::Star;
         }
     }
 
@@ -59,8 +59,8 @@ pub fn generate_static_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
-        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
+        ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
     }
 }
 
@@ -120,12 +120,12 @@ pub fn generate_dynamic_pokemon(
 
     let xor = ((pid >> 16) ^ (pid & 0xFFFF)) as u16 ^ tsv;
 
-    let mut shiny_type = enums::ShinyEnum::None;
+    let mut shiny_type = enums::Shiny::None;
     if xor < 0x10 {
         if xor == 0 {
-            shiny_type = enums::ShinyEnum::Square;
+            shiny_type = enums::Shiny::Square;
         } else {
-            shiny_type = enums::ShinyEnum::Star;
+            shiny_type = enums::Shiny::Star;
         }
     }
 
@@ -133,7 +133,7 @@ pub fn generate_dynamic_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
-        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
+        ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
     }
 }

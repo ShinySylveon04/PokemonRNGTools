@@ -4,14 +4,14 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum LeadFilterEnum {
+pub enum LeadFilter {
     None = 0,
     Synchronize = 1,
 }
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum AbilityFilterEnum {
+pub enum AbilityFilter {
     Any = 3,
     Ability0 = 0,
     Ability1 = 1,
@@ -20,7 +20,7 @@ pub enum AbilityFilterEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
-pub enum AbilityEnum {
+pub enum Ability {
     #[num_enum(default)]
     Ability0 = 0,
     Ability1 = 1,
@@ -29,7 +29,7 @@ pub enum AbilityEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
 #[repr(u32)]
-pub enum NatureFilterEnum {
+pub enum NatureFilter {
     #[num_enum(default)]
     Hardy = 0,
     Lonely = 1,
@@ -62,7 +62,7 @@ pub enum NatureFilterEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
-pub enum NatureEnum {
+pub enum Nature {
     #[num_enum(default)]
     Hardy = 0,
     Lonely = 1,
@@ -94,7 +94,7 @@ pub enum NatureEnum {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub enum ShinyFilterEnum {
+pub enum ShinyFilter {
     None = 0,
     Star = 1,
     Square = 2,
@@ -104,14 +104,14 @@ pub enum ShinyFilterEnum {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum EncounterFilterEnum {
+pub enum EncounterFilter {
     Static = 0,
     Dynamic = 1,
 }
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub enum ShinyEnum {
+pub enum Shiny {
     None = 0,
     Star = 1,
     Square = 2,
@@ -122,7 +122,7 @@ pub enum ShinyEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
 #[repr(usize)]
-pub enum EncounterSlotFilterEnum {
+pub enum EncounterSlotFilter {
     #[num_enum(default)]
     Any = 12,
     Slot0 = 0,
@@ -142,7 +142,7 @@ pub enum EncounterSlotFilterEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
 #[repr(usize)]
-pub enum EncounterSlotEnum {
+pub enum EncounterSlot {
     #[num_enum(default)]
     Slot0 = 0,
     Slot1 = 1,
@@ -161,7 +161,7 @@ pub enum EncounterSlotEnum {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, PartialOrd)]
 #[repr(u32)]
-pub enum GenderRatioEnum {
+pub enum GenderRatio {
     #[num_enum(default)]
     NoSetGender = 256,
     Genderless = 255,
@@ -175,7 +175,7 @@ pub enum GenderRatioEnum {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub enum GenderEnum {
+pub enum Gender {
     Genderless = 255,
     Male = 0,
     Female = 254,
@@ -183,7 +183,7 @@ pub enum GenderEnum {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum GenderFilterEnum {
+pub enum GenderFilter {
     Any = 256,
     Male = 0,
     Female = 254,
@@ -191,7 +191,7 @@ pub enum GenderFilterEnum {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub enum IDFilterEnum {
+pub enum IDFilter {
     TID = "TID",
     SID = "SID",
     TSV = "TSV",
@@ -199,25 +199,25 @@ pub enum IDFilterEnum {
     None = "None",
 }
 
-pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatioEnum) -> Option<GenderEnum> {
+pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatio) -> Option<Gender> {
     match gender_ratio {
-        GenderRatioEnum::Male => Some(GenderEnum::Male),
-        GenderRatioEnum::Female => Some(GenderEnum::Female),
-        GenderRatioEnum::Genderless => Some(GenderEnum::Genderless),
+        GenderRatio::Male => Some(Gender::Male),
+        GenderRatio::Female => Some(Gender::Female),
+        GenderRatio::Genderless => Some(Gender::Genderless),
         _ => None,
     }
 }
 
-pub fn get_gender_from_ratio(gender_ratio: &GenderRatioEnum, gender_num: u32) -> GenderEnum {
+pub fn get_gender_from_ratio(gender_ratio: &GenderRatio, gender_num: u32) -> Gender {
     match gender_ratio {
-        GenderRatioEnum::Male => GenderEnum::Male,
-        GenderRatioEnum::Female => GenderEnum::Female,
-        GenderRatioEnum::Genderless => GenderEnum::Genderless,
+        GenderRatio::Male => Gender::Male,
+        GenderRatio::Female => Gender::Female,
+        GenderRatio::Genderless => Gender::Genderless,
         _ => {
             if gender_num < *gender_ratio as u32 {
-                GenderEnum::Female
+                Gender::Female
             } else {
-                GenderEnum::Male
+                Gender::Male
             }
         }
     }

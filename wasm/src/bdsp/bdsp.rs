@@ -7,12 +7,12 @@ use wasm_bindgen::prelude::*;
 
 pub fn generate_bdsp_pokemon(
     mut rng: Xorshift,
-    gender_ratio: enums::GenderRatioEnum,
-    lead: enums::LeadFilterEnum,
+    gender_ratio: enums::GenderRatio,
+    lead: enums::LeadFilter,
 ) -> Pokemonbdsp {
     let encounter_rand = rng.rand_range(0, 100) as u8;
     rng.advance(84);
-    let mut shiny = enums::ShinyEnum::None;
+    let mut shiny = enums::Shiny::None;
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
@@ -21,9 +21,9 @@ pub fn generate_bdsp_pokemon(
     let tsv = pid >> 0x10 ^ pid & 0xFFFF;
     if (psv ^ tsv) < 0x10 {
         if (psv ^ tsv) == 0 {
-            shiny = enums::ShinyEnum::Square
+            shiny = enums::Shiny::Square
         } else {
-            shiny = enums::ShinyEnum::Star
+            shiny = enums::Shiny::Star
         }
     }
 
@@ -45,7 +45,7 @@ pub fn generate_bdsp_pokemon(
     };
 
     let nature;
-    if lead != enums::LeadFilterEnum::Synchronize {
+    if lead != enums::LeadFilter::Synchronize {
         let nature_rand = rng.next();
         nature = nature_rand - (nature_rand / 25) * 25;
     } else {
@@ -63,9 +63,9 @@ pub fn generate_bdsp_pokemon(
         shiny,
         pid,
         ec,
-        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
         ivs,
-        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
         gender,
         encounter,
     }
@@ -73,11 +73,11 @@ pub fn generate_bdsp_pokemon(
 
 pub fn generate_bdsp_pokemon_stationary(
     mut rng: Xorshift,
-    gender_ratio: enums::GenderRatioEnum,
+    gender_ratio: enums::GenderRatio,
     set_ivs: bool,
-    lead: enums::LeadFilterEnum,
+    lead: enums::LeadFilter,
 ) -> PokemonbdspStationary {
-    let mut shiny = enums::ShinyEnum::None;
+    let mut shiny = enums::Shiny::None;
 
     let ec = rng.next();
     let shiny_rand = rng.next();
@@ -87,9 +87,9 @@ pub fn generate_bdsp_pokemon_stationary(
     let tsv = pid >> 0x10 ^ pid & 0xFFFF;
     if (psv ^ tsv) < 0x10 {
         if (psv ^ tsv) == 0 {
-            shiny = enums::ShinyEnum::Square
+            shiny = enums::Shiny::Square
         } else {
-            shiny = enums::ShinyEnum::Star
+            shiny = enums::Shiny::Star
         }
     }
 
@@ -128,7 +128,7 @@ pub fn generate_bdsp_pokemon_stationary(
     };
 
     let nature;
-    if lead != enums::LeadFilterEnum::Synchronize {
+    if lead != enums::LeadFilter::Synchronize {
         let nature_rand = rng.next();
         nature = nature_rand - (nature_rand / 25) * 25;
     } else {
@@ -139,9 +139,9 @@ pub fn generate_bdsp_pokemon_stationary(
         shiny,
         pid,
         ec,
-        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
         ivs,
-        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
         gender,
     }
 }
@@ -149,13 +149,13 @@ pub fn generate_bdsp_pokemon_stationary(
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UndergroundResults {
-    pub shiny_value: enums::ShinyEnum,
+    pub shiny_value: enums::Shiny,
     pub pid: u32,
     pub ec: u32,
-    pub nature: enums::NatureEnum,
+    pub nature: enums::Nature,
     pub ivs: Vec<u32>,
-    pub ability: enums::AbilityEnum,
-    pub gender: enums::GenderEnum,
+    pub ability: enums::Ability,
+    pub gender: enums::Gender,
     pub encounter: u8,
     pub advances: usize,
     pub is_rare: bool,
@@ -163,7 +163,7 @@ pub struct UndergroundResults {
 
 pub fn generate_bdsp_pokemon_underground(
     mut rng: Xorshift,
-    gender_ratio: enums::GenderRatioEnum,
+    gender_ratio: enums::GenderRatio,
     advances: usize,
     tiles: usize,
     large_room: bool,
@@ -222,13 +222,13 @@ pub fn generate_bdsp_pokemon_underground(
 
     fn generate_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::GenderRatioEnum,
+        gender_ratio: enums::GenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> UndergroundResults {
         rng.next(); // slot weight call?
         rng.next(); // level
-        let mut shiny = enums::ShinyEnum::None;
+        let mut shiny = enums::Shiny::None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -240,12 +240,12 @@ pub fn generate_bdsp_pokemon_underground(
             let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
             let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
-                shiny = enums::ShinyEnum::Star;
+                shiny = enums::Shiny::Star;
                 break;
             }
 
             if (psv ^ tsv) == 0 {
-                shiny = enums::ShinyEnum::Square;
+                shiny = enums::Shiny::Square;
                 break;
             }
         }
@@ -281,9 +281,9 @@ pub fn generate_bdsp_pokemon_underground(
             shiny_value: shiny,
             pid,
             ec,
-            nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+            nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
             ivs,
-            ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+            ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
             gender,
             encounter,
             advances,
@@ -293,12 +293,12 @@ pub fn generate_bdsp_pokemon_underground(
 
     fn generate_rare_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::GenderRatioEnum,
+        gender_ratio: enums::GenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> UndergroundResults {
         rng.next(); // level
-        let mut shiny = enums::ShinyEnum::None;
+        let mut shiny = enums::Shiny::None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -310,12 +310,12 @@ pub fn generate_bdsp_pokemon_underground(
             let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
             let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
-                shiny = enums::ShinyEnum::Star;
+                shiny = enums::Shiny::Star;
                 break;
             }
 
             if (psv ^ tsv) == 0 {
-                shiny = enums::ShinyEnum::Square;
+                shiny = enums::Shiny::Square;
                 break;
             }
         }
@@ -350,9 +350,9 @@ pub fn generate_bdsp_pokemon_underground(
             shiny_value: shiny,
             pid,
             ec,
-            nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+            nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
             ivs,
-            ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+            ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
             gender,
             encounter,
             advances,
@@ -381,10 +381,10 @@ pub fn generate_tid(mut rng: Xorshift) -> TIDbdsp {
 
 pub fn generate_bdsp_pokemon_roamer(
     mut seed_rng: Xorshift,
-    gender_ratio: enums::GenderRatioEnum,
+    gender_ratio: enums::GenderRatio,
     set_ivs: bool,
 ) -> PokemonbdspStationary {
-    let mut shiny = enums::ShinyEnum::None;
+    let mut shiny = enums::Shiny::None;
 
     let seed = seed_rng.next();
     let ec = seed;
@@ -398,9 +398,9 @@ pub fn generate_bdsp_pokemon_roamer(
     let tsv = pid >> 0x10 ^ pid & 0xFFFF;
     if (psv ^ tsv) < 0x10 {
         if (psv ^ tsv) == 0 {
-            shiny = enums::ShinyEnum::Square
+            shiny = enums::Shiny::Square
         } else {
-            shiny = enums::ShinyEnum::Star
+            shiny = enums::Shiny::Star
         }
     }
 
@@ -442,9 +442,9 @@ pub fn generate_bdsp_pokemon_roamer(
         shiny,
         pid,
         ec,
-        nature: enums::NatureEnum::try_from(nature).unwrap_or(enums::NatureEnum::Hardy),
+        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
         ivs,
-        ability: enums::AbilityEnum::try_from(ability).unwrap_or(enums::AbilityEnum::Ability0),
+        ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
         gender,
     }
 }
