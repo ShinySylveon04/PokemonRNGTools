@@ -1,5 +1,6 @@
-use super::enums;
-use super::{Pokemonbdsp, PokemonbdspStationary, TIDbdsp, Xoroshiro, Xorshift};
+use crate::enums;
+use crate::rng::{Xoroshiro, Xorshift};
+use crate::{Pokemonbdsp, PokemonbdspStationary, TIDbdsp};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;

@@ -1,5 +1,6 @@
-use super::enums;
-use super::{calculate_shiny_value, check_is_shiny, Pokemon, Xoroshiro};
+use crate::enums;
+use crate::rng::Xoroshiro;
+use crate::{calculate_shiny_value, check_is_shiny, Pokemon};
 use std::convert::TryFrom;
 
 pub fn generate_static_pokemon(

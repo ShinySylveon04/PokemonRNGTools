@@ -4,12 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
-mod xoroshiro;
-pub use xoroshiro::*;
-
-mod xorshift;
-pub use xorshift::*;
-
+mod rng;
 mod bdsp;
 mod enums;
 mod swsh;
@@ -310,7 +305,7 @@ pub fn calculate_pokemon(
     min: u32,
     max: u32,
 ) -> Array {
-    let mut rng = Xoroshiro::from_state(seed1, seed2);
+    let mut rng = rng::Xoroshiro::from_state(seed1, seed2);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResult> = Vec::new();
     let values = min..=max;
@@ -376,7 +371,7 @@ pub fn calculate_pokemon_bdsp(
                 .unwrap_or(enums::EncounterSlotFilterEnum::Slot0)
         })
         .collect();
-    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResultBdsp> = Vec::new();
@@ -446,7 +441,7 @@ pub fn calculate_pokemon_bdsp_stationary(
             enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
         })
         .collect();
-    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
@@ -517,7 +512,7 @@ pub fn calculate_pokemon_bdsp_underground(
             enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
         })
         .collect();
-    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results = Vec::new();
     let values = min..=max;
@@ -564,7 +559,7 @@ pub fn calculate_tid(
     id: Vec<u32>,
     filter_type: enums::IDFilterEnum,
 ) -> JsValue {
-    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     let mut tid_results;
     let mut results: Vec<TIDResult> = Vec::new();
     let values = min..=max;
@@ -620,7 +615,7 @@ pub fn calculate_pokemon_bdsp_roamer(
             enums::NatureFilterEnum::try_from(*nature).unwrap_or(enums::NatureFilterEnum::Hardy)
         })
         .collect();
-    let mut rng = Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
@@ -670,7 +665,7 @@ mod test {
 
     #[test]
     fn should_generate_u64s() {
-        let mut rng = Xoroshiro::new(0x1122334455667788);
+        let mut rng = rng::Xoroshiro::new(0x1122334455667788);
         let expected_results = vec![
             0x93c4e4b97803e1e3,
             0x55484e305249860e,
@@ -781,7 +776,7 @@ mod test {
 
     #[test]
     fn should_generate_u32s() {
-        let mut rng = Xoroshiro::new(0x1122334455667788);
+        let mut rng = rng::Xoroshiro::new(0x1122334455667788);
         let expected_results = vec![
             0x7803e1e3, 0x5249860e, 0x5c97d74f, 0x137d6fb8, 0xffa7d32e, 0x9cafe83c, 0x6703b2a8,
             0x6fa44b86, 0x953f1fdd, 0x98d78970, 0x3a1bec0, 0x4f0daf2c, 0x9549db32, 0x8218596a,
@@ -807,7 +802,7 @@ mod test {
 
     #[test]
     fn should_return_static_square_shiny() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -824,7 +819,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_square_shiny() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -841,7 +836,7 @@ mod test {
 
     #[test]
     fn should_return_static_square_shiny_advances() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -859,7 +854,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_square_shiny_advances() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -877,7 +872,7 @@ mod test {
 
     #[test]
     fn should_return_static_shiny_pid() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -894,7 +889,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_shiny_pid() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -911,7 +906,7 @@ mod test {
 
     #[test]
     fn should_return_static_shiny_ec() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -928,7 +923,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_shiny_ec() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -945,7 +940,7 @@ mod test {
 
     #[test]
     fn should_return_static_shiny_nature() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -962,7 +957,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_shiny_nature() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -979,7 +974,7 @@ mod test {
 
     #[test]
     fn should_return_static_shiny_ability() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
@@ -996,7 +991,7 @@ mod test {
 
     #[test]
     fn should_return_dynamic_shiny_ability() {
-        let mut rng = Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
+        let mut rng = rng::Xoroshiro::from_state(0xe1e16bc81e378a0b, 0xa79a405a9d7f5849);
 
         let mut pokemon_shininess;
 
