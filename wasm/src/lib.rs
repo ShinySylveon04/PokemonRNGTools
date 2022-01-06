@@ -4,9 +4,12 @@ use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
-mod rng;
+extern crate console_error_panic_hook;
+use std::panic;
+
 mod bdsp;
 mod enums;
+mod rng;
 mod swsh;
 
 impl PartialEq<enums::Ability> for enums::AbilityFilter {
@@ -339,56 +342,68 @@ pub fn calculate_pokemon(
     shiny_results.into_iter().map(JsValue::from).collect()
 }
 
-#[wasm_bindgen]
-pub fn calculate_pokemon_bdsp(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    shiny_filter: enums::ShinyFilter,
+#[derive(Deserialize, Serialize)]
+pub struct Settings {
+    nature_filter: Vec<u32>,
+    encounter_filter: Vec<usize>,
+    rng_state: Vec<u32>,
+    delay: usize,
     min: usize,
     max: usize,
-    delay: usize,
-    nature_filter: Vec<u32>,
-    ability_filter: enums::AbilityFilter,
-    encounter_filter: Vec<usize>,
     gender_ratio: enums::GenderRatio,
+    lead: enums::LeadFilter,
+    shiny_filter: enums::ShinyFilter,
+    ability_filter: enums::AbilityFilter,
     gender_filter: enums::GenderFilter,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
-    lead: enums::LeadFilter,
-) -> JsValue {
-    let natures = nature_filter
+}
+
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp(settings: &JsValue) -> JsValue {
+    panic::set_hook(Box::new(console_error_panic_hook::hook));
+    let parsed_settings: Settings = settings.into_serde().unwrap();
+    let natures = parsed_settings
+        .nature_filter
         .iter()
-        .map(|nature| {
-            enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy)
-        })
+        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
-    let encounters = encounter_filter
+    let encounters = parsed_settings
+        .encounter_filter
         .iter()
         .map(|encounter| {
             enums::EncounterSlotFilter::try_from(*encounter)
                 .unwrap_or(enums::EncounterSlotFilter::Slot0)
         })
         .collect();
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    rng.advance(delay);
+    let states: [u32; 4] = [
+        parsed_settings.rng_state[0],
+        parsed_settings.rng_state[1],
+        parsed_settings.rng_state[2],
+        parsed_settings.rng_state[3],
+    ];
+    let mut rng = rng::Xorshift::from_state(states);
+    rng.advance(parsed_settings.delay);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResultBdsp> = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
+    let values = parsed_settings.min..=parsed_settings.max;
+    rng.advance(parsed_settings.min);
     for value in values {
-        pokemon_results = bdsp::generate_bdsp_pokemon(rng.clone(), gender_ratio, lead);
+        pokemon_results = bdsp::generate_bdsp_pokemon(
+            rng.clone(),
+            parsed_settings.gender_ratio,
+            parsed_settings.lead,
+        );
 
         if filter_bdsp(
             &pokemon_results,
-            shiny_filter,
+            parsed_settings.shiny_filter,
             &natures,
-            ability_filter,
+            parsed_settings.ability_filter,
             &encounters,
-            gender_filter,
-            &min_ivs,
-            &max_ivs,
+            parsed_settings.gender_filter.into(),
+            &parsed_settings.min_ivs,
+            &parsed_settings.max_ivs,
         ) {
             let shiny_state = rng.get_state();
             let result = ShinyResultBdsp {
@@ -437,9 +452,7 @@ pub fn calculate_pokemon_bdsp_stationary(
 ) -> JsValue {
     let natures = nature_filter
         .iter()
-        .map(|nature| {
-            enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy)
-        })
+        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -508,9 +521,7 @@ pub fn calculate_pokemon_bdsp_underground(
 ) -> JsValue {
     let natures = nature_filter
         .iter()
-        .map(|nature| {
-            enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy)
-        })
+        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -611,9 +622,7 @@ pub fn calculate_pokemon_bdsp_roamer(
 ) -> JsValue {
     let natures = nature_filter
         .iter()
-        .map(|nature| {
-            enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy)
-        })
+        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);

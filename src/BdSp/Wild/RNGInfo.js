@@ -122,11 +122,11 @@ export const RNGInfo = ({ setState, state }) => {
             id="min"
             label={t('Min Advances')}
             variant="outlined"
-            value={state.min}
+            value={state.min_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
-                min:
+                min_advances:
                   event.target.value.length === 0
                     ? ''
                     : parseInt(event.target.value),
@@ -144,11 +144,11 @@ export const RNGInfo = ({ setState, state }) => {
             id="max"
             label={t('Max Advances')}
             variant="outlined"
-            value={state.max}
+            value={state.max_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
-                max:
+                max_advances:
                   event.target.value.length === 0
                     ? ''
                     : parseInt(event.target.value),
@@ -184,12 +184,12 @@ export const RNGInfo = ({ setState, state }) => {
             <Select
               labelId="lead-type-label"
               id="lead"
-              value={state.lead}
+              value={state.lead_filter}
               label={t('Lead')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  lead: event.target.value,
+                  lead_filter: event.target.value,
                 }))
               }
             >

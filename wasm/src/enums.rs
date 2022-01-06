@@ -1,16 +1,19 @@
 use num_enum::FromPrimitive;
 use serde::{Deserialize, Serialize};
+use serde_repr::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[repr(u32)]
 pub enum LeadFilter {
     None = 0,
     Synchronize = 1,
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[repr(u32)]
 pub enum AbilityFilter {
     Any = 3,
     Ability0 = 0,
@@ -27,7 +30,7 @@ pub enum Ability {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum NatureFilter {
     #[num_enum(default)]
@@ -93,7 +96,8 @@ pub enum Nature {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[repr(u32)]
 pub enum ShinyFilter {
     None = 0,
     Star = 1,
@@ -104,6 +108,7 @@ pub enum ShinyFilter {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(u32)]
 pub enum EncounterFilter {
     Static = 0,
     Dynamic = 1,
@@ -159,7 +164,9 @@ pub enum EncounterSlot {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, PartialOrd)]
+#[derive(
+    Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, PartialOrd, Serialize_repr, Deserialize_repr,
+)]
 #[repr(u32)]
 pub enum GenderRatio {
     #[num_enum(default)]
@@ -174,16 +181,20 @@ pub enum GenderRatio {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize, FromPrimitive)]
+#[repr(u32)]
 pub enum Gender {
+    #[num_enum(default)]
     Genderless = 255,
     Male = 0,
     Female = 254,
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Clone, Copy, Debug, FromPrimitive)]
+#[repr(u32)]
 pub enum GenderFilter {
+    #[num_enum(default)]
     Any = 256,
     Male = 0,
     Female = 254,
