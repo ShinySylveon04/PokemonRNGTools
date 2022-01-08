@@ -1,11 +1,9 @@
+use super::settings::Settings;
 use crate::rng::Xorshift;
 use crate::{enums, rng};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
-
-extern crate console_error_panic_hook;
-use std::panic;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
@@ -101,23 +99,6 @@ fn generate_pokemon(
         gender,
         encounter,
     }
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct Settings {
-    nature_filter: Vec<u32>,
-    encounter_filter: Vec<usize>,
-    rng_state: Vec<u32>,
-    delay: usize,
-    min: usize,
-    max: usize,
-    gender_ratio: enums::GenderRatio,
-    lead: enums::LeadFilter,
-    shiny_filter: enums::ShinyFilter,
-    ability_filter: enums::AbilityFilter,
-    gender_filter: enums::GenderFilter,
-    min_ivs: Vec<u32>,
-    max_ivs: Vec<u32>,
 }
 
 fn filter(

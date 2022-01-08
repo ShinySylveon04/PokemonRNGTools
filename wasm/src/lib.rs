@@ -27,9 +27,9 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
 
 #[wasm_bindgen]
 pub fn get_wild(settings: &JsValue) -> JsValue {
-    let parsed_settings: bdsp::wild::Settings = settings.into_serde().unwrap();
+    let parsed_settings: bdsp::wild::settings::Settings = settings.into_serde().unwrap();
 
-    let results = bdsp::wild::generate_wild(parsed_settings);
+    let results = bdsp::wild::generator::generate_wild(parsed_settings);
 
     JsValue::from_serde(&results).unwrap()
 }
