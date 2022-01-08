@@ -20,6 +20,15 @@ pub enum AbilityFilter {
     Ability1 = 1,
 }
 
+impl PartialEq<Ability> for AbilityFilter {
+    fn eq(&self, other: &Ability) -> bool {
+        match (self, other) {
+            (AbilityFilter::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u32)]
@@ -95,6 +104,15 @@ pub enum Nature {
     Synchronize = 25,
 }
 
+impl PartialEq<Nature> for NatureFilter {
+    fn eq(&self, other: &Nature) -> bool {
+        match (self, other) {
+            (NatureFilter::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
@@ -104,6 +122,20 @@ pub enum ShinyFilter {
     Square = 2,
     Both = 3,
     Any = 4,
+}
+
+impl PartialEq<Shiny> for ShinyFilter {
+    fn eq(&self, other: &Shiny) -> bool {
+        match (self, other) {
+            (ShinyFilter::Star, Shiny::Star) => true,
+            (ShinyFilter::Square, Shiny::Square) => true,
+            (ShinyFilter::None, Shiny::None) => true,
+            (ShinyFilter::Both, Shiny::Square) => true,
+            (ShinyFilter::Both, Shiny::Star) => true,
+            (ShinyFilter::Any, _) => true,
+            (_, _) => false,
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -163,6 +195,15 @@ pub enum EncounterSlot {
     Slot11 = 11,
 }
 
+impl PartialEq<u8> for EncounterSlotFilter {
+    fn eq(&self, other: &u8) -> bool {
+        match (self, other) {
+            (EncounterSlotFilter::Any, _) => true,
+            (_, _) => (*self as u8) == (*other),
+        }
+    }
+}
+
 #[wasm_bindgen]
 #[derive(
     Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, PartialOrd, Serialize_repr, Deserialize_repr,
@@ -198,6 +239,15 @@ pub enum GenderFilter {
     Any = 256,
     Male = 0,
     Female = 254,
+}
+
+impl PartialEq<Gender> for GenderFilter {
+    fn eq(&self, other: &Gender) -> bool {
+        match (self, other) {
+            (GenderFilter::Any, _) => true,
+            (_, _) => (*self as u32) == (*other as u32),
+        }
+    }
 }
 
 #[wasm_bindgen]
