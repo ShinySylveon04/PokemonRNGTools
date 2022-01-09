@@ -156,6 +156,26 @@ pub enum Shiny {
     All = 4,
 }
 
+impl Shiny {
+    pub fn from_xor(xor: u32) -> Self {
+        if xor < 0x10 {
+            return Self::Star;
+        }
+
+        if xor == 0 {
+            return Self::Square;
+        }
+
+        Self::None
+    }
+
+    pub fn from_pid_shiny_rand(pid: u32, shiny_rand: u32) -> Self {
+        let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
+        let tsv = pid >> 0x10 ^ pid & 0xFFFF;
+        Self::from_xor(psv ^ tsv)
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
 #[repr(usize)]
@@ -258,6 +278,13 @@ pub enum IDFilter {
     TSV = "TSV",
     G8TID = "G8TID",
     None = "None",
+}
+
+pub fn get_sync_nature(lead_filter: &LeadFilter) -> Option<Nature> {
+    match lead_filter {
+        LeadFilter::Synchronize => Some(Nature::Synchronize),
+        _ => None,
+    }
 }
 
 pub fn get_set_gender_from_ratio(gender_ratio: &GenderRatio) -> Option<Gender> {

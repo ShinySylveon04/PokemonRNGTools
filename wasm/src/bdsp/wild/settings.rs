@@ -10,7 +10,7 @@ pub struct Settings {
     pub min: usize,
     pub max: usize,
     pub gender_ratio: enums::GenderRatio,
-    pub lead: enums::LeadFilter,
+    pub lead_filter: enums::LeadFilter,
     pub shiny_filter: enums::ShinyFilter,
     pub ability_filter: enums::AbilityFilter,
     pub gender_filter: enums::GenderFilter,
