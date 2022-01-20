@@ -134,3 +134,8 @@ Cargo.lock
 
 # wasm files
 wasm/pkg
+
+# test files
+test.rs
+test.exe
+test
