@@ -133,7 +133,7 @@ pub fn filter_bdsp_stationary(
 }
 
 pub fn filter_bdsp_underground(
-    results: &bdsp::underground::Pokemon,
+    results: &bdsp::underground::generator::Pokemon,
     shiny_filter: enums::ShinyFilter,
     natures: &Vec<enums::NatureFilter>,
     ability_filter: enums::AbilityFilter,
@@ -313,6 +313,7 @@ pub fn calculate_pokemon_bdsp_underground(
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
 ) -> JsValue {
+    init_panic_hook();
     let natures = nature_filter
         .iter()
         .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
@@ -323,7 +324,7 @@ pub fn calculate_pokemon_bdsp_underground(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        let mut result = bdsp::underground::generate_pokemon(
+        let mut result = bdsp::underground::generator::generate_pokemon(
             rng.clone(),
             gender_ratio,
             value,
@@ -348,7 +349,7 @@ pub fn calculate_pokemon_bdsp_underground(
         rng.next();
     }
 
-    let results: Vec<bdsp::underground::Pokemon> = pokemon_results.into_iter().collect();
+    let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }

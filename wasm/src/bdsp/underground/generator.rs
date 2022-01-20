@@ -1,7 +1,7 @@
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(getter_with_clone)]
@@ -14,9 +14,49 @@ pub struct Pokemon {
     pub ivs: Vec<u32>,
     pub ability: enums::Ability,
     pub gender: enums::Gender,
-    pub encounter: u8,
+    pub encounter: u32,
     pub advances: usize,
     pub is_rare: bool,
+}
+
+#[derive(PartialEq, Debug)]
+pub struct PokemonSlot {
+    pub slot: u32,
+    pub poke_type: u8,
+}
+
+pub fn generate_pokemon_slots(rng: &mut Xorshift) -> u8 {
+    let typerates = vec![
+        100, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+    ];
+
+    let summed_typerates = vec![
+        100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
+    ];
+
+    let sum = typerates.iter().sum();
+
+    let typerate_rand = rng.rand_range(0, sum);
+
+    let poke_type = summed_typerates
+        .iter()
+        .position(|rate| typerate_rand < *rate)
+        .unwrap_or(0) as u8;
+    // for first rand use with typerates from ugrandmark typerate table
+
+    poke_type
+}
+
+pub fn generate_size_slots(rng: &mut Xorshift) -> u32 {
+    let mut sizes = vec![0, 0, 0, 1, 1, 1, 2, 2, 2];
+
+    let size_rand = rng.rand_range(0, sizes.len().try_into().unwrap());
+
+    let slot = sizes[size_rand as usize];
+
+    sizes.remove(size_rand.try_into().unwrap());
+
+    slot
 }
 
 pub fn generate_pokemon(
@@ -62,7 +102,31 @@ pub fn generate_pokemon(
         poke_num = poke_num - 1;
     }
 
-    rng.advance(poke_num * 2);
+    // rng.advance(poke_num * 2);
+
+    // let mut poke_results: Vec<PokemonSlot> = Vec::new();
+
+    let mut test_results: Vec<u32> = Vec::new();
+
+    for _i in 0..poke_num {
+        let poke_type = generate_pokemon_slots(&mut rng);
+
+        test_results.push(poke_type.into())
+
+        // let result = PokemonSlot { poke_type, slot };
+
+        // poke_results.push(result)
+    }
+
+    for _i in 0..poke_num {
+        let slot = generate_size_slots(&mut rng);
+
+        test_results.push(slot)
+    }
+
+    // assert_ne!(test_results, test_results);
+
+    // assert_ne!(poke_results, poke_results);
 
     let values = 0..poke_num;
 
@@ -84,7 +148,7 @@ pub fn generate_pokemon(
         advances: usize,
         diglett_boost: bool,
     ) -> Pokemon {
-        rng.next(); // slot weight call?
+        let encounter = rng.rand_range(0, 765); // slot weight call?
         rng.next(); // level
         let mut shiny = enums::Shiny::None;
         let ec = rng.next();
@@ -133,7 +197,7 @@ pub fn generate_pokemon(
         rng.next(); // item
         rng.next(); // egg move
                     // randNum between 0 and max egg moves, then use as index for egg move
-        let encounter = 0;
+                    // let encounter = 0;
 
         Pokemon {
             shiny_value: shiny,

@@ -52,10 +52,10 @@ export function Wild() {
   const { t } = useTranslation();
   const [searching, setSearching] = React.useState(false);
   const [state, setState] = React.useState({
-    state0: 12345678,
-    state1: 12345678,
-    state2: 12345678,
-    state3: 12345678,
+    state0: '',
+    state1: '',
+    state2: '',
+    state3: '',
     shiny_filter: 4,
     min_advances: 0,
     max_advances: 10000,
