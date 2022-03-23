@@ -14,6 +14,18 @@ const NavItems = ({ handleDrawerClose, location }) => (
   <Box sx={{ overflow: 'auto' }}>
     <List>
       <ListItem>
+        <ListItemText primary="Ruby & Sapphire" />
+      </ListItem>
+      <ListItemButton
+        selected={location === '/rs'}
+        onClick={handleDrawerClose}
+        component={Link}
+        to="rs"
+        sx={{ pl: 4 }}
+      >
+        <ListItemText primary="Wild" />
+      </ListItemButton>
+      <ListItem>
         <ListItemText primary="Sword & Shield" />
       </ListItem>
       <ListItemButton
