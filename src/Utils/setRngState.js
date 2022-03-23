@@ -1,5 +1,5 @@
 export const setRngStateFromClipboard = (event, setState) => {
-  const text = event.clipboardData.getData('Text').split('\n');
+  const text = event.clipboardData.getData('Text').split('\n').filter(line => line.trim());
 
   if (text.length === 4) {
     setState(state => ({
