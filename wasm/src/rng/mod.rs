@@ -1,3 +1,6 @@
+mod lcrng;
+pub use lcrng::*;
+
 mod xoroshiro;
 pub use xoroshiro::*;
 
