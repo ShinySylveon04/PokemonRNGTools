@@ -24,4 +24,4 @@ wasm-bindgen-test = "0.2"
 num_enum = "0.5"
 js-sys = "0.3.55"
 console_error_panic_hook = "0.1.7"
-bdsp_ug_generator = {git = "https://github.com/SteveCookTU/bdsp_ug_generator.git", rev = "a4c9ca0"}
+bdsp_ug_generator = {git = "https://github.com/SteveCookTU/bdsp_ug_generator.git", rev = "4a699ce"}

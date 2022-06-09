@@ -307,7 +307,7 @@ pub fn calculate_pokemon_bdsp_underground(
     _encounter_filter: enums::EncounterSlotFilter,
     gender_filter: enums::GenderFilter,
     _tiles: usize,
-    _diglett_boost: bool,
+    diglett_boost: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
     version: u8,
@@ -400,8 +400,15 @@ pub fn calculate_pokemon_bdsp_underground(
     let mut rng = bdsp_ug_generator::xorshift::XorShift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     rng.advance(min);
-    let results =
-        bdsp_ug_generator::run_results(max as u32, rng, version, story_flag, room, filter);
+    let results = bdsp_ug_generator::run_results(
+        max as u32,
+        rng,
+        version,
+        story_flag,
+        room,
+        filter,
+        diglett_boost,
+    );
 
     let results: Vec<bdsp::underground::generator::Pokemon> = results
         .into_iter()
