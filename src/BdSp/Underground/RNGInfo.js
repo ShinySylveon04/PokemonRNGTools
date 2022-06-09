@@ -186,44 +186,82 @@ export const RNGInfo = ({ setState, state }) => {
           />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <TextField
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            fullWidth
-            id="tiles"
-            label={t('Statue Tiles')}
-            variant="outlined"
-            value={state.tiles}
-            onChange={event =>
-              setState(state => ({
-                ...state,
-                tiles:
-                  event.target.value.length === 0
-                    ? ''
-                    : parseInt(event.target.value),
-              }))
-            }
-          />
-        </Grid>
-        <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="room-label">{t('Room Size')}</InputLabel>
+            <InputLabel id="story-flag-label">{t('Story Flag')}</InputLabel>
             <Select
-              labelId="room-label"
-              id="room"
-              value={state.large_room}
-              label={t('Room Size')}
+              labelId="story-flag-label"
+              id="story-flag"
+              value={state.story_flag}
+              label={t('Story Flag')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  large_room: event.target.value,
+                  story_flag: event.target.value,
                 }))
               }
             >
-              <MenuItem value={false}>{t('Small')}</MenuItem>
-              <MenuItem value={true}>{t('Large')}</MenuItem>
+              <MenuItem value={1}>{t('Underground Unlocked')}</MenuItem>
+              <MenuItem value={2}>{t('Strength Obtained')}</MenuItem>
+              <MenuItem value={3}>{t('Defog Obtained')}</MenuItem>
+              <MenuItem value={4}>{t('7 Badges')}</MenuItem>
+              <MenuItem value={5}>{t('Waterfall Obtained')}</MenuItem>
+              <MenuItem value={6}>{t('National Dex')}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="room-label">{t('Game')}</InputLabel>
+            <Select
+              labelId="game-label"
+              id="game"
+              value={state.version}
+              label={t('Game')}
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  version: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={2}>{t('Brilliant Diamond')}</MenuItem>
+              <MenuItem value={3}>{t('Shining Pearl')}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="room-label">{t('Room')}</InputLabel>
+            <Select
+              labelId="room-label"
+              id="room"
+              value={state.room}
+              label={t('Room')}
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  room: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={2}>{t('Spacious Cave')}</MenuItem>
+              <MenuItem value={3}>{t('Grassland Cave')}</MenuItem>
+              <MenuItem value={4}>{t('Fountainspring Cave')}</MenuItem>
+              <MenuItem value={5}>{t('Rocky Cave')}</MenuItem>
+              <MenuItem value={6}>{t('Volcanic Cave')}</MenuItem>
+              <MenuItem value={7}>{t('Swampy Cave')}</MenuItem>
+              <MenuItem value={8}>{t('Dazzling Cave')}</MenuItem>
+              <MenuItem value={9}>{t('Whiteout Cave')}</MenuItem>
+              <MenuItem value={10}>{t('Icy Cave')}</MenuItem>
+              <MenuItem value={11}>{t('Riverbank Cave')}</MenuItem>
+              <MenuItem value={12}>{t('Sandsear Cave')}</MenuItem>
+              <MenuItem value={13}>{t('Still Water Cavern')}</MenuItem>
+              <MenuItem value={14}>{t('Sunlit Cavern')}</MenuItem>
+              <MenuItem value={15}>{t('Big Bluff Cavern')}</MenuItem>
+              <MenuItem value={16}>{t('Stargleam Cavern')}</MenuItem>
+              <MenuItem value={17}>{t('Glacial Cavern')}</MenuItem>
+              <MenuItem value={18}>{t('Bogsunk Cavern')}</MenuItem>
+              <MenuItem value={19}>{t('Typhlo Cavern')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
