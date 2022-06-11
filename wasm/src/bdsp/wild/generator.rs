@@ -18,7 +18,7 @@ pub struct Pokemon {
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
     pub state0: u32,
     pub state1: u32,
@@ -149,7 +149,7 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
     let values = settings.min..=settings.max;
     rng.advance(settings.min);
     for value in values {
-        let generate_result = generate_pokemon(rng.clone(), &settings);
+        let generate_result = generate_pokemon(rng, &settings);
         if let Some(pokemon) = generate_result {
             let rng_state = rng.get_state();
             let result = Result {
