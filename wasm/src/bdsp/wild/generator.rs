@@ -145,18 +145,18 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
     ];
     let mut rng = rng::Xorshift::from_state(states);
     rng.advance(settings.delay);
-    let mut shiny_results: Vec<Result> = Vec::new();
+    let mut results: Vec<Result> = Vec::new();
     let values = settings.min..=settings.max;
     rng.advance(settings.min);
     for value in values {
         let generate_result = generate_pokemon(rng.clone(), &settings);
         if let Some(pokemon) = generate_result {
-            let shiny_state = rng.get_state();
+            let rng_state = rng.get_state();
             let result = Result {
-                state0: shiny_state[0],
-                state1: shiny_state[1],
-                state2: shiny_state[2],
-                state3: shiny_state[3],
+                state0: rng_state[0],
+                state1: rng_state[1],
+                state2: rng_state[2],
+                state3: rng_state[3],
                 advances: value,
                 pid: pokemon.pid,
                 shiny_value: pokemon.shiny,
@@ -167,13 +167,11 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
                 gender: pokemon.gender,
                 encounter: pokemon.encounter,
             };
-            shiny_results.push(result);
+            results.push(result);
         }
 
         rng.next();
     }
 
-    let results: Vec<Result> = shiny_results.into_iter().collect();
-
-    results
+    results.into_iter().collect()
 }
