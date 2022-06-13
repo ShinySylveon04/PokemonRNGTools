@@ -252,7 +252,7 @@ pub enum Gender {
 }
 
 #[wasm_bindgen]
-#[derive(Serialize_repr, Deserialize_repr, PartialEq, Clone, Copy, Debug, FromPrimitive)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Clone, Copy, Debug, FromPrimitive)]
 #[repr(u32)]
 pub enum GenderFilter {
     #[num_enum(default)]

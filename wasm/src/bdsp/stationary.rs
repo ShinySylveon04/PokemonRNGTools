@@ -70,13 +70,12 @@ pub fn generate_pokemon(
         }
     };
 
-    let nature;
-    if lead != enums::LeadFilter::Synchronize {
+    let nature = if lead != enums::LeadFilter::Synchronize {
         let nature_rand = rng.next();
-        nature = nature_rand - (nature_rand / 25) * 25;
+        nature_rand - (nature_rand / 25) * 25
     } else {
-        nature = 25;
-    }
+        25
+    };
 
     Pokemon {
         shiny,
