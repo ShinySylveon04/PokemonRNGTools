@@ -1,4 +1,4 @@
 import { expose } from 'comlink';
-import { calculate_tid } from '../../../../wasm/Cargo.toml';
+import { get_bdsp_tid } from '../../../../wasm/Cargo.toml';
 
-expose(calculate_tid);
+expose(get_bdsp_tid);
