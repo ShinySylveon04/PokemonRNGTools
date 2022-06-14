@@ -64,34 +64,26 @@ pub fn calculate_tid(mut rng: Xorshift, settings: &Settings) -> Option<Tid> {
     let sidtid = rng.next();
     let tid = sidtid & 0xFFFF;
 
-    if settings.filter_type == enums::IDFilter::TID {
-        if settings.id.iter().all(|id| *id != tid) {
-            return None;
-        }
+    if settings.filter_type == enums::IDFilter::TID && settings.id.iter().all(|id| *id != tid) {
+        return None;
     };
 
     let sid = sidtid >> 0x10;
 
-    if settings.filter_type == enums::IDFilter::SID {
-        if settings.id.iter().all(|id| *id != sid) {
-            return None;
-        }
+    if settings.filter_type == enums::IDFilter::SID && settings.id.iter().all(|id| *id != sid) {
+        return None;
     };
 
     let tsv = ((tid ^ sid) >> 4) as u32;
 
-    if settings.filter_type == enums::IDFilter::TSV {
-        if settings.id.iter().all(|id| *id != tsv) {
-            return None;
-        }
+    if settings.filter_type == enums::IDFilter::TSV && settings.id.iter().all(|id| *id != tsv) {
+        return None;
     };
 
     let g8tid = sidtid % 1000000;
 
-    if settings.filter_type == enums::IDFilter::G8TID {
-        if settings.id.iter().all(|id| *id != g8tid) {
-            return None;
-        }
+    if settings.filter_type == enums::IDFilter::G8TID && settings.id.iter().all(|id| *id != g8tid) {
+        return None;
     };
 
     Some(Tid {
