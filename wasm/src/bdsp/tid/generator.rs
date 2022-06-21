@@ -14,7 +14,6 @@ pub struct Tid {
     pub sid: u16,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
     pub state0: u32,

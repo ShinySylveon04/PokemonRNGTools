@@ -13,6 +13,41 @@ import { Results } from './Results';
 
 const calculatePokemon = wrap(new Worker('./workers/getResults.js'));
 
+const formatSettings = state => {
+  const settings = {
+    shiny_filter: state.shiny_filter,
+    nature_filter: state.nature_filter,
+    ability_filter: state.ability_filter,
+    gender_ratio: state.gender_ratio,
+    gender_filter: state.gender_filter,
+    lead_filter: state.lead_filter,
+    min_ivs: [
+      parseInt(state.minIVs.hp),
+      parseInt(state.minIVs.atk),
+      parseInt(state.minIVs.def),
+      parseInt(state.minIVs.spa),
+      parseInt(state.minIVs.spd),
+      parseInt(state.minIVs.spe),
+    ],
+    max_ivs: [
+      parseInt(state.maxIVs.hp),
+      parseInt(state.maxIVs.atk),
+      parseInt(state.maxIVs.def),
+      parseInt(state.maxIVs.spa),
+      parseInt(state.maxIVs.spd),
+      parseInt(state.maxIVs.spe),
+    ],
+    rng_state: [state.state0, state.state1, state.state2, state.state3].map(
+      num => parseInt(num, 16),
+    ),
+    set_ivs: state.set_ivs,
+    min: state.min_advances,
+    max: state.max_advances,
+    delay: state.delay,
+  };
+  return settings;
+};
+
 export function Stationary() {
   const { t } = useTranslation();
 
@@ -22,18 +57,18 @@ export function Stationary() {
     state1: '',
     state2: '',
     state3: '',
-    shiny: 4,
+    shiny_filter: 4,
     min: 0,
     max: 10000,
     delay: 64,
-    nature: [25],
-    ability: 3,
+    nature_filter: [25],
+    ability_filter: 3,
     genderRatio: 255,
-    gender: 256,
+    gender_filter: 256,
     set_ivs: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-    lead: 0,
+    lead_filter: 0,
   });
 
   const [results, setResults] = React.useState([
@@ -51,62 +86,14 @@ export function Stationary() {
     },
   ]);
 
-  const {
-    state0,
-    state1,
-    state2,
-    state3,
-    shiny,
-    min,
-    max,
-    delay,
-    nature,
-    ability,
-    genderRatio,
-    gender,
-    set_ivs,
-    minIVs,
-    maxIVs,
-    lead,
-  } = state;
+  const settings = formatSettings(state);
 
   const handleSubmit = event => {
     event.preventDefault();
 
     setSearching(true);
 
-    return calculatePokemon(
-      parseInt(state0, 16),
-      parseInt(state1, 16),
-      parseInt(state2, 16),
-      parseInt(state3, 16),
-      shiny,
-      min,
-      max,
-      delay,
-      nature,
-      ability,
-      genderRatio,
-      gender,
-      set_ivs,
-      [
-        parseInt(minIVs.hp),
-        parseInt(minIVs.atk),
-        parseInt(minIVs.def),
-        parseInt(minIVs.spa),
-        parseInt(minIVs.spd),
-        parseInt(minIVs.spe),
-      ],
-      [
-        parseInt(maxIVs.hp),
-        parseInt(maxIVs.atk),
-        parseInt(maxIVs.def),
-        parseInt(maxIVs.spa),
-        parseInt(maxIVs.spd),
-        parseInt(maxIVs.spe),
-      ],
-      lead,
-    ).then(data => {
+    return calculatePokemon(settings).then(data => {
       setResults(data), setSearching(false);
     });
   };

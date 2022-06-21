@@ -191,12 +191,12 @@ export const RNGInfo = ({ setState, state }) => {
             <Select
               labelId="lead-type-label"
               id="lead"
-              value={state.lead}
+              value={state.lead_filter}
               label={t('Lead')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  lead: event.target.value,
+                  lead_filter: event.target.value,
                 }))
               }
             >

@@ -1,6 +1,6 @@
 #![feature(iter_order_by)]
+use bdsp::stationary::generator::Result;
 use js_sys::Array;
-use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
@@ -45,6 +45,16 @@ pub fn get_bdsp_tid(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn get_bdsp_stationary(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::stationary::settings::Settings = settings.into_serde().unwrap();
+
+    let results = bdsp::stationary::generator::generate_stationary(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: enums::Shiny,
@@ -66,23 +76,6 @@ pub struct ShinyResult {
     pub ability: enums::Ability,
 }
 
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ShinyResultBdspStationary {
-    pub state0: u32,
-    pub state1: u32,
-    pub state2: u32,
-    pub state3: u32,
-    pub advances: usize,
-    pub shiny_value: enums::Shiny,
-    pub pid: u32,
-    pub ec: u32,
-    pub nature: enums::Nature,
-    pub ivs: Vec<u32>,
-    pub ability: enums::Ability,
-    pub gender: enums::Gender,
-}
-
 pub fn filter(
     results: Pokemon,
     shiny_filter: enums::ShinyFilter,
@@ -92,29 +85,6 @@ pub fn filter(
     shiny_filter == results.shiny_type
         && nature_filter == results.nature
         && ability_filter == results.ability
-}
-
-pub fn filter_bdsp_stationary(
-    results: &bdsp::stationary::Pokemon,
-    shiny_filter: enums::ShinyFilter,
-    natures: &[enums::NatureFilter],
-    ability_filter: enums::AbilityFilter,
-    gender_filter: enums::GenderFilter,
-    min_ivs: &Vec<u32>,
-    max_ivs: &Vec<u32>,
-) -> bool {
-    return ability_filter == results.ability
-        && natures.iter().any(|nature| *nature == results.nature)
-        && gender_filter == results.gender
-        && shiny_filter == results.shiny
-        && results
-            .ivs
-            .iter()
-            .eq_by(min_ivs, |&iv, &min_iv| iv >= min_iv)
-        && results
-            .ivs
-            .iter()
-            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
 }
 
 pub fn filter_bdsp_underground(
@@ -186,72 +156,6 @@ pub fn calculate_pokemon(
     }
 
     shiny_results.into_iter().map(JsValue::from).collect()
-}
-
-#[wasm_bindgen]
-pub fn calculate_pokemon_bdsp_stationary(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    shiny_filter: enums::ShinyFilter,
-    min: usize,
-    max: usize,
-    delay: usize,
-    nature_filter: Vec<u32>,
-    ability_filter: enums::AbilityFilter,
-    gender_ratio: enums::GenderRatio,
-    gender_filter: enums::GenderFilter,
-    set_ivs: bool,
-    min_ivs: Vec<u32>,
-    max_ivs: Vec<u32>,
-    lead: enums::LeadFilter,
-) -> JsValue {
-    let natures: Vec<enums::NatureFilter> = nature_filter
-        .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
-        .collect();
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    rng.advance(delay);
-    let mut pokemon_results;
-    let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
-    for value in values {
-        pokemon_results = bdsp::stationary::generate_pokemon(rng, gender_ratio, set_ivs, lead);
-
-        if filter_bdsp_stationary(
-            &pokemon_results,
-            shiny_filter,
-            &natures,
-            ability_filter,
-            gender_filter,
-            &min_ivs,
-            &max_ivs,
-        ) {
-            let shiny_state = rng.get_state();
-            let result = ShinyResultBdspStationary {
-                state0: shiny_state[0],
-                state1: shiny_state[1],
-                state2: shiny_state[2],
-                state3: shiny_state[3],
-                advances: value,
-                pid: pokemon_results.pid,
-                shiny_value: pokemon_results.shiny,
-                ec: pokemon_results.ec,
-                nature: pokemon_results.nature,
-                ivs: pokemon_results.ivs,
-                ability: pokemon_results.ability,
-                gender: pokemon_results.gender,
-            };
-            shiny_results.push(result);
-        }
-        rng.next();
-    }
-
-    let results: Vec<ShinyResultBdspStationary> = shiny_results.into_iter().collect();
-
-    JsValue::from_serde(&results).unwrap()
 }
 
 #[wasm_bindgen]
@@ -341,42 +245,33 @@ pub fn calculate_pokemon_bdsp_roamer(
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results;
-    let mut shiny_results: Vec<ShinyResultBdspStationary> = Vec::new();
+    let mut shiny_results: Vec<Result> = Vec::new();
     let values = min..=max;
     rng.advance(min);
     for value in values {
         pokemon_results = bdsp::roamer::generate_pokemon(rng, gender_ratio, set_ivs);
 
-        if filter_bdsp_stationary(
-            &pokemon_results,
-            shiny_filter,
-            &natures,
-            ability_filter,
-            gender_filter,
-            &min_ivs,
-            &max_ivs,
-        ) {
-            let shiny_state = rng.get_state();
-            let result = ShinyResultBdspStationary {
-                state0: shiny_state[0],
-                state1: shiny_state[1],
-                state2: shiny_state[2],
-                state3: shiny_state[3],
-                advances: value,
-                pid: pokemon_results.pid,
-                shiny_value: pokemon_results.shiny,
-                ec: pokemon_results.ec,
-                nature: pokemon_results.nature,
-                ivs: pokemon_results.ivs,
-                ability: pokemon_results.ability,
-                gender: pokemon_results.gender,
-            };
-            shiny_results.push(result);
-        }
+        let shiny_state = rng.get_state();
+        let result = Result {
+            state0: shiny_state[0],
+            state1: shiny_state[1],
+            state2: shiny_state[2],
+            state3: shiny_state[3],
+            advances: value,
+            pid: pokemon_results.pid,
+            shiny_value: pokemon_results.shiny,
+            ec: pokemon_results.ec,
+            nature: pokemon_results.nature,
+            ivs: pokemon_results.ivs,
+            ability: pokemon_results.ability,
+            gender: pokemon_results.gender,
+        };
+        shiny_results.push(result);
+
         rng.next();
     }
 
-    let results: Vec<ShinyResultBdspStationary> = shiny_results.into_iter().collect();
+    let results: Vec<Result> = shiny_results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }

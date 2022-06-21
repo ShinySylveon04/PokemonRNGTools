@@ -2,11 +2,13 @@ use crate::enums;
 use crate::rng::{Xoroshiro, Xorshift};
 use std::convert::TryFrom;
 
+use crate::bdsp::stationary::generator::Pokemon;
+
 pub fn generate_pokemon(
     mut seed_rng: Xorshift,
     gender_ratio: enums::GenderRatio,
     set_ivs: bool,
-) -> super::stationary::Pokemon {
+) -> Pokemon {
     let mut shiny = enums::Shiny::None;
 
     let seed = seed_rng.next();
@@ -61,7 +63,7 @@ pub fn generate_pokemon(
 
     let nature = rng.next_bdsp() % 25;
 
-    super::stationary::Pokemon {
+    Pokemon {
         shiny,
         pid,
         ec,
