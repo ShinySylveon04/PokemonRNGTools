@@ -3,7 +3,6 @@ use crate::rng::Xorshift;
 use crate::{enums, rng};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
-use wasm_bindgen::prelude::*;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
@@ -17,7 +16,6 @@ pub struct Pokemon {
     pub encounter: u8,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
     pub state0: u32,

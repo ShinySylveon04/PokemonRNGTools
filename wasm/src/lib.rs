@@ -35,6 +35,16 @@ pub fn get_wild(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn get_bdsp_tid(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::tid::settings::Settings = settings.into_serde().unwrap();
+
+    let results = bdsp::tid::generator::generate_tid(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: enums::Shiny,
@@ -71,21 +81,6 @@ pub struct ShinyResultBdspStationary {
     pub ivs: Vec<u32>,
     pub ability: enums::Ability,
     pub gender: enums::Gender,
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TIDResult {
-    pub state0: u32,
-    pub state1: u32,
-    pub state2: u32,
-    pub state3: u32,
-    pub advances: usize,
-    pub tid: u16,
-    pub tsv: u16,
-    pub g8tid: u32,
-    pub sid: u16,
-    pub filter_type: enums::IDFilter,
 }
 
 pub fn filter(
@@ -143,23 +138,6 @@ pub fn filter_bdsp_underground(
             .ivs
             .iter()
             .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
-}
-
-pub fn filter_tid(results: &bdsp::tid::Tid, id: &[u32], filter_type: enums::IDFilter) -> bool {
-    if filter_type == enums::IDFilter::None {
-        true
-    } else {
-        let filter_id = match filter_type {
-            enums::IDFilter::G8TID => results.g8tid,
-            enums::IDFilter::SID => results.sid as u32,
-            enums::IDFilter::TID => results.tid as u32,
-            enums::IDFilter::TSV => results.tsv as u32,
-            enums::IDFilter::None => 0, // shouldn't hit this value because of if above
-            _ => 0,
-        };
-
-        id.contains(&filter_id)
-    }
 }
 
 #[wasm_bindgen]
@@ -334,49 +312,6 @@ pub fn calculate_pokemon_bdsp_underground(
     }
 
     let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn calculate_tid(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    min: usize,
-    max: usize,
-    id: Vec<u32>,
-    filter_type: enums::IDFilter,
-) -> JsValue {
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    let mut tid_results;
-    let mut results: Vec<TIDResult> = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
-    for value in values {
-        tid_results = bdsp::tid::generate_tid(rng);
-
-        if filter_tid(&tid_results, &id, filter_type) {
-            let result_state = rng.get_state();
-            let result = TIDResult {
-                state0: result_state[0],
-                state1: result_state[1],
-                state2: result_state[2],
-                state3: result_state[3],
-                advances: value,
-                tid: tid_results.tid,
-                tsv: tid_results.tsv,
-                g8tid: tid_results.g8tid,
-                sid: tid_results.sid,
-                filter_type,
-            };
-            results.push(result);
-        }
-        rng.next();
-    }
-
-    let results: Vec<TIDResult> = results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }
