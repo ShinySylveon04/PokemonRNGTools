@@ -4,7 +4,6 @@ use crate::bdsp::tid::settings::Settings;
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
-use wasm_bindgen::prelude::*;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Tid {

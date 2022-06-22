@@ -1,5 +1,4 @@
 #![feature(iter_order_by)]
-use bdsp::stationary::generator::Result;
 use js_sys::Array;
 use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
@@ -216,62 +215,6 @@ pub fn calculate_pokemon_bdsp_underground(
     }
 
     let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn calculate_pokemon_bdsp_roamer(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    shiny_filter: enums::ShinyFilter,
-    min: usize,
-    max: usize,
-    delay: usize,
-    nature_filter: Vec<u32>,
-    ability_filter: enums::AbilityFilter,
-    gender_ratio: enums::GenderRatio,
-    gender_filter: enums::GenderFilter,
-    set_ivs: bool,
-    min_ivs: Vec<u32>,
-    max_ivs: Vec<u32>,
-) -> JsValue {
-    let natures: Vec<enums::NatureFilter> = nature_filter
-        .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
-        .collect();
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    rng.advance(delay);
-    let mut pokemon_results;
-    let mut shiny_results: Vec<Result> = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
-    for value in values {
-        pokemon_results = bdsp::roamer::generate_pokemon(rng, gender_ratio, set_ivs);
-
-        let shiny_state = rng.get_state();
-        let result = Result {
-            state0: shiny_state[0],
-            state1: shiny_state[1],
-            state2: shiny_state[2],
-            state3: shiny_state[3],
-            advances: value,
-            pid: pokemon_results.pid,
-            shiny_value: pokemon_results.shiny,
-            ec: pokemon_results.ec,
-            nature: pokemon_results.nature,
-            ivs: pokemon_results.ivs,
-            ability: pokemon_results.ability,
-            gender: pokemon_results.gender,
-        };
-        shiny_results.push(result);
-
-        rng.next();
-    }
-
-    let results: Vec<Result> = shiny_results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }

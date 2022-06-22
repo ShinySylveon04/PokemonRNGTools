@@ -1,4 +1,5 @@
 use super::settings::Settings;
+use crate::bdsp::roamer;
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
@@ -36,8 +37,14 @@ pub fn generate_stationary(settings: Settings) -> Vec<Result> {
     let values = settings.min..=settings.max;
     rng.advance(settings.min);
 
+    let is_roamer = settings.is_roamer;
+
     for value in values {
-        let generate_result = generate_pokemon(rng, &settings);
+        let generate_result = match is_roamer {
+            true => roamer::generate_pokemon(rng, &settings),
+            false => generate_pokemon(rng, &settings),
+        };
+        // let generate_result = generate_pokemon(rng, &settings);
 
         if let Some(pokemon) = generate_result {
             let rng_state = rng.get_state();
@@ -192,6 +199,7 @@ mod test {
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
             set_ivs: false,
+            is_roamer: false,
         };
 
         let expected_results = vec![
@@ -253,6 +261,7 @@ mod test {
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
             set_ivs: false,
+            is_roamer: false,
         };
 
         let expected_results = Result {

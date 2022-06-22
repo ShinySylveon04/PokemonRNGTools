@@ -16,4 +16,5 @@ pub struct Settings {
     pub min_ivs: Vec<u32>,
     pub max_ivs: Vec<u32>,
     pub lead_filter: enums::LeadFilter,
+    pub is_roamer: bool,
 }
