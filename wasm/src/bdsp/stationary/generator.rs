@@ -37,14 +37,11 @@ pub fn generate_stationary(settings: Settings) -> Vec<Result> {
     let values = settings.min..=settings.max;
     rng.advance(settings.min);
 
-    let is_roamer = settings.is_roamer;
-
     for value in values {
-        let generate_result = match is_roamer {
+        let generate_result = match settings.is_roamer {
             true => roamer::generate_pokemon(rng, &settings),
             false => generate_pokemon(rng, &settings),
         };
-        // let generate_result = generate_pokemon(rng, &settings);
 
         if let Some(pokemon) = generate_result {
             let rng_state = rng.get_state();
