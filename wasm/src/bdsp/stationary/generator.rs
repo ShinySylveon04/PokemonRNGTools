@@ -243,6 +243,69 @@ mod test {
     }
 
     #[test]
+    fn should_generate_pokemon_with_ivs() {
+        let mut rng = Xorshift::from_state([1, 2, 3, 4]);
+        let settings = Settings {
+            nature_filter: vec![25],
+            rng_state: vec![1, 2, 3, 4],
+            delay: 0,
+            min: 0,
+            max: 10,
+            gender_ratio: enums::GenderRatio::Genderless,
+            lead_filter: enums::LeadFilter::None,
+            shiny_filter: enums::ShinyFilter::None,
+            ability_filter: enums::AbilityFilter::Any,
+            gender_filter: enums::GenderFilter::Any,
+            min_ivs: vec![0, 0, 0, 0, 0, 0],
+            max_ivs: vec![31, 31, 31, 31, 31, 31],
+            set_ivs: true,
+            is_roamer: false,
+        };
+
+        let expected_results = vec![
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 2147483652,
+                ec: 2147485709,
+                nature: enums::Nature::Lax,
+                ivs: vec![31, 30, 31, 11, 25, 31],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Genderless,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 2147491872,
+                ec: 2147489823,
+                nature: enums::Nature::Lax,
+                ivs: vec![31, 30, 31, 11, 25, 31],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Genderless,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 2151678029,
+                ec: 2147483652,
+                nature: enums::Nature::Hasty,
+                ivs: vec![31, 11, 31, 25, 31, 15],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Genderless,
+            },
+        ];
+
+        for (advance, expected_result) in expected_results.iter().enumerate() {
+            let result = generate_pokemon(rng.clone(), &settings);
+
+            assert_eq!(
+                result.as_ref(),
+                Some(expected_result),
+                "Mismatch on advance {}",
+                advance
+            );
+            rng.next();
+        }
+    }
+
+    #[test]
     fn should_filter_pokemon() {
         let settings = Settings {
             nature_filter: vec![25],
