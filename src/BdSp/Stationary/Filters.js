@@ -146,12 +146,12 @@ export const Filters = ({ setState, state }) => {
             <Select
               labelId="genderRatio-label"
               id="genderRatio"
-              value={state.genderRatio}
+              value={state.gender_ratio}
               label={t('Gender Ratio')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  genderRatio: event.target.value,
+                  gender_ratio: event.target.value,
                 }))
               }
             >

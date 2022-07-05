@@ -44,6 +44,7 @@ const formatSettings = state => {
     min: state.min_advances,
     max: state.max_advances,
     delay: state.delay,
+    is_roamer: state.is_roamer,
   };
   return settings;
 };
@@ -58,17 +59,18 @@ export function Stationary() {
     state2: '',
     state3: '',
     shiny_filter: 4,
-    min: 0,
-    max: 10000,
+    min_advances: 0,
+    max_advances: 10000,
     delay: 64,
     nature_filter: [25],
     ability_filter: 3,
-    genderRatio: 255,
+    gender_ratio: 255,
     gender_filter: 256,
     set_ivs: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
     lead_filter: 0,
+    is_roamer: false,
   });
 
   const [results, setResults] = React.useState([

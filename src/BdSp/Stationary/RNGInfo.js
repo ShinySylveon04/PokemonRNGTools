@@ -17,10 +17,16 @@ import { setRngStateFromClipboard } from '../../Utils/setRngState';
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
 
-  const [checked, setChecked] = React.useState(false);
-  const handleChange = event => {
+  const [ivsChecked, setIVsChecked] = React.useState(false);
+  const [roamerChecked, setRoamerChecked] = React.useState(false);
+  const handleChangeIVs = event => {
     setState({ ...state, set_ivs: event.target.checked });
-    setChecked(event.target.checked);
+    setIVsChecked(event.target.checked);
+  };
+
+  const handleChangeRoamer = event => {
+    setState({ ...state, is_roamer: event.target.checked });
+    setRoamerChecked(event.target.checked);
   };
 
   const handlePaste = event => setRngStateFromClipboard(event, setState);
@@ -129,7 +135,7 @@ export const RNGInfo = ({ setState, state }) => {
             id="min"
             label={t('Min Advances')}
             variant="outlined"
-            value={state.min}
+            value={state.min_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
@@ -151,7 +157,7 @@ export const RNGInfo = ({ setState, state }) => {
             id="max"
             label={t('Max Advances')}
             variant="outlined"
-            value={state.max}
+            value={state.max_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
@@ -217,12 +223,24 @@ export const RNGInfo = ({ setState, state }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={checked}
-                  onChange={handleChange}
+                  checked={ivsChecked}
+                  onChange={handleChangeIVs}
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
               }
               label={t('Set IVs')}
+            />
+          </Grid>
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={roamerChecked}
+                  onChange={handleChangeRoamer}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label={t('Roamer')}
             />
           </Grid>
         </Grid>
