@@ -64,15 +64,6 @@ const NavItems = ({ handleDrawerClose, location }) => (
       >
         <ListItemText primary="TID" />
       </ListItemButton>
-      <ListItemButton
-        selected={location === '/bdsp/roamers'}
-        onClick={handleDrawerClose}
-        component={Link}
-        to="bdsp/roamers"
-        sx={{ pl: 4 }}
-      >
-        <ListItemText primary="Roamers" />
-      </ListItemButton>
     </List>
   </Box>
 );
