@@ -26,7 +26,7 @@ ReactDOM.render(
           <Route path="translate" element={<Translate />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
-          <Route path="bdsp/stationary" element={<Stationary />} />
+          <Route path="bdsp/static" element={<Stationary />} />
           <Route path="bdsp/underground" element={<Underground />} />
           <Route path="bdsp/tid" element={<TID />} />
         </Route>
