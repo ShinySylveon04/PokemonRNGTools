@@ -9,7 +9,6 @@ import { Wild } from './BdSp/Wild/Wild';
 import { Stationary } from './BdSp/Stationary/Stationary';
 import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
-import { Roamers } from './BdSp/Roamers/Roamers';
 
 import { MetaTags } from './Components/MetaTags';
 

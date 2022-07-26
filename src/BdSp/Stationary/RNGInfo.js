@@ -3,8 +3,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -13,21 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { useTranslation } from 'react-i18next';
 
 import { setRngStateFromClipboard } from '../../Utils/setRngState';
+import { PokemonList } from './PokemonList';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
-
-  const [ivsChecked, setIVsChecked] = React.useState(false);
-  const [roamerChecked, setRoamerChecked] = React.useState(false);
-  const handleChangeIVs = event => {
-    setState({ ...state, set_ivs: event.target.checked });
-    setIVsChecked(event.target.checked);
-  };
-
-  const handleChangeRoamer = event => {
-    setState({ ...state, is_roamer: event.target.checked });
-    setRoamerChecked(event.target.checked);
-  };
 
   const handlePaste = event => setRngStateFromClipboard(event, setState);
   return (
@@ -211,38 +198,11 @@ export const RNGInfo = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid
-          container
-          item
-          sm={6}
-          md={3}
-          xs={12}
-          sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}
-        >
-          <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={ivsChecked}
-                  onChange={handleChangeIVs}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              }
-              label={t('Set IVs')}
-            />
-          </Grid>
-          <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={roamerChecked}
-                  onChange={handleChangeRoamer}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              }
-              label={t('Roamer')}
-            />
-          </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="pokemon-type-label">{t('Pokemon')}</InputLabel>
+            <PokemonList setState={setState} state={state} t={t} />
+          </FormControl>
         </Grid>
       </Grid>
     </Paper>

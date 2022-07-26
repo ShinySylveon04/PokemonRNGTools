@@ -64,13 +64,14 @@ export function Stationary() {
     delay: 64,
     nature_filter: [25],
     ability_filter: 3,
-    gender_ratio: 255,
+    gender_ratio: 31,
     gender_filter: 256,
     set_ivs: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
     lead_filter: 0,
     is_roamer: false,
+    pokemon: 387,
   });
 
   const [results, setResults] = React.useState([
