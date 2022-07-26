@@ -21,59 +21,151 @@ export const PokemonList = ({ t, setState, state }) => (
     }}
   >
     <ListSubheader>Gifts</ListSubheader>
-    <MenuItem value={SPECIES.Turtwig}>{t('Turtwig')}</MenuItem>
-    <MenuItem value={SPECIES.Chimchar}>{t('Chimchar')}</MenuItem>
-    <MenuItem value={SPECIES.Piplup}>{t('Piplup')}</MenuItem>
-    <MenuItem value={SPECIES.Eevee}>{t('Eevee')}</MenuItem>
-    <MenuItem value={SPECIES.Happiny}>{t('Happiny')}</MenuItem>
-    <MenuItem value={SPECIES.Riolu}>{t('Riolu')}</MenuItem>
-    <MenuItem value={SPECIES.Mew}>{t('Mew')}</MenuItem>
-    <MenuItem value={SPECIES.Jirachi}>{t('Jirachi')}</MenuItem>
+    <MenuItem value={SPECIES.Turtwig}>
+      {t(`pokemonNames.${SPECIES.Turtwig}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Chimchar}>
+      {t(`pokemonNames.${SPECIES.Chimchar}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Piplup}>
+      {t(`pokemonNames.${SPECIES.Piplup}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Eevee}>
+      {t(`pokemonNames.${SPECIES.Eevee}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Happiny}>
+      {t(`pokemonNames.${SPECIES.Happiny}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Riolu}>
+      {t(`pokemonNames.${SPECIES.Riolu}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Mew}>{t(`pokemonNames.${SPECIES.Mew}`)}</MenuItem>
+    <MenuItem value={SPECIES.Jirachi}>
+      {t(`pokemonNames.${SPECIES.Jirachi}`)}
+    </MenuItem>
     <ListSubheader>Fossils</ListSubheader>
-    <MenuItem value={SPECIES.Omanyte}>{t('Omanyte')}</MenuItem>
-    <MenuItem value={SPECIES.Kabuto}>{t('Kabuto')}</MenuItem>
-    <MenuItem value={SPECIES.Aerodactyl}>{t('Aerodactyl')}</MenuItem>
-    <MenuItem value={SPECIES.Lileep}>{t('Lileep')}</MenuItem>
-    <MenuItem value={SPECIES.Anorith}>{t('Anorith')}</MenuItem>
-    <MenuItem value={SPECIES.Cranidos}>{t('Cranidos')}</MenuItem>
-    <MenuItem value={SPECIES.Shieldon}>{t('Shieldon')}</MenuItem>
+    <MenuItem value={SPECIES.Omanyte}>
+      {t(`pokemonNames.${SPECIES.Omanyte}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Kabuto}>
+      {t(`pokemonNames.${SPECIES.Kabuto}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Aerodactyl}>
+      {t(`pokemonNames.${SPECIES.Aerodactyl}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Lileep}>
+      {t(`pokemonNames.${SPECIES.Lileep}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Anorith}>
+      {t(`pokemonNames.${SPECIES.Anorith}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Cranidos}>
+      {t(`pokemonNames.${SPECIES.Cranidos}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Shieldon}>
+      {t(`pokemonNames.${SPECIES.Shieldon}`)}
+    </MenuItem>
     <ListSubheader>Stationary</ListSubheader>
-    <MenuItem value={SPECIES.Drifloon}>{t('Drifloon')}</MenuItem>
-    <MenuItem value={SPECIES.Spiritomb}>{t('Spiritomb')}</MenuItem>
-    <MenuItem value={SPECIES.Rotom}>{t('Rotom')}</MenuItem>
+    <MenuItem value={SPECIES.Drifloon}>
+      {t(`pokemonNames.${SPECIES.Drifloon}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Spiritomb}>
+      {t(`pokemonNames.${SPECIES.Spiritomb}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Rotom}>
+      {t(`pokemonNames.${SPECIES.Rotom}`)}
+    </MenuItem>
     <ListSubheader>Roamers</ListSubheader>
-    <MenuItem value={SPECIES.Mesprit}>{t('Mesprit')}</MenuItem>
-    <MenuItem value={SPECIES.Cresselia}>{t('Cresselia')}</MenuItem>
+    <MenuItem value={SPECIES.Mesprit}>
+      {t(`pokemonNames.${SPECIES.Mesprit}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Cresselia}>
+      {t(`pokemonNames.${SPECIES.Cresselia}`)}
+    </MenuItem>
     <ListSubheader>Legends</ListSubheader>
-    <MenuItem value={SPECIES.Uxie}>{t('Uxie')}</MenuItem>
-    <MenuItem value={SPECIES.Azelf}>{t('Azelf')}</MenuItem>
-    <MenuItem value={SPECIES.Dialga}>{t('Dialga')}</MenuItem>
-    <MenuItem value={SPECIES.Palkia}>{t('Palkia')}</MenuItem>
-    <MenuItem value={SPECIES.Heatran}>{t('Heatran')}</MenuItem>
-    <MenuItem value={SPECIES.Regigigas}>{t('Regigigas')}</MenuItem>
-    <MenuItem value={SPECIES.Giratina}>{t('Giratina')}</MenuItem>
+    <MenuItem value={SPECIES.Uxie}>
+      {t(`pokemonNames.${SPECIES.Uxie}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Azelf}>
+      {t(`pokemonNames.${SPECIES.Azelf}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Dialga}>
+      {t(`pokemonNames.${SPECIES.Dialga}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Palkia}>
+      {t(`pokemonNames.${SPECIES.Palkia}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Heatran}>
+      {t(`pokemonNames.${SPECIES.Heatran}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Regigigas}>
+      {t(`pokemonNames.${SPECIES.Regigigas}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Giratina}>
+      {t(`pokemonNames.${SPECIES.Giratina}`)}
+    </MenuItem>
     <ListSubheader>Ramanas Park (Pure Space)</ListSubheader>
-    <MenuItem value={SPECIES.Articuno}>{t('Articuno')}</MenuItem>
-    <MenuItem value={SPECIES.Zapdos}>{t('Zapdos')}</MenuItem>
-    <MenuItem value={SPECIES.Moltres}>{t('Moltres')}</MenuItem>
-    <MenuItem value={SPECIES.Raikou}>{t('Raikou')}</MenuItem>
-    <MenuItem value={SPECIES.Entei}>{t('Entei')}</MenuItem>
-    <MenuItem value={SPECIES.Suicune}>{t('Suicune')}</MenuItem>
-    <MenuItem value={SPECIES.Regirock}>{t('Regirock')}</MenuItem>
-    <MenuItem value={SPECIES.Regice}>{t('Regice')}</MenuItem>
-    <MenuItem value={SPECIES.Registeel}>{t('Registeel')}</MenuItem>
-    <MenuItem value={SPECIES.Latias}>{t('Latias')}</MenuItem>
-    <MenuItem value={SPECIES.Latios}>{t('Latios')}</MenuItem>
+    <MenuItem value={SPECIES.Articuno}>
+      {t(`pokemonNames.${SPECIES.Articuno}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Zapdos}>
+      {t(`pokemonNames.${SPECIES.Zapdos}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Moltres}>
+      {t(`pokemonNames.${SPECIES.Moltres}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Raikou}>
+      {t(`pokemonNames.${SPECIES.Raikou}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Entei}>
+      {t(`pokemonNames.${SPECIES.Entei}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Suicune}>
+      {t(`pokemonNames.${SPECIES.Suicune}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Regirock}>
+      {t(`pokemonNames.${SPECIES.Regirock}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Regice}>
+      {t(`pokemonNames.${SPECIES.Regice}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Registeel}>
+      {t(`pokemonNames.${SPECIES.Registeel}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Latias}>
+      {t(`pokemonNames.${SPECIES.Latias}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Latios}>
+      {t(`pokemonNames.${SPECIES.Latios}`)}
+    </MenuItem>
     <ListSubheader>Ramanas Park (Strange Space)</ListSubheader>
-    <MenuItem value={SPECIES.Mewtwo}>{t('Mewtwo')}</MenuItem>
-    <MenuItem value={SPECIES.Lugia}>{t('Lugia')}</MenuItem>
-    <MenuItem value={SPECIES.HoOh}>{t('Ho-Oh')}</MenuItem>
-    <MenuItem value={SPECIES.Kyogre}>{t('Kyogre')}</MenuItem>
-    <MenuItem value={SPECIES.Groudon}>{t('Groudon')}</MenuItem>
-    <MenuItem value={SPECIES.Rayquaza}>{t('Rayquaza')}</MenuItem>
+    <MenuItem value={SPECIES.Mewtwo}>
+      {t(`pokemonNames.${SPECIES.Mewtwo}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Lugia}>
+      {t(`pokemonNames.${SPECIES.Lugia}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.HoOh}>
+      {t(`pokemonNames.${SPECIES.HoOh}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Kyogre}>
+      {t(`pokemonNames.${SPECIES.Kyogre}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Groudon}>
+      {t(`pokemonNames.${SPECIES.Groudon}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Rayquaza}>
+      {t(`pokemonNames.${SPECIES.Rayquaza}`)}
+    </MenuItem>
     <ListSubheader>Mythics</ListSubheader>
-    <MenuItem value={SPECIES.Darkrai}>{t('Darkrai')}</MenuItem>
-    <MenuItem value={SPECIES.Shaymin}>{t('Shaymin')}</MenuItem>
-    <MenuItem value={SPECIES.Arceus}>{t('Arceus')}</MenuItem>
+    <MenuItem value={SPECIES.Darkrai}>
+      {t(`pokemonNames.${SPECIES.Darkrai}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Shaymin}>
+      {t(`pokemonNames.${SPECIES.Shaymin}`)}
+    </MenuItem>
+    <MenuItem value={SPECIES.Arceus}>
+      {t(`pokemonNames.${SPECIES.Arceus}`)}
+    </MenuItem>
   </Select>
 );
