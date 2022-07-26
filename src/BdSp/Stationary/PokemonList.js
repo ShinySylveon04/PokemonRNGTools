@@ -20,7 +20,7 @@ export const PokemonList = ({ t, setState, state }) => (
       }));
     }}
   >
-    <ListSubheader>Gifts</ListSubheader>
+    <ListSubheader>{t('Gifts')}</ListSubheader>
     <MenuItem value={SPECIES.Turtwig}>
       {t(`pokemonNames.${SPECIES.Turtwig}`)}
     </MenuItem>
@@ -43,7 +43,7 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Jirachi}>
       {t(`pokemonNames.${SPECIES.Jirachi}`)}
     </MenuItem>
-    <ListSubheader>Fossils</ListSubheader>
+    <ListSubheader>{t('Fossils')}</ListSubheader>
     <MenuItem value={SPECIES.Omanyte}>
       {t(`pokemonNames.${SPECIES.Omanyte}`)}
     </MenuItem>
@@ -65,7 +65,7 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Shieldon}>
       {t(`pokemonNames.${SPECIES.Shieldon}`)}
     </MenuItem>
-    <ListSubheader>Stationary</ListSubheader>
+    <ListSubheader>{t('Stationary')}</ListSubheader>
     <MenuItem value={SPECIES.Drifloon}>
       {t(`pokemonNames.${SPECIES.Drifloon}`)}
     </MenuItem>
@@ -75,14 +75,14 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Rotom}>
       {t(`pokemonNames.${SPECIES.Rotom}`)}
     </MenuItem>
-    <ListSubheader>Roamers</ListSubheader>
+    <ListSubheader>{t('Roamers')}</ListSubheader>
     <MenuItem value={SPECIES.Mesprit}>
       {t(`pokemonNames.${SPECIES.Mesprit}`)}
     </MenuItem>
     <MenuItem value={SPECIES.Cresselia}>
       {t(`pokemonNames.${SPECIES.Cresselia}`)}
     </MenuItem>
-    <ListSubheader>Legends</ListSubheader>
+    <ListSubheader>{t('Legends')}</ListSubheader>
     <MenuItem value={SPECIES.Uxie}>
       {t(`pokemonNames.${SPECIES.Uxie}`)}
     </MenuItem>
@@ -104,7 +104,7 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Giratina}>
       {t(`pokemonNames.${SPECIES.Giratina}`)}
     </MenuItem>
-    <ListSubheader>Ramanas Park (Pure Space)</ListSubheader>
+    <ListSubheader>{t('Ramanas Park (Pure Space)')}</ListSubheader>
     <MenuItem value={SPECIES.Articuno}>
       {t(`pokemonNames.${SPECIES.Articuno}`)}
     </MenuItem>
@@ -138,7 +138,7 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Latios}>
       {t(`pokemonNames.${SPECIES.Latios}`)}
     </MenuItem>
-    <ListSubheader>Ramanas Park (Strange Space)</ListSubheader>
+    <ListSubheader>{t('Ramanas Park (Strange Space)')}</ListSubheader>
     <MenuItem value={SPECIES.Mewtwo}>
       {t(`pokemonNames.${SPECIES.Mewtwo}`)}
     </MenuItem>
@@ -157,7 +157,7 @@ export const PokemonList = ({ t, setState, state }) => (
     <MenuItem value={SPECIES.Rayquaza}>
       {t(`pokemonNames.${SPECIES.Rayquaza}`)}
     </MenuItem>
-    <ListSubheader>Mythics</ListSubheader>
+    <ListSubheader>{t('Mythics')}</ListSubheader>
     <MenuItem value={SPECIES.Darkrai}>
       {t(`pokemonNames.${SPECIES.Darkrai}`)}
     </MenuItem>
