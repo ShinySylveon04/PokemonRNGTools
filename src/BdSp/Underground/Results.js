@@ -48,7 +48,7 @@ const ShowResults = ({ results, state, t }) => {
       <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
       <TableCell align="left">{showAbility(result.ability)}</TableCell>
       <TableCell align="left">
-        {state.genderRatio === 256 ? '-' : showGender(result.gender)}
+        {showGender(result.gender)}
       </TableCell>
       <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
         {`${result.ivs[0]} /
@@ -91,7 +91,7 @@ export const Results = ({ results, state }) => {
             <TableRow>
               <TableCell>{t('Advances')}</TableCell>
               <TableCell align="left">{t('Shiny')}</TableCell>
-              <TableCell align="left">{t('Slot')}</TableCell>
+              <TableCell align="left">{t('Species')}</TableCell>
               <TableCell align="left">{t('Nature')}</TableCell>
               <TableCell align="left">{t('Ability')}</TableCell>
               <TableCell align="left">{t('Gender')}</TableCell>

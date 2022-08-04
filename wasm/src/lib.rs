@@ -266,52 +266,169 @@ pub fn calculate_pokemon_bdsp_underground(
     delay: usize,
     nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilter,
-    _encounter_filter: enums::EncounterSlotFilter,
-    gender_ratio: enums::GenderRatio,
+    species: u16,
     gender_filter: enums::GenderFilter,
-    tiles: usize,
-    large_room: bool,
     diglett_boost: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
+    version: u8,
+    room: u8,
+    story_flag: u8,
 ) -> JsValue {
     init_panic_hook();
-    let natures: Vec<enums::NatureFilter> = nature_filter
-        .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
-        .collect();
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
+    let min_ivs = [
+        min_ivs[0] as u8,
+        min_ivs[1] as u8,
+        min_ivs[2] as u8,
+        min_ivs[3] as u8,
+        min_ivs[4] as u8,
+        min_ivs[5] as u8,
+    ];
+    let max_ivs = [
+        max_ivs[0] as u8,
+        max_ivs[1] as u8,
+        max_ivs[2] as u8,
+        max_ivs[3] as u8,
+        max_ivs[4] as u8,
+        max_ivs[5] as u8,
+    ];
+
+    let version = if version == 2 {
+        bdsp_ug_generator::Version::BD
+    } else {
+        bdsp_ug_generator::Version::SP
+    };
+
+    let room = match room {
+        2 => bdsp_ug_generator::RoomType::SpaciousCave,
+        3 => bdsp_ug_generator::RoomType::GrasslandCave,
+        4 => bdsp_ug_generator::RoomType::FountainspringCave,
+        5 => bdsp_ug_generator::RoomType::RockyCave,
+        6 => bdsp_ug_generator::RoomType::VolcanicCave,
+        7 => bdsp_ug_generator::RoomType::SwampyCave,
+        8 => bdsp_ug_generator::RoomType::DazzlingCave,
+        9 => bdsp_ug_generator::RoomType::WhiteoutCave,
+        10 => bdsp_ug_generator::RoomType::IcyCave,
+        11 => bdsp_ug_generator::RoomType::RiverbankCave,
+        12 => bdsp_ug_generator::RoomType::SandsearCave,
+        13 => bdsp_ug_generator::RoomType::StillWaterCavern,
+        14 => bdsp_ug_generator::RoomType::SunlitCavern,
+        15 => bdsp_ug_generator::RoomType::BigBluffCavern,
+        16 => bdsp_ug_generator::RoomType::StargleamCavern,
+        17 => bdsp_ug_generator::RoomType::GlacialCavern,
+        18 => bdsp_ug_generator::RoomType::BogsunkCavern,
+        _ => bdsp_ug_generator::RoomType::TyphloCavern,
+    };
+
+    let ability = if ability_filter == enums::AbilityFilter::Any {
+        None
+    } else {
+        Some(ability_filter as u8)
+    };
+
+    let nature = if !nature_filter.contains(&25) {
+        Some(
+            nature_filter
+                .into_iter()
+                .map(|i| i as u8)
+                .collect::<Vec<u8>>(),
+        )
+    } else {
+        None
+    };
+
+    let gender = match gender_filter {
+        enums::GenderFilter::Any => None,
+        enums::GenderFilter::Female => Some(1),
+        enums::GenderFilter::Male => Some(0),
+    };
+
+    let shiny = shiny_filter != enums::ShinyFilter::Any;
+
+    let species = if species == 0 {
+        None
+    } else {
+        Some(species)
+    };
+
+    let filter = bdsp_ug_generator::Filter {
+        shiny,
+        species,
+        min_ivs,
+        max_ivs,
+        ability,
+        nature,
+        item: None,
+        egg_move: None,
+        gender,
+    };
+
+    let mut rng = bdsp_ug_generator::xorshift::XorShift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
-    let mut pokemon_results = Vec::new();
-    let values = min..=max;
     rng.advance(min);
-    for value in values {
-        let mut result = bdsp::underground::generator::generate_pokemon(
-            rng,
-            gender_ratio,
-            value,
-            tiles,
-            large_room,
-            diglett_boost,
-        );
 
-        if result.iter().any(|pokemon| {
-            filter_bdsp_underground(
-                pokemon,
-                shiny_filter,
-                &natures,
-                ability_filter,
-                gender_filter,
-                &min_ivs,
-                &max_ivs,
-            )
-        }) {
-            pokemon_results.append(&mut result);
-        }
-        rng.next();
-    }
+    let results = bdsp_ug_generator::run_results(
+        max as u32,
+        rng,
+        version,
+        story_flag,
+        room,
+        filter,
+        diglett_boost,
+    );
 
-    let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
+    let results: Vec<bdsp::underground::generator::Pokemon> = results
+        .into_iter()
+        .map(|a| {
+            let mut advance = Vec::with_capacity(a.regular_pokemon.len() + 1);
+            for p in a.regular_pokemon.iter() {
+                advance.push(bdsp::underground::generator::Pokemon {
+                    shiny_value: if p.shiny {
+                        enums::Shiny::Star
+                    } else {
+                        enums::Shiny::None
+                    },
+                    pid: p.pid,
+                    ec: p.ec,
+                    nature: enums::Nature::try_from(p.nature as u32).unwrap(),
+                    ivs: p.ivs.iter().map(|i| *i as u32).collect(),
+                    ability: enums::Ability::try_from(p.ability as u32).unwrap(),
+                    gender: match p.gender {
+                        0 => enums::Gender::Male,
+                        1 => enums::Gender::Female,
+                        _ => enums::Gender::Genderless,
+                    },
+                    encounter: p.species as u32,
+                    advances: a.advance as usize + min,
+                    is_rare: false,
+                })
+            }
+            if let Some(p) = &a.rare_pokemon {
+                advance.push(bdsp::underground::generator::Pokemon {
+                    shiny_value: if p.shiny {
+                        enums::Shiny::Star
+                    } else {
+                        enums::Shiny::None
+                    },
+                    pid: p.pid,
+                    ec: p.ec,
+                    nature: enums::Nature::try_from(p.nature as u32).unwrap(),
+                    ivs: p.ivs.iter().map(|i| *i as u32).collect(),
+                    ability: enums::Ability::try_from(p.ability as u32).unwrap(),
+                    gender: match p.gender {
+                        0 => enums::Gender::Male,
+                        1 => enums::Gender::Female,
+                        _ => enums::Gender::Genderless,
+                    },
+                    encounter: p.species as u32,
+                    advances: a.advance as usize + min,
+                    is_rare: false,
+                })
+            }
+            advance
+        })
+        .flatten()
+        .collect::<Vec<bdsp::underground::generator::Pokemon>>();
 
     JsValue::from_serde(&results).unwrap()
 }

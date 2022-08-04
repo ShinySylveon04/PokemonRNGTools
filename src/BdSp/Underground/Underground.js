@@ -27,14 +27,15 @@ export function Underground() {
     delay: 0,
     nature: [25],
     ability: 3,
-    encounter: 12,
+    species: 0,
     genderRatio: 256,
     gender: 256,
-    tiles: 0,
-    large_room: false,
     diglett_boost: false,
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+    version: 2,
+    room: 2,
+    story_flag: 6,
   });
 
   const [results, setResults] = React.useState([
@@ -64,14 +65,14 @@ export function Underground() {
     delay,
     nature,
     ability,
-    encounter,
-    genderRatio,
+    species,
     gender,
-    tiles,
-    large_room,
     diglett_boost,
     minIVs,
     maxIVs,
+    version,
+    room,
+    story_flag
   } = state;
 
   const handleSubmit = event => {
@@ -89,11 +90,8 @@ export function Underground() {
       delay,
       nature,
       ability,
-      encounter,
-      genderRatio,
+      species,
       gender,
-      tiles,
-      large_room,
       diglett_boost,
       [
         parseInt(minIVs.hp),
@@ -111,6 +109,9 @@ export function Underground() {
         parseInt(maxIVs.spd),
         parseInt(maxIVs.spe),
       ],
+      version,
+      room,
+      story_flag
     ).then(data => {
       setResults(data), setSearching(false);
     });

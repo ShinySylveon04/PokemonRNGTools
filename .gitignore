@@ -135,3 +135,5 @@ wasm/pkg
 test.rs
 test.exe
 test
+
+.idea
