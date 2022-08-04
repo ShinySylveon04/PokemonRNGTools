@@ -425,7 +425,6 @@ pub fn calculate_pokemon_bdsp_underground(
         .flatten()
         .collect::<Vec<bdsp::underground::generator::Pokemon>>();
 
-
     JsValue::from_serde(&results).unwrap()
 }
 
