@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { natureOptions } from '../../natures';
 import { IVFilters } from './IVFilters';
+import TextField from '@mui/material/TextField';
 
 export const Filters = ({ setState, state }) => {
   const { t } = useTranslation();
@@ -140,33 +141,26 @@ export const Filters = ({ setState, state }) => {
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id="encounter-label">{t('Encounter Slot')}</InputLabel>
-            <Select
-              labelId="encounter-label"
-              id="encounter-slot"
-              value={state.encounter}
-              label={t('Encounter Slot')}
+            <TextField
+              inputProps={{
+                inputMode: 'numeric',
+                pattern: '[0-9]*',
+              }}
+              fullWidth
+              id="species"
+              label={t('Species')}
+              variant="outlined"
+              value={state.species}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  encounter: event.target.value,
+                  species:
+                    event.target.value.length === 0
+                      ? 0
+                      : parseInt(event.target.value),
                 }))
               }
-            >
-              <MenuItem value={12}>{t('Any')}</MenuItem>
-              <MenuItem value={0}>0</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={6}>6</MenuItem>
-              <MenuItem value={7}>7</MenuItem>
-              <MenuItem value={8}>8</MenuItem>
-              <MenuItem value={9}>9</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={11}>11</MenuItem>
-            </Select>
+            />
           </FormControl>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>

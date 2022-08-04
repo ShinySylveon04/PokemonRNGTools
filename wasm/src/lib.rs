@@ -266,9 +266,8 @@ pub fn calculate_pokemon_bdsp_underground(
     delay: usize,
     nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilter,
-    _encounter_filter: enums::EncounterSlotFilter,
+    species: u16,
     gender_filter: enums::GenderFilter,
-    _tiles: usize,
     diglett_boost: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
@@ -346,9 +345,15 @@ pub fn calculate_pokemon_bdsp_underground(
 
     let shiny = shiny_filter != enums::ShinyFilter::Any;
 
+    let species = if species == 0 {
+        None
+    } else {
+        Some(species)
+    };
+
     let filter = bdsp_ug_generator::Filter {
         shiny,
-        species: None,
+        species,
         min_ivs,
         max_ivs,
         ability,

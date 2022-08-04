@@ -200,12 +200,12 @@ export const RNGInfo = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={1}>{t('Underground Unlocked')}</MenuItem>
-              <MenuItem value={2}>{t('Strength Obtained')}</MenuItem>
-              <MenuItem value={3}>{t('Defog Obtained')}</MenuItem>
-              <MenuItem value={4}>{t('7 Badges')}</MenuItem>
-              <MenuItem value={5}>{t('Waterfall Obtained')}</MenuItem>
-              <MenuItem value={6}>{t('National Dex')}</MenuItem>
+              <MenuItem value={1}>{t('story_flag.Underground Unlocked')}</MenuItem>
+              <MenuItem value={2}>{t('story_flag.Strength Obtained')}</MenuItem>
+              <MenuItem value={3}>{t('story_flag.Defog Obtained')}</MenuItem>
+              <MenuItem value={4}>{t('story_flag.7 Badges')}</MenuItem>
+              <MenuItem value={5}>{t('story_flag.Waterfall Obtained')}</MenuItem>
+              <MenuItem value={6}>{t('story_flag.National Dex')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -224,8 +224,8 @@ export const RNGInfo = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={2}>{t('Brilliant Diamond')}</MenuItem>
-              <MenuItem value={3}>{t('Shining Pearl')}</MenuItem>
+              <MenuItem value={2}>{t('game.Brilliant Diamond')}</MenuItem>
+              <MenuItem value={3}>{t('game.Shining Pearl')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -244,24 +244,24 @@ export const RNGInfo = ({ setState, state }) => {
                 }))
               }
             >
-              <MenuItem value={2}>{t('Spacious Cave')}</MenuItem>
-              <MenuItem value={3}>{t('Grassland Cave')}</MenuItem>
-              <MenuItem value={4}>{t('Fountainspring Cave')}</MenuItem>
-              <MenuItem value={5}>{t('Rocky Cave')}</MenuItem>
-              <MenuItem value={6}>{t('Volcanic Cave')}</MenuItem>
-              <MenuItem value={7}>{t('Swampy Cave')}</MenuItem>
-              <MenuItem value={8}>{t('Dazzling Cave')}</MenuItem>
-              <MenuItem value={9}>{t('Whiteout Cave')}</MenuItem>
-              <MenuItem value={10}>{t('Icy Cave')}</MenuItem>
-              <MenuItem value={11}>{t('Riverbank Cave')}</MenuItem>
-              <MenuItem value={12}>{t('Sandsear Cave')}</MenuItem>
-              <MenuItem value={13}>{t('Still Water Cavern')}</MenuItem>
-              <MenuItem value={14}>{t('Sunlit Cavern')}</MenuItem>
-              <MenuItem value={15}>{t('Big Bluff Cavern')}</MenuItem>
-              <MenuItem value={16}>{t('Stargleam Cavern')}</MenuItem>
-              <MenuItem value={17}>{t('Glacial Cavern')}</MenuItem>
-              <MenuItem value={18}>{t('Bogsunk Cavern')}</MenuItem>
-              <MenuItem value={19}>{t('Typhlo Cavern')}</MenuItem>
+              <MenuItem value={2}>{t('room.Spacious Cave')}</MenuItem>
+              <MenuItem value={3}>{t('room.Grassland Cave')}</MenuItem>
+              <MenuItem value={4}>{t('room.Fountainspring Cave')}</MenuItem>
+              <MenuItem value={5}>{t('room.Rocky Cave')}</MenuItem>
+              <MenuItem value={6}>{t('room.Volcanic Cave')}</MenuItem>
+              <MenuItem value={7}>{t('room.Swampy Cave')}</MenuItem>
+              <MenuItem value={8}>{t('room.Dazzling Cave')}</MenuItem>
+              <MenuItem value={9}>{t('room.Whiteout Cave')}</MenuItem>
+              <MenuItem value={10}>{t('room.Icy Cave')}</MenuItem>
+              <MenuItem value={11}>{t('room.Riverbank Cave')}</MenuItem>
+              <MenuItem value={12}>{t('room.Sandsear Cave')}</MenuItem>
+              <MenuItem value={13}>{t('room.Still Water Cavern')}</MenuItem>
+              <MenuItem value={14}>{t('room.Sunlit Cavern')}</MenuItem>
+              <MenuItem value={15}>{t('room.Big Bluff Cavern')}</MenuItem>
+              <MenuItem value={16}>{t('room.Stargleam Cavern')}</MenuItem>
+              <MenuItem value={17}>{t('room.Glacial Cavern')}</MenuItem>
+              <MenuItem value={18}>{t('room.Bogsunk Cavern')}</MenuItem>
+              <MenuItem value={19}>{t('room.Typhlo Cavern')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>

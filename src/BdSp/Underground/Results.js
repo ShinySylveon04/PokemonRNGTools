@@ -91,7 +91,7 @@ export const Results = ({ results, state }) => {
             <TableRow>
               <TableCell>{t('Advances')}</TableCell>
               <TableCell align="left">{t('Shiny')}</TableCell>
-              <TableCell align="left">{t('Slot')}</TableCell>
+              <TableCell align="left">{t('Species')}</TableCell>
               <TableCell align="left">{t('Nature')}</TableCell>
               <TableCell align="left">{t('Ability')}</TableCell>
               <TableCell align="left">{t('Gender')}</TableCell>
