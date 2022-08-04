@@ -1,6 +1,4 @@
 import React from 'react';
-import ListSubheader from '@mui/material/ListSubheader';
-import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -69,27 +67,29 @@ const STRANGE_SPACE_POKEMON = [
 
 const MYTHICS_POKEMON = [SPECIES.Darkrai, SPECIES.Shaymin, SPECIES.Arceus];
 
-const SpeciesMenuItem = ({ speciesList }) => {
+export const PokemonList = ({ setState, state }) => {
   const { t } = useTranslation();
-  return speciesList.map(speciesId => (
-    <MenuItem key={speciesId} value={speciesId}>
-      {t(`pokemonNames.${speciesId}`)}
-    </MenuItem>
-  ));
-};
 
-export const PokemonList = ({ t, setState, state }) => {
+  const SpeciesMenuItem = ({ speciesList }) => {
+    return speciesList.map(speciesId => (
+      <option key={speciesId} value={speciesId}>
+        {t(`pokemonNames.${speciesId}`)}
+      </option>
+    ));
+  };
   return (
     <React.Fragment>
       <FormControl fullWidth>
-        <InputLabel id="pokemon-type-label">{t('Pokemon')}</InputLabel>
+        <InputLabel htmlFor="pokemon-type-label">{t('Pokemon')}</InputLabel>
         <Select
-          labelId="pokemon-type-label"
-          id="pokemon"
+          native
+          inputProps={{
+            name: 'pokemon',
+            id: 'pokemon-type-label',
+          }}
           value={state.pokemon}
           label={t('Pokemon')}
           onChange={event => {
-            console.log(event);
             setState(state => ({
               ...state,
               ...RNG_CONFIG[event.target.value],
@@ -97,22 +97,30 @@ export const PokemonList = ({ t, setState, state }) => {
             }));
           }}
         >
-          <ListSubheader>{t('Gifts')}</ListSubheader>
-          <SpeciesMenuItem speciesList={GIFT_POKEMON} />
-          <ListSubheader>{t('Fossils')}</ListSubheader>
-          <SpeciesMenuItem speciesList={FOSSIL_POKEMON} />
-          <ListSubheader>{t('Stationary')}</ListSubheader>
-          <SpeciesMenuItem speciesList={STATIONARY_POKEMON} />
-          <ListSubheader>{t('Roamers')}</ListSubheader>
-          <SpeciesMenuItem speciesList={ROAMER_POKEMON} />
-          <ListSubheader>{t('Legends')}</ListSubheader>
-          <SpeciesMenuItem speciesList={LEGENDS_POKEMON} />
-          <ListSubheader>{t('Ramanas Park (Pure Space)')}</ListSubheader>
-          <SpeciesMenuItem speciesList={PURE_SPACE_POKEMON} />
-          <ListSubheader>{t('Ramanas Park (Strange Space)')}</ListSubheader>
-          <SpeciesMenuItem speciesList={STRANGE_SPACE_POKEMON} />
-          <ListSubheader>{t('Mythics')}</ListSubheader>
-          <SpeciesMenuItem speciesList={MYTHICS_POKEMON} />
+          <optgroup label={t('Gifts')}>
+            <SpeciesMenuItem speciesList={GIFT_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Fossils')}>
+            <SpeciesMenuItem speciesList={FOSSIL_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Stationary')}>
+            <SpeciesMenuItem speciesList={STATIONARY_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Roamers')}>
+            <SpeciesMenuItem speciesList={ROAMER_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Legends')}>
+            <SpeciesMenuItem speciesList={LEGENDS_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Ramanas Park (Pure Space)')}>
+            <SpeciesMenuItem speciesList={PURE_SPACE_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Ramanas Park (Strange Space)')}>
+            <SpeciesMenuItem speciesList={STRANGE_SPACE_POKEMON} />
+          </optgroup>
+          <optgroup label={t('Mythics')}>
+            <SpeciesMenuItem speciesList={MYTHICS_POKEMON} />
+          </optgroup>
         </Select>
       </FormControl>
     </React.Fragment>

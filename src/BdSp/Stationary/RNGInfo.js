@@ -199,7 +199,7 @@ export const RNGInfo = ({ setState, state }) => {
           </FormControl>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <PokemonList setState={setState} state={state} t={t} />
+          <PokemonList setState={setState} state={state} />
         </Grid>
       </Grid>
     </Paper>
