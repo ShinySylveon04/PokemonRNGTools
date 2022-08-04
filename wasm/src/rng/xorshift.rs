@@ -89,3 +89,24 @@ impl Xorshift {
         (tmp % diff).wrapping_add(min)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::vec;
+
+    #[test]
+    fn should_generate_u32s() {
+        let state = [0x12345678, 0x12345678, 0x12345678, 0x12345678];
+        let mut rng = Xorshift::from_state(state);
+
+        let expected_results = vec![
+            0x220345D0, 0x9234407E, 0x220353D6, 0x92345678, 0x2AA1BC2B, 0x9A262EB1, 0x220353C0,
+            0x9234566E, 0x35D3F0E7, 0x1EAB134A, 0xA68ECE0C,
+        ];
+
+        for rand in expected_results.iter() {
+            assert_eq!(&rng.next(), rand);
+        }
+    }
+}

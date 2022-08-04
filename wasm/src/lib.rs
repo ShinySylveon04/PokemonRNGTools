@@ -35,6 +35,16 @@ pub fn get_wild(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn get_bdsp_tid(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::tid::settings::Settings = settings.into_serde().unwrap();
+
+    let results = bdsp::tid::generator::generate_tid(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: enums::Shiny,
@@ -73,47 +83,27 @@ pub struct ShinyResultBdspStationary {
     pub gender: enums::Gender,
 }
 
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TIDResult {
-    pub state0: u32,
-    pub state1: u32,
-    pub state2: u32,
-    pub state3: u32,
-    pub advances: usize,
-    pub tid: u16,
-    pub tsv: u16,
-    pub g8tid: u32,
-    pub sid: u16,
-    pub filter_type: enums::IDFilter,
-}
-
 pub fn filter(
     results: Pokemon,
     shiny_filter: enums::ShinyFilter,
     nature_filter: enums::NatureFilter,
     ability_filter: enums::AbilityFilter,
 ) -> bool {
-    if shiny_filter == results.shiny_type
+    shiny_filter == results.shiny_type
         && nature_filter == results.nature
         && ability_filter == results.ability
-    {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 pub fn filter_bdsp_stationary(
     results: &bdsp::stationary::Pokemon,
     shiny_filter: enums::ShinyFilter,
-    natures: &Vec<enums::NatureFilter>,
+    natures: &[enums::NatureFilter],
     ability_filter: enums::AbilityFilter,
     gender_filter: enums::GenderFilter,
     min_ivs: &Vec<u32>,
     max_ivs: &Vec<u32>,
 ) -> bool {
-    if ability_filter == results.ability
+    return ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
         && gender_filter == results.gender
         && shiny_filter == results.shiny
@@ -124,24 +114,19 @@ pub fn filter_bdsp_stationary(
         && results
             .ivs
             .iter()
-            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv)
-    {
-        return true;
-    } else {
-        return false;
-    }
+            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
 }
 
 pub fn filter_bdsp_underground(
     results: &bdsp::underground::generator::Pokemon,
     shiny_filter: enums::ShinyFilter,
-    natures: &Vec<enums::NatureFilter>,
+    natures: &[enums::NatureFilter],
     ability_filter: enums::AbilityFilter,
     gender_filter: enums::GenderFilter,
     min_ivs: &Vec<u32>,
     max_ivs: &Vec<u32>,
 ) -> bool {
-    if ability_filter == results.ability
+    return ability_filter == results.ability
         && natures.iter().any(|nature| *nature == results.nature)
         && gender_filter == results.gender
         && shiny_filter == results.shiny_value
@@ -152,29 +137,7 @@ pub fn filter_bdsp_underground(
         && results
             .ivs
             .iter()
-            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv)
-    {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-pub fn filter_tid(results: &bdsp::tid::TID, id: &Vec<u32>, filter_type: enums::IDFilter) -> bool {
-    if filter_type == enums::IDFilter::None {
-        return true;
-    } else {
-        let filter_id = match filter_type {
-            enums::IDFilter::G8TID => results.g8tid,
-            enums::IDFilter::SID => results.sid as u32,
-            enums::IDFilter::TID => results.tid as u32,
-            enums::IDFilter::TSV => results.tsv as u32,
-            enums::IDFilter::None => 0, // shouldn't hit this value because of if above
-            _ => 0,
-        };
-
-        return id.contains(&filter_id);
-    }
+            .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
 }
 
 #[wasm_bindgen]
@@ -198,10 +161,10 @@ pub fn calculate_pokemon(
     for value in values {
         pokemon_results = match encounter_type {
             enums::EncounterFilter::Static => {
-                swsh::generate_static_pokemon(rng.clone(), tid, sid, shiny_charm)
+                swsh::generate_static_pokemon(rng, tid, sid, shiny_charm)
             }
             enums::EncounterFilter::Dynamic => {
-                swsh::generate_dynamic_pokemon(rng.clone(), tid, sid, shiny_charm)
+                swsh::generate_dynamic_pokemon(rng, tid, sid, shiny_charm)
             }
         };
 
@@ -244,7 +207,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     max_ivs: Vec<u32>,
     lead: enums::LeadFilter,
 ) -> JsValue {
-    let natures = nature_filter
+    let natures: Vec<enums::NatureFilter> = nature_filter
         .iter()
         .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
@@ -255,8 +218,7 @@ pub fn calculate_pokemon_bdsp_stationary(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        pokemon_results =
-            bdsp::stationary::generate_pokemon(rng.clone(), gender_ratio, set_ivs, lead);
+        pokemon_results = bdsp::stationary::generate_pokemon(rng, gender_ratio, set_ivs, lead);
 
         if filter_bdsp_stationary(
             &pokemon_results,
@@ -315,7 +277,6 @@ pub fn calculate_pokemon_bdsp_underground(
     story_flag: u8,
 ) -> JsValue {
     init_panic_hook();
-
     let min_ivs = [
         min_ivs[0] as u8,
         min_ivs[1] as u8,
@@ -400,6 +361,7 @@ pub fn calculate_pokemon_bdsp_underground(
     let mut rng = bdsp_ug_generator::xorshift::XorShift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     rng.advance(min);
+
     let results = bdsp_ug_generator::run_results(
         max as u32,
         rng,
@@ -463,48 +425,6 @@ pub fn calculate_pokemon_bdsp_underground(
         .flatten()
         .collect::<Vec<bdsp::underground::generator::Pokemon>>();
 
-    JsValue::from_serde(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn calculate_tid(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    min: usize,
-    max: usize,
-    id: Vec<u32>,
-    filter_type: enums::IDFilter,
-) -> JsValue {
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    let mut tid_results;
-    let mut results: Vec<TIDResult> = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
-    for value in values {
-        tid_results = bdsp::tid::generate_tid(rng.clone());
-
-        if filter_tid(&tid_results, &id, filter_type) {
-            let result_state = rng.get_state();
-            let result = TIDResult {
-                state0: result_state[0],
-                state1: result_state[1],
-                state2: result_state[2],
-                state3: result_state[3],
-                advances: value,
-                tid: tid_results.tid,
-                tsv: tid_results.tsv,
-                g8tid: tid_results.g8tid,
-                sid: tid_results.sid,
-                filter_type: filter_type,
-            };
-            results.push(result);
-        }
-        rng.next();
-    }
-
-    let results: Vec<TIDResult> = results.into_iter().collect();
 
     JsValue::from_serde(&results).unwrap()
 }
@@ -527,7 +447,7 @@ pub fn calculate_pokemon_bdsp_roamer(
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
 ) -> JsValue {
-    let natures = nature_filter
+    let natures: Vec<enums::NatureFilter> = nature_filter
         .iter()
         .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
         .collect();
@@ -538,7 +458,7 @@ pub fn calculate_pokemon_bdsp_roamer(
     let values = min..=max;
     rng.advance(min);
     for value in values {
-        pokemon_results = bdsp::roamer::generate_pokemon(rng.clone(), gender_ratio, set_ivs);
+        pokemon_results = bdsp::roamer::generate_pokemon(rng, gender_ratio, set_ivs);
 
         if filter_bdsp_stationary(
             &pokemon_results,
