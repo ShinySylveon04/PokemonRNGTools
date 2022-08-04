@@ -199,10 +199,7 @@ export const RNGInfo = ({ setState, state }) => {
           </FormControl>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="pokemon-type-label">{t('Pokemon')}</InputLabel>
-            <PokemonList setState={setState} state={state} t={t} />
-          </FormControl>
+          <PokemonList setState={setState} state={state} t={t} />
         </Grid>
       </Grid>
     </Paper>
