@@ -59,7 +59,7 @@ pub fn generate_static_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
+        nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
         ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
     }
 }
@@ -133,7 +133,7 @@ pub fn generate_dynamic_pokemon(
         shiny_type,
         ec,
         pid,
-        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
+        nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
         ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
     }
 }

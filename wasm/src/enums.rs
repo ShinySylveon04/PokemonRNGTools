@@ -40,7 +40,7 @@ pub enum Ability {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
-#[repr(u32)]
+#[repr(u16)]
 pub enum NatureFilter {
     #[num_enum(default)]
     Hardy = 0,
@@ -73,7 +73,7 @@ pub enum NatureFilter {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
-#[repr(u32)]
+#[repr(u16)]
 pub enum Nature {
     #[num_enum(default)]
     Hardy = 0,

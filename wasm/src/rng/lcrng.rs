@@ -18,14 +18,22 @@ impl Lcrng {
     pub fn get_state(&self) -> u32 {
         self.state
     }
+
+    pub fn next_u32(&mut self) -> u32 {
+        self.state = self.state.wrapping_mul(0x41C64E6D).wrapping_add(0x6073);
+        self.state
+    }
+
+    pub fn next_u16(&mut self) -> u16 {
+        (self.next_u32() >> 16) as u16
+    }
 }
 
 impl Iterator for Lcrng {
     type Item = u32;
 
     fn next(&mut self) -> Option<u32> {
-        self.state = self.state.wrapping_mul(0x41C64E6D).wrapping_add(0x6073);
-        Some(self.state)
+        Some(self.next_u32())
     }
 }
 
@@ -54,5 +62,14 @@ mod test {
         let rng = Lcrng::new(0x12345678);
         let result = rng.skip(100).take(4).collect::<Vec<u32>>();
         assert_eq!(result, [0xa13699ff, 0x2165a406, 0x92e50b01, 0x18a65de0]);
+    }
+
+    #[test]
+    fn should_work() {
+        let mut rng = Lcrng::new(0);
+        let result = rng.take(4).collect::<Vec<u32>>();
+        let expected_result = [0x6073, 0xe97e7b6a, 0x52713895, 0x31b0dde4];
+
+        assert_eq!(result, expected_result)
     }
 }

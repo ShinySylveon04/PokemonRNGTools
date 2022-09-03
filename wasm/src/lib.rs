@@ -9,6 +9,7 @@ extern crate console_error_panic_hook;
 mod bdsp;
 mod enums;
 mod rng;
+mod rs;
 mod swsh;
 
 #[wasm_bindgen]
@@ -246,7 +247,9 @@ pub fn calculate_pokemon_bdsp_stationary(
 ) -> JsValue {
     let natures = nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -316,7 +319,9 @@ pub fn calculate_pokemon_bdsp_underground(
     init_panic_hook();
     let natures = nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
@@ -417,7 +422,9 @@ pub fn calculate_pokemon_bdsp_roamer(
 ) -> JsValue {
     let natures = nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);

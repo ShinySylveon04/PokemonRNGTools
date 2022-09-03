@@ -89,7 +89,7 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
         Some(set_nature) => set_nature,
         None => {
             let nature_rand = rng.next();
-            enums::Nature::try_from(nature_rand - (nature_rand / 25) * 25)
+            enums::Nature::try_from((nature_rand - (nature_rand / 25) * 25) as u16)
                 .unwrap_or(enums::Nature::Hardy)
         }
     };
@@ -97,7 +97,9 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
     let natures: Vec<enums::NatureFilter> = settings
         .nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
 
     if !natures.iter().any(|nat| *nat == nature) {

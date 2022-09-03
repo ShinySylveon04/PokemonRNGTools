@@ -65,7 +65,7 @@ pub fn generate_pokemon(
         shiny,
         pid,
         ec,
-        nature: enums::Nature::try_from(nature).unwrap_or(enums::Nature::Hardy),
+        nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
         ivs,
         ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
         gender,
