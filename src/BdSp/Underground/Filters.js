@@ -6,49 +6,16 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import ListItemText from '@mui/material/ListItemText';
 
 import { useTranslation } from 'react-i18next';
 
-import { natureOptions } from '../../natures';
 import { IVFilters } from './IVFilters';
 import { ShinyFilter } from '../../Components/ShinyFilter';
+import { NatureFilter } from '../../Components/NatureFilter';
 
 export const Filters = ({ setState, state }) => {
   const { t } = useTranslation();
 
-  const handleNatureChange = event => {
-    // If Any is selected, then a nature is selected, deselect Any
-    if (state.nature.includes(25) && event.target.value.length > 1) {
-      const index = event.target.value.indexOf(25);
-      if (index > -1) {
-        event.target.value.splice(index, 1);
-      }
-      setState(state => ({
-        ...state,
-        nature: event.target.value,
-      }));
-    }
-    // If nature(s) are selected, then select Any, deselect all other natures
-    // Or if all natures are unselected set to Any by default
-    else if (
-      (!state.nature.includes(25) && event.target.value.includes(25)) ||
-      event.target.value.length === 0
-    ) {
-      setState(state => ({
-        ...state,
-        nature: [25],
-      }));
-    }
-    // Otherwise, add natures selected
-    else {
-      setState(state => ({
-        ...state,
-        nature: event.target.value,
-      }));
-    }
-  };
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -67,37 +34,7 @@ export const Filters = ({ setState, state }) => {
           <ShinyFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="nature-label">{t('Nature')}</InputLabel>
-            <Select
-              multiple
-              labelId="nature-label"
-              id="nature"
-              value={state.nature}
-              label={t('Nature')}
-              renderValue={selected =>
-                selected
-                  .map(nature =>
-                    t(
-                      `nature.${
-                        natureOptions.find(
-                          natureOption => natureOption.value === nature,
-                        ).name
-                      }`,
-                    ),
-                  )
-                  .join(', ')
-              }
-              onChange={event => handleNatureChange(event)}
-            >
-              {natureOptions.map(nature => (
-                <MenuItem value={nature.value} key={nature.value}>
-                  <Checkbox checked={state.nature.indexOf(nature.value) > -1} />
-                  <ListItemText primary={t(`nature.${nature.name}`)} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NatureFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
