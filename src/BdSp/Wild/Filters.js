@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { IVFilters } from './IVFilters';
 import { ShinyFilter } from '../../Components/ShinyFilter';
 import { NatureFilter } from '../../Components/NatureFilter';
+import { AbilityFilter } from '../../Components/AbilityFilter';
 
 import { useTranslation } from 'react-i18next';
 
@@ -70,25 +71,7 @@ export const Filters = ({ setState, state }) => {
           <NatureFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="ability-label">{t('Ability')}</InputLabel>
-            <Select
-              labelId="ability-label"
-              id="ability"
-              value={state.ability_filter}
-              label={t('Ability')}
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  ability_filter: event.target.value,
-                }))
-              }
-            >
-              <MenuItem value={3}>{t('Any')}</MenuItem>
-              <MenuItem value={0}>0</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-            </Select>
-          </FormControl>
+          <AbilityFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
