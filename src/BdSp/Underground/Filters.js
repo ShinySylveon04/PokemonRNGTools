@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { natureOptions } from '../../natures';
 import { IVFilters } from './IVFilters';
+import { ShinyFilter } from '../../Components/ShinyFilter';
 
 export const Filters = ({ setState, state }) => {
   const { t } = useTranslation();
@@ -63,26 +64,7 @@ export const Filters = ({ setState, state }) => {
           </Typography>
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="shiny-type-label">{t('Shiny')}</InputLabel>
-            <Select
-              labelId="shiny-type-label"
-              id="shiny-type"
-              value={state.shiny}
-              label={t('Shiny')}
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  shiny: event.target.value,
-                }))
-              }
-            >
-              <MenuItem value={4}>{t('Any')}</MenuItem>
-              <MenuItem value={1}>{t('Star')}</MenuItem>
-              <MenuItem value={2}>{t('Square')}</MenuItem>
-              <MenuItem value={3}>{t('Star/Square')}</MenuItem>
-            </Select>
-          </FormControl>
+          <ShinyFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
           <FormControl fullWidth>
