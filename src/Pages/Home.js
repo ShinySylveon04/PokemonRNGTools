@@ -77,17 +77,17 @@ export const Home = () => {
             <CardHeader
               avatar={<img src={dialga} alt="Dialga" width={50} />}
               title="Brilliant Diamond & Shining Pearl"
-              subheader="Stationary"
+              subheader="Static"
             />
             <CardContent>
               <Typography variant="body2" gutterBottom>
-                RNG stationary Pokemon, such as your starter or Dialga/Palkia
+                RNG static Pokemon, such as your starter or Dialga/Palkia
               </Typography>
               <Button
                 color="primary"
                 variant="contained"
                 component={Link}
-                to="bdsp/stationary"
+                to="bdsp/static"
                 fullWidth
               >
                 Link

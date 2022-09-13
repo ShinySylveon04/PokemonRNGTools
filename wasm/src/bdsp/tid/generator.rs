@@ -4,7 +4,6 @@ use crate::bdsp::tid::settings::Settings;
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
-use wasm_bindgen::prelude::*;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Tid {
@@ -14,7 +13,6 @@ pub struct Tid {
     pub sid: u16,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
     pub state0: u32,

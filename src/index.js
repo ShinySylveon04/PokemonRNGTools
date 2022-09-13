@@ -9,7 +9,6 @@ import { Wild } from './BdSp/Wild/Wild';
 import { Stationary } from './BdSp/Stationary/Stationary';
 import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
-import { Roamers } from './BdSp/Roamers/Roamers';
 
 import { MetaTags } from './Components/MetaTags';
 
@@ -26,10 +25,9 @@ ReactDOM.render(
           <Route path="translate" element={<Translate />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
-          <Route path="bdsp/stationary" element={<Stationary />} />
+          <Route path="bdsp/static" element={<Stationary />} />
           <Route path="bdsp/underground" element={<Underground />} />
           <Route path="bdsp/tid" element={<TID />} />
-          <Route path="bdsp/roamers" element={<Roamers />} />
         </Route>
       </Routes>
     </HashRouter>
