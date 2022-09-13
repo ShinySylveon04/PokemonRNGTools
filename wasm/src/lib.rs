@@ -36,6 +36,16 @@ pub fn get_wild(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn gen3_wild(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: rs::settings::Settings = settings.into_serde().unwrap();
+
+    let results = rs::wild::generate_pokemon(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: enums::Shiny,

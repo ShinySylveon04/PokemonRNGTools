@@ -66,7 +66,7 @@ mod test {
 
     #[test]
     fn should_work() {
-        let mut rng = Lcrng::new(0);
+        let rng = Lcrng::new(0);
         let result = rng.take(4).collect::<Vec<u32>>();
         let expected_result = [0x6073, 0xe97e7b6a, 0x52713895, 0x31b0dde4];
 

@@ -14,6 +14,6 @@ pub struct Settings {
     pub shiny_filter: enums::ShinyFilter,
     pub ability_filter: enums::AbilityFilter,
     pub gender_filter: enums::GenderFilter,
-    pub min_ivs: Vec<u32>,
-    pub max_ivs: Vec<u32>,
+    pub min_ivs: Vec<u16>,
+    pub max_ivs: Vec<u16>,
 }

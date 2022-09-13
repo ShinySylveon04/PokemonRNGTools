@@ -3,13 +3,11 @@ use crate::enums;
 use crate::rng::Lcrng;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
-use wasm_bindgen::prelude::*;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
     pub shiny: enums::Shiny,
     pub pid: u32,
-    pub ec: u32,
     pub nature: enums::Nature,
     pub ivs: Vec<u16>,
     pub ability: enums::Ability,
@@ -17,7 +15,6 @@ pub struct Pokemon {
     pub encounter: u8,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Result {
     pub state0: u32,
@@ -43,7 +40,7 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
         .all(|((iv, min), max)| min <= iv && iv <= max)
 }
 
-fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> {
+pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> {
     let settings = Settings {
         nature_filter: vec![25],
         encounter_filter: vec![12],
@@ -123,10 +120,13 @@ fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> {
     ivs[4] = (iv2 >> 10) & 0x1f;
     ivs[5] = iv2 & 0x1f;
 
+    if !check_ivs(&ivs, &settings.min_ivs, &settings.max_ivs) {
+        return None;
+    }
+
     Some(Pokemon {
         shiny: enums::Shiny::None,
         pid: pid.into(),
-        ec: 563921523,
         nature,
         ivs,
         ability,
@@ -163,7 +163,6 @@ mod test {
             Pokemon {
                 shiny: enums::Shiny::None,
                 pid: 0x60A1E414,
-                ec: 563921523,
                 nature: enums::Nature::Calm,
                 ivs: vec![11, 25, 10, 25, 3, 24],
                 ability: enums::Ability::Ability0,
@@ -173,7 +172,6 @@ mod test {
             Pokemon {
                 shiny: enums::Shiny::None,
                 pid: 0x639E3D69,
-                ec: 563921523,
                 nature: enums::Nature::Bashful,
                 ivs: vec![9, 9, 7, 20, 26, 13],
                 ability: enums::Ability::Ability1,

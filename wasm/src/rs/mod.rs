@@ -1,4 +1,5 @@
 mod wild;
 pub use wild::*;
 
-mod settings;
+pub mod settings;
+pub use settings::*;
