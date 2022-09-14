@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
-import { IVFilters } from './IVFilters';
+import { IVFilter } from '../../Components/IVFilter';
 import { ShinyFilter } from '../../Components/ShinyFilter';
 import { NatureFilter } from '../../Components/NatureFilter';
 import { AbilityFilter } from '../../Components/AbilityFilter';
@@ -108,7 +108,7 @@ export const Filters = ({ setState, state }) => {
         <Grid item sm={6} md={3} xs={12}>
           <GenderFilter state={state} setState={setState} />
         </Grid>
-        <IVFilters state={state} setState={setState} />
+        <IVFilter state={state} setState={setState} />
       </Grid>
     </Paper>
   );
