@@ -14,6 +14,7 @@ import { AbilityFilter } from '../../Components/AbilityFilter';
 
 import { useTranslation } from 'react-i18next';
 import { GenderRatioFilter } from '../../Components/GenderRatioFilter';
+import { GenderFilter } from '../../Components/GenderFilter';
 
 export const Filters = ({ setState, state }) => {
   const handleEncounterChange = event => {
@@ -105,25 +106,7 @@ export const Filters = ({ setState, state }) => {
           <GenderRatioFilter state={state} setState={setState} />
         </Grid>
         <Grid item sm={6} md={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="gender-label">{t('Gender')}</InputLabel>
-            <Select
-              labelId="gender-label"
-              id="gender"
-              value={state.gender_filter}
-              label={t('Gender')}
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  gender_filter: event.target.value,
-                }))
-              }
-            >
-              <MenuItem value={256}>{t('Any')}</MenuItem>
-              <MenuItem value={0}>♂</MenuItem>
-              <MenuItem value={254}>♀</MenuItem>
-            </Select>
-          </FormControl>
+          <GenderFilter state={state} setState={setState} />
         </Grid>
         <IVFilters state={state} setState={setState} />
       </Grid>
