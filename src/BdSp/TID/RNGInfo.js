@@ -6,12 +6,11 @@ import Paper from '@mui/material/Paper';
 
 import { useTranslation } from 'react-i18next';
 
-import { setRngStateFromClipboard } from '../../Utils/setRngState';
+import { RNGStates } from '../../Components/RNGStates';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
 
-  const handlePaste = event => setRngStateFromClipboard(event, setState);
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid
@@ -26,87 +25,7 @@ export const RNGInfo = ({ setState, state }) => {
             {t('RNG Info')}
           </Typography>
         </Grid>
-        <Grid container item sm={6} xs={12} justifyContent="center">
-          <TextField
-            onPaste={event => handlePaste(event)}
-            fullWidth
-            autoComplete="off"
-            inputProps={{
-              inputMode: 'text',
-              maxLength: 8,
-            }}
-            value={state.state0}
-            id="seed0"
-            label={t('Seed 0')}
-            variant="outlined"
-            onChange={event => {
-              setState(state => ({
-                ...state,
-                state0: event.target.value,
-              }));
-            }}
-          />
-        </Grid>
-        <Grid container item sm={6} xs={12} justifyContent="center">
-          <TextField
-            autoComplete="off"
-            fullWidth
-            inputProps={{
-              inputMode: 'text',
-              maxLength: 8,
-            }}
-            value={state.state1}
-            id="seed1"
-            label={t('Seed 1')}
-            variant="outlined"
-            onChange={event => {
-              setState(state => ({
-                ...state,
-                state1: event.target.value,
-              }));
-            }}
-          />
-        </Grid>
-        <Grid container item sm={6} xs={12} justifyContent="center">
-          <TextField
-            autoComplete="off"
-            fullWidth
-            inputProps={{
-              inputMode: 'text',
-              maxLength: 8,
-            }}
-            value={state.state2}
-            id="seed2"
-            label={t('Seed 2')}
-            variant="outlined"
-            onChange={event => {
-              setState(state => ({
-                ...state,
-                state2: event.target.value,
-              }));
-            }}
-          />
-        </Grid>
-        <Grid container item sm={6} xs={12} justifyContent="center">
-          <TextField
-            autoComplete="off"
-            fullWidth
-            inputProps={{
-              inputMode: 'text',
-              maxLength: 8,
-            }}
-            value={state.state3}
-            id="seed3"
-            label={t('Seed 3')}
-            variant="outlined"
-            onChange={event => {
-              setState(state => ({
-                ...state,
-                state3: event.target.value,
-              }));
-            }}
-          />
-        </Grid>
+        <RNGStates state={state} setState={setState} />
         <Grid item sm={6} md={3} xs={12}>
           <TextField
             inputProps={{
