@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -9,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { LeadFilter } from '../../Components/LeadFilter';
 import { RNGStates } from '../../Components/RNGStates';
 import { RNGAdvances } from '../../Components/RNGAdvances';
+import { RNGDelay } from '../../Components/RNGDelay';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
@@ -29,28 +29,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <RNGStates state={state} setState={setState} />
         <RNGAdvances state={state} setState={setState} />
-        <Grid item sm={6} md={3} xs={12}>
-          <TextField
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            fullWidth
-            id="delay"
-            label={t('Delay')}
-            variant="outlined"
-            value={state.delay}
-            onChange={event =>
-              setState(state => ({
-                ...state,
-                delay:
-                  event.target.value.length === 0
-                    ? ''
-                    : parseInt(event.target.value),
-              }))
-            }
-          />
-        </Grid>
+        <RNGDelay state={state} setState={setState} />
         <Grid item sm={6} md={3} xs={12}>
           <LeadFilter state={state} setState={setState} />
         </Grid>
