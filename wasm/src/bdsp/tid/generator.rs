@@ -30,9 +30,9 @@ pub struct Result {
 pub fn generate_tid(settings: Settings) -> Vec<Result> {
     let states: [u32; 4] = settings.rng_state[0..4].try_into().unwrap_or_default();
     let mut rng = Xorshift::from_state(states);
-    rng.advance(settings.min);
+    rng.advance(settings.min_advances);
     let mut results: Vec<Result> = Vec::new();
-    let values = settings.min..=settings.max;
+    let values = settings.min_advances..=settings.max_advances;
     for value in values {
         let generate_result = calculate_tid(rng, &settings);
 
@@ -102,8 +102,8 @@ mod test {
         let settings = Settings {
             id: vec![0],
             filter_type: enums::IDFilter::None,
-            max: 10,
-            min: 0,
+            max_advances: 10,
+            min_advances: 0,
             rng_state: vec![0x12345678, 0x12345678, 0x12345678, 0x12345678],
         };
         let mut rng = Xorshift::from_state([0x12345678, 0x12345678, 0x12345678, 0x12345678]);
@@ -153,8 +153,8 @@ mod test {
         let settings = Settings {
             id: vec![1234],
             filter_type: enums::IDFilter::TSV,
-            max: 10000,
-            min: 0,
+            max_advances: 10000,
+            min_advances: 0,
             rng_state: vec![0x12345678, 0x12345678, 0x12345678, 0x12345678],
         };
 
