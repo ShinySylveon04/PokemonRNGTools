@@ -18,8 +18,8 @@ const formatSettings = state => {
     rng_state: [state.state0, state.state1, state.state2, state.state3].map(
       num => parseInt(num, 16),
     ),
-    min: state.min,
-    max: state.max,
+    min_advances: state.min_advances,
+    max_advances: state.max_advances,
     id: state.id
       .split('\n')
       .filter(id => id.length !== 0)
@@ -38,8 +38,8 @@ export function TID() {
     state1: '',
     state2: '',
     state3: '',
-    min: 0,
-    max: 10000,
+    min_advances: 0,
+    max_advances: 10000,
     id: '',
     id_filter: 'None',
   });
