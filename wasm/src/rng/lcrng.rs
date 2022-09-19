@@ -27,6 +27,12 @@ impl Lcrng {
     pub fn next_u16(&mut self) -> u16 {
         (self.next_u32() >> 16) as u16
     }
+
+    pub fn advance(&mut self, advances: usize) {
+        for _ in 0..advances {
+            self.next();
+        }
+    }
 }
 
 impl Iterator for Lcrng {

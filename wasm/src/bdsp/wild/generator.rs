@@ -146,8 +146,8 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
     let mut rng = rng::Xorshift::from_state(states);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
-    let values = settings.min..=settings.max;
-    rng.advance(settings.min);
+    let values = settings.min_advances..=settings.max_advances;
+    rng.advance(settings.min_advances);
     for value in values {
         let generate_result = generate_pokemon(rng, &settings);
         if let Some(pokemon) = generate_result {
@@ -189,8 +189,8 @@ mod test {
             encounter_filter: vec![12],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
@@ -473,8 +473,8 @@ mod test {
             encounter_filter: vec![12],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10000,
+            min_advances: 0,
+            max_advances: 10000,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::Both,

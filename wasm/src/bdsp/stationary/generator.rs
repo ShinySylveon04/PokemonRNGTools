@@ -3,7 +3,7 @@ use crate::bdsp::roamer;
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(getter_with_clone)]
@@ -147,7 +147,7 @@ pub fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemo
     let nature = match enums::get_sync_nature(&settings.lead_filter) {
         Some(set_nature) => set_nature,
         None => {
-            let nature_rand = rng.next();
+            let nature_rand: u16 = rng.next().try_into().unwrap();
             enums::Nature::try_from(nature_rand - (nature_rand / 25) * 25)
                 .unwrap_or(enums::Nature::Hardy)
         }
@@ -156,7 +156,9 @@ pub fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemo
     let natures: Vec<enums::NatureFilter> = settings
         .nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
 
     if !natures.iter().any(|nat| *nat == nature) {

@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 pub struct Settings {
     pub nature_filter: Vec<u32>,
     pub encounter_filter: Vec<usize>,
-    pub rng_state: usize,
+    pub rng_state: u32,
     pub delay: usize,
-    pub min: usize,
-    pub max: usize,
+    pub min_advances: usize,
+    pub max_advances: usize,
     pub gender_ratio: enums::GenderRatio,
     pub lead_filter: enums::LeadFilter,
     pub shiny_filter: enums::ShinyFilter,

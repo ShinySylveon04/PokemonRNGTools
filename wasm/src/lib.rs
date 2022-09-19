@@ -26,11 +26,11 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
 }
 
 #[wasm_bindgen]
-pub fn gen3_wild(settings: &JsValue) -> JsValue {
+pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: rs::settings::Settings = settings.into_serde().unwrap();
 
-    let results = rs::wild::generate_wild(parsed_settings);
+    let results = rs::generator::generate_wild(parsed_settings);
 
     JsValue::from_serde(&results).unwrap()
 }

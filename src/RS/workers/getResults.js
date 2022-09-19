@@ -1,4 +1,4 @@
 import { expose } from 'comlink';
-import { gen3_wild } from '../../../../wasm/Cargo.toml';
+import { get_gen3_wild } from '../../../wasm/Cargo.toml';
 
-expose(gen3_wild);
+expose(get_gen3_wild);

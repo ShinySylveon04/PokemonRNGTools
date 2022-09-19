@@ -15,18 +15,14 @@ pub struct Pokemon {
     pub encounter: u8,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
-    pub state0: u32,
-    pub state1: u32,
-    pub state2: u32,
-    pub state3: u32,
+    pub rng_state: u32,
     pub advances: usize,
     pub shiny_value: enums::Shiny,
     pub pid: u32,
-    pub ec: u32,
     pub nature: enums::Nature,
-    pub ivs: Vec<u32>,
+    pub ivs: Vec<u16>,
     pub ability: enums::Ability,
     pub gender: enums::Gender,
     pub encounter: u8,
@@ -41,22 +37,6 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 }
 
 pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> {
-    let settings = Settings {
-        nature_filter: vec![25],
-        encounter_filter: vec![12],
-        rng_state: 0,
-        delay: 0,
-        min: 0,
-        max: 10,
-        gender_ratio: enums::GenderRatio::Male50Female50,
-        lead_filter: enums::LeadFilter::None,
-        shiny_filter: enums::ShinyFilter::None,
-        ability_filter: enums::AbilityFilter::Any,
-        gender_filter: enums::GenderFilter::Any,
-        min_ivs: vec![0, 0, 0, 0, 0, 0],
-        max_ivs: vec![31, 31, 31, 31, 31, 31],
-    };
-
     rng.next_u32();
     rng.next_u32();
     rng.next_u32();
@@ -135,6 +115,37 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
     })
 }
 
+pub fn generate_wild(settings: Settings) -> Vec<Result> {
+    let mut rng = Lcrng::from_state(settings.rng_state);
+    rng.advance(settings.delay);
+    let mut results: Vec<Result> = Vec::new();
+    let values = settings.min_advances..=settings.max_advances;
+    rng.advance(settings.min_advances);
+
+    for value in values {
+        let generate_result = generate_pokemon(rng, &settings);
+        if let Some(pokemon) = generate_result {
+            let rng_state = rng.get_state();
+            let result = Result {
+                rng_state,
+                advances: value,
+                pid: pokemon.pid,
+                shiny_value: pokemon.shiny,
+                nature: pokemon.nature,
+                ivs: pokemon.ivs,
+                ability: pokemon.ability,
+                gender: pokemon.gender,
+                encounter: pokemon.encounter,
+            };
+            results.push(result);
+        }
+
+        rng.next();
+    }
+
+    results.into_iter().collect()
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -148,8 +159,8 @@ mod test {
             encounter_filter: vec![12],
             rng_state: 0,
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
