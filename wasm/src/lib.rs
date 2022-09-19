@@ -164,8 +164,8 @@ pub fn calculate_pokemon_bdsp_underground(
     seed3: u32,
     seed4: u32,
     shiny_filter: enums::ShinyFilter,
-    min: usize,
-    max: usize,
+    min_advances: usize,
+    max_advances: usize,
     delay: usize,
     nature_filter: Vec<u32>,
     ability_filter: enums::AbilityFilter,
@@ -186,8 +186,8 @@ pub fn calculate_pokemon_bdsp_underground(
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);
     let mut pokemon_results = Vec::new();
-    let values = min..=max;
-    rng.advance(min);
+    let values = min_advances..=max_advances;
+    rng.advance(min_advances);
     for value in values {
         let mut result = bdsp::underground::generator::generate_pokemon(
             rng,

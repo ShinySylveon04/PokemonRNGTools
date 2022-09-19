@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LeadFilter } from '../../Components/LeadFilter';
 import { RNGStates } from '../../Components/RNGStates';
+import { RNGAdvances } from '../../Components/RNGAdvances';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
@@ -27,50 +28,7 @@ export const RNGInfo = ({ setState, state }) => {
           </Typography>
         </Grid>
         <RNGStates state={state} setState={setState} />
-        <Grid item sm={6} md={3} xs={12}>
-          <TextField
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            fullWidth
-            id="min"
-            label={t('Min Advances')}
-            variant="outlined"
-            value={state.min_advances}
-            onChange={event =>
-              setState(state => ({
-                ...state,
-                min_advances:
-                  event.target.value.length === 0
-                    ? ''
-                    : parseInt(event.target.value),
-              }))
-            }
-          />
-        </Grid>
-        <Grid item sm={6} md={3} xs={12}>
-          <TextField
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            fullWidth
-            id="max"
-            label={t('Max Advances')}
-            variant="outlined"
-            value={state.max_advances}
-            onChange={event =>
-              setState(state => ({
-                ...state,
-                max_advances:
-                  event.target.value.length === 0
-                    ? ''
-                    : parseInt(event.target.value),
-              }))
-            }
-          />
-        </Grid>
+        <RNGAdvances state={state} setState={setState} />
         <Grid item sm={6} md={3} xs={12}>
           <TextField
             inputProps={{
