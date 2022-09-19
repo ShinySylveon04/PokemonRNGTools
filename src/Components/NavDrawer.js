@@ -50,13 +50,13 @@ const NavItems = ({ handleDrawerClose, location }) => (
         <ListItemText primary="Wild" />
       </ListItemButton>
       <ListItemButton
-        selected={location === '/bdsp/stationary'}
+        selected={location === '/bdsp/static'}
         onClick={handleDrawerClose}
         component={Link}
-        to="bdsp/stationary"
+        to="bdsp/static"
         sx={{ pl: 4 }}
       >
-        <ListItemText primary="Stationary" />
+        <ListItemText primary="Static" />
       </ListItemButton>
       <ListItemButton
         selected={location === '/bdsp/underground'}
@@ -75,15 +75,6 @@ const NavItems = ({ handleDrawerClose, location }) => (
         sx={{ pl: 4 }}
       >
         <ListItemText primary="TID" />
-      </ListItemButton>
-      <ListItemButton
-        selected={location === '/bdsp/roamers'}
-        onClick={handleDrawerClose}
-        component={Link}
-        to="bdsp/roamers"
-        sx={{ pl: 4 }}
-      >
-        <ListItemText primary="Roamers" />
       </ListItemButton>
     </List>
   </Box>

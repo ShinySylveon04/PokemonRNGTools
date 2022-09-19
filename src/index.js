@@ -28,10 +28,9 @@ ReactDOM.render(
           <Route path="rs" element={<RS />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
-          <Route path="bdsp/stationary" element={<Stationary />} />
+          <Route path="bdsp/static" element={<Stationary />} />
           <Route path="bdsp/underground" element={<Underground />} />
           <Route path="bdsp/tid" element={<TID />} />
-          <Route path="bdsp/roamers" element={<Roamers />} />
         </Route>
       </Routes>
     </HashRouter>

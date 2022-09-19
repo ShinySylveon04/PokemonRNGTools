@@ -3,8 +3,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -13,15 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { useTranslation } from 'react-i18next';
 
 import { setRngStateFromClipboard } from '../../Utils/setRngState';
+import { PokemonList } from './PokemonList';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
-
-  const [checked, setChecked] = React.useState(false);
-  const handleChange = event => {
-    setState({ ...state, set_ivs: event.target.checked });
-    setChecked(event.target.checked);
-  };
 
   const handlePaste = event => setRngStateFromClipboard(event, setState);
   return (
@@ -129,7 +122,7 @@ export const RNGInfo = ({ setState, state }) => {
             id="min"
             label={t('Min Advances')}
             variant="outlined"
-            value={state.min}
+            value={state.min_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
@@ -151,7 +144,7 @@ export const RNGInfo = ({ setState, state }) => {
             id="max"
             label={t('Max Advances')}
             variant="outlined"
-            value={state.max}
+            value={state.max_advances}
             onChange={event =>
               setState(state => ({
                 ...state,
@@ -191,12 +184,12 @@ export const RNGInfo = ({ setState, state }) => {
             <Select
               labelId="lead-type-label"
               id="lead"
-              value={state.lead}
+              value={state.lead_filter}
               label={t('Lead')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  lead: event.target.value,
+                  lead_filter: event.target.value,
                 }))
               }
             >
@@ -205,26 +198,8 @@ export const RNGInfo = ({ setState, state }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid
-          container
-          item
-          sm={6}
-          md={3}
-          xs={12}
-          sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}
-        >
-          <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checked}
-                  onChange={handleChange}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              }
-              label={t('Set IVs')}
-            />
-          </Grid>
+        <Grid item sm={6} md={3} xs={12}>
+          <PokemonList setState={setState} state={state} />
         </Grid>
       </Grid>
     </Paper>

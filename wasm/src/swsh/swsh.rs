@@ -38,7 +38,7 @@ pub fn generate_static_pokemon(
         }
     } else {
         // force pid to be shiny
-        if !((psv ^ tsv) < 16) {
+        if (psv ^ tsv) >= 16 {
             let pid_high = (pid & 0xFFFF) ^ tsv as u32;
             pid = (pid_high << 16) as u32 | (pid & 0xFFFF)
         }
@@ -112,7 +112,7 @@ pub fn generate_dynamic_pokemon(
         }
     } else {
         // force pid to be shiny
-        if !((psv ^ tsv) < 16) {
+        if (psv ^ tsv) >= 16 {
             let pid_high = (pid & 0xFFFF) ^ tsv as u32;
             pid = (pid_high << 16) as u32 | (pid & 0xFFFF)
         }

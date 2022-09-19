@@ -19,32 +19,32 @@ export const Filters = ({ setState, state }) => {
 
   const handleNatureChange = event => {
     // If Any is selected, then a nature is selected, deselect Any
-    if (state.nature.includes(25) && event.target.value.length > 1) {
+    if (state.nature_filter.includes(25) && event.target.value.length > 1) {
       const index = event.target.value.indexOf(25);
       if (index > -1) {
         event.target.value.splice(index, 1);
       }
       setState(state => ({
         ...state,
-        nature: event.target.value,
+        nature_filter: event.target.value,
       }));
     }
     // If nature(s) are selected, then select Any, deselect all other natures
     // Or if all natures are unselected set to Any by default
     else if (
-      (!state.nature.includes(25) && event.target.value.includes(25)) ||
+      (!state.nature_filter.includes(25) && event.target.value.includes(25)) ||
       event.target.value.length === 0
     ) {
       setState(state => ({
         ...state,
-        nature: [25],
+        nature_filter: [25],
       }));
     }
     // Otherwise, add natures selected
     else {
       setState(state => ({
         ...state,
-        nature: event.target.value,
+        nature_filter: event.target.value,
       }));
     }
   };
@@ -68,12 +68,12 @@ export const Filters = ({ setState, state }) => {
             <Select
               labelId="shiny-type-label"
               id="shiny-type"
-              value={state.shiny}
+              value={state.shiny_filter}
               label={t('Shiny')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  shiny: event.target.value,
+                  shiny_filter: event.target.value,
                 }))
               }
             >
@@ -91,7 +91,7 @@ export const Filters = ({ setState, state }) => {
               multiple
               labelId="nature-label"
               id="nature"
-              value={state.nature}
+              value={state.nature_filter}
               label={t('Nature')}
               renderValue={selected =>
                 selected
@@ -110,7 +110,9 @@ export const Filters = ({ setState, state }) => {
             >
               {natureOptions.map(nature => (
                 <MenuItem value={nature.value} key={nature.value}>
-                  <Checkbox checked={state.nature.indexOf(nature.value) > -1} />
+                  <Checkbox
+                    checked={state.nature_filter.indexOf(nature.value) > -1}
+                  />
                   <ListItemText primary={t(`nature.${nature.name}`)} />
                 </MenuItem>
               ))}
@@ -123,12 +125,12 @@ export const Filters = ({ setState, state }) => {
             <Select
               labelId="ability-label"
               id="ability"
-              value={state.ability}
+              value={state.ability_filter}
               label={t('Ability')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  ability: event.target.value,
+                  ability_filter: event.target.value,
                 }))
               }
             >
@@ -144,12 +146,12 @@ export const Filters = ({ setState, state }) => {
             <Select
               labelId="genderRatio-label"
               id="genderRatio"
-              value={state.genderRatio}
+              value={state.gender_ratio}
               label={t('Gender Ratio')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  genderRatio: event.target.value,
+                  gender_ratio: event.target.value,
                 }))
               }
             >
@@ -170,12 +172,12 @@ export const Filters = ({ setState, state }) => {
             <Select
               labelId="gender-label"
               id="gender"
-              value={state.gender}
+              value={state.gender_filter}
               label={t('Gender')}
               onChange={event =>
                 setState(state => ({
                   ...state,
-                  gender: event.target.value,
+                  gender_filter: event.target.value,
                 }))
               }
             >

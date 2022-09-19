@@ -19,7 +19,7 @@ pub struct Pokemon {
     pub is_rare: bool,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct PokemonSlot {
     pub slot: u32,
     pub poke_type: u8,
@@ -99,7 +99,7 @@ pub fn generate_pokemon(
     }
 
     if rare_check < 50 {
-        poke_num = poke_num - 1;
+        poke_num -= 1;
     }
 
     // rng.advance(poke_num * 2);

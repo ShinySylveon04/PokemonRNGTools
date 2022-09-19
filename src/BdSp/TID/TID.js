@@ -13,6 +13,22 @@ import { Results } from './Results';
 
 const calculateTID = wrap(new Worker('./workers/getResults.js'));
 
+const formatSettings = state => {
+  const settings = {
+    rng_state: [state.state0, state.state1, state.state2, state.state3].map(
+      num => parseInt(num, 16),
+    ),
+    min: state.min,
+    max: state.max,
+    id: state.id
+      .split('\n')
+      .filter(id => id.length !== 0)
+      .map(id => parseInt(id, 10)),
+    filter_type: state.id_filter,
+  };
+  return settings;
+};
+
 export function TID() {
   const { t } = useTranslation();
 
@@ -40,23 +56,14 @@ export function TID() {
     },
   ]);
 
-  const { state0, state1, state2, state3, min, max, id, id_filter } = state;
+  const settings = formatSettings(state);
 
   const handleSubmit = event => {
     event.preventDefault();
 
     setSearching(true);
 
-    return calculateTID(
-      parseInt(state0, 16),
-      parseInt(state1, 16),
-      parseInt(state2, 16),
-      parseInt(state3, 16),
-      min,
-      max,
-      id.split('\n'),
-      id_filter,
-    ).then(data => {
+    return calculateTID(settings).then(data => {
       setResults(data), setSearching(false);
     });
   };

@@ -3,7 +3,6 @@ use crate::rng::Xorshift;
 use crate::{enums, rng};
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
-use wasm_bindgen::prelude::*;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
@@ -17,8 +16,7 @@ pub struct Pokemon {
     pub encounter: u8,
 }
 
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Result {
     pub state0: u32,
     pub state1: u32,
@@ -147,18 +145,18 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
     ];
     let mut rng = rng::Xorshift::from_state(states);
     rng.advance(settings.delay);
-    let mut shiny_results: Vec<Result> = Vec::new();
+    let mut results: Vec<Result> = Vec::new();
     let values = settings.min..=settings.max;
     rng.advance(settings.min);
     for value in values {
-        let generate_result = generate_pokemon(rng.clone(), &settings);
+        let generate_result = generate_pokemon(rng, &settings);
         if let Some(pokemon) = generate_result {
-            let shiny_state = rng.get_state();
+            let rng_state = rng.get_state();
             let result = Result {
-                state0: shiny_state[0],
-                state1: shiny_state[1],
-                state2: shiny_state[2],
-                state3: shiny_state[3],
+                state0: rng_state[0],
+                state1: rng_state[1],
+                state2: rng_state[2],
+                state3: rng_state[3],
                 advances: value,
                 pid: pokemon.pid,
                 shiny_value: pokemon.shiny,
@@ -169,13 +167,342 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
                 gender: pokemon.gender,
                 encounter: pokemon.encounter,
             };
-            shiny_results.push(result);
+            results.push(result);
         }
 
         rng.next();
     }
 
-    let results: Vec<Result> = shiny_results.into_iter().collect();
+    results.into_iter().collect()
+}
 
-    results
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::vec;
+
+    #[test]
+    fn should_generate_pokemon() {
+        let mut rng = Xorshift::from_state([1, 2, 3, 4]);
+        let settings = Settings {
+            nature_filter: vec![25],
+            encounter_filter: vec![12],
+            rng_state: vec![1, 2, 3, 4],
+            delay: 0,
+            min: 0,
+            max: 10,
+            gender_ratio: enums::GenderRatio::Male50Female50,
+            lead_filter: enums::LeadFilter::None,
+            shiny_filter: enums::ShinyFilter::None,
+            ability_filter: enums::AbilityFilter::Any,
+            gender_filter: enums::GenderFilter::Any,
+            min_ivs: vec![0, 0, 0, 0, 0, 0],
+            max_ivs: vec![31, 31, 31, 31, 31, 31],
+        };
+
+        let expected_results = vec![
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x6a88a6e4,
+                ec: 0x219cc273,
+                nature: enums::Nature::Bashful,
+                ivs: vec![12, 20, 1, 12, 5, 20],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 4,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xa28ce86c,
+                ec: 0x032ebce9,
+                nature: enums::Nature::Hardy,
+                ivs: vec![20, 1, 12, 5, 20, 16],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 5,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xe5443914,
+                ec: 0x6a88a6e4,
+                nature: enums::Nature::Quiet,
+                ivs: vec![1, 12, 5, 20, 16, 20],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 0,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x137b08a1,
+                ec: 0xa28ce86c,
+                nature: enums::Nature::Jolly,
+                ivs: vec![12, 5, 20, 16, 20, 19],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Male,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xbc6b23ac,
+                ec: 0xe5443914,
+                nature: enums::Nature::Naive,
+                ivs: vec![5, 20, 16, 20, 19, 6],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 6,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xf9e163c5,
+                ec: 0x137b08a1,
+                nature: enums::Nature::Jolly,
+                ivs: vec![20, 16, 20, 19, 6, 28],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 7,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xbd297974,
+                ec: 0xbc6b23ac,
+                nature: enums::Nature::Naughty,
+                ivs: vec![16, 20, 19, 6, 28, 0],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Male,
+                encounter: 3,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xf65c4070,
+                ec: 0xf9e163c5,
+                nature: enums::Nature::Naughty,
+                ivs: vec![20, 19, 6, 28, 0, 10],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Male,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x934f7b54,
+                ec: 0xbd297974,
+                nature: enums::Nature::Bold,
+                ivs: vec![19, 6, 28, 0, 10, 17],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 3,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xe1c2cdb3,
+                ec: 0xf65c4070,
+                nature: enums::Nature::Adamant,
+                ivs: vec![6, 28, 0, 10, 17, 25],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x9756fa26,
+                ec: 0x934f7b54,
+                nature: enums::Nature::Sassy,
+                ivs: vec![28, 0, 10, 17, 25, 10],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x039d677c,
+                ec: 0xe1c2cdb3,
+                nature: enums::Nature::Jolly,
+                ivs: vec![0, 10, 17, 25, 10, 12],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x6b603980,
+                ec: 0x9756fa26,
+                nature: enums::Nature::Lax,
+                ivs: vec![10, 17, 25, 10, 12, 21],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Male,
+                encounter: 0,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x1cb8de0a,
+                ec: 0x039d677c,
+                nature: enums::Nature::Quirky,
+                ivs: vec![17, 25, 10, 12, 21, 9],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Male,
+                encounter: 2,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xbc9f8071,
+                ec: 0x6b603980,
+                nature: enums::Nature::Bashful,
+                ivs: vec![25, 10, 12, 21, 9, 22],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 0,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xd451a619,
+                ec: 0x1cb8de0a,
+                nature: enums::Nature::Careful,
+                ivs: vec![10, 12, 21, 9, 22, 21],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 2,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x3e17392a,
+                ec: 0xbc9f8071,
+                nature: enums::Nature::Quiet,
+                ivs: vec![12, 21, 9, 22, 21, 30],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Male,
+                encounter: 2,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x6405e86c,
+                ec: 0xd451a619,
+                nature: enums::Nature::Calm,
+                ivs: vec![21, 9, 22, 21, 30, 20],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Male,
+                encounter: 8,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xa4596095,
+                ec: 0x3e17392a,
+                nature: enums::Nature::Quiet,
+                ivs: vec![9, 22, 21, 30, 20, 24],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 4,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x7de16b69,
+                ec: 0x6405e86c,
+                nature: enums::Nature::Timid,
+                ivs: vec![22, 21, 30, 20, 24, 29],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Male,
+                encounter: 5,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x7a38c396,
+                ec: 0xa4596095,
+                nature: enums::Nature::Gentle,
+                ivs: vec![21, 30, 20, 24, 29, 15],
+                ability: enums::Ability::Ability0,
+                gender: enums::Gender::Female,
+                encounter: 3,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xb1b51235,
+                ec: 0x7de16b69,
+                nature: enums::Nature::Bashful,
+                ivs: vec![30, 20, 24, 29, 15, 24],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Male,
+                encounter: 1,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x5e07815e,
+                ec: 0x7a38c396,
+                nature: enums::Nature::Hasty,
+                ivs: vec![20, 24, 29, 15, 24, 21],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 0,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0xa84b03d4,
+                ec: 0xb1b51235,
+                nature: enums::Nature::Mild,
+                ivs: vec![24, 29, 15, 24, 21, 3],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Female,
+                encounter: 6,
+            },
+            Pokemon {
+                shiny: enums::Shiny::None,
+                pid: 0x94535138,
+                ec: 0x5e07815e,
+                nature: enums::Nature::Adamant,
+                ivs: vec![29, 15, 24, 21, 3, 21],
+                ability: enums::Ability::Ability1,
+                gender: enums::Gender::Male,
+                encounter: 0,
+            },
+        ];
+
+        for (advance, expected_result) in expected_results.iter().enumerate() {
+            let result = generate_pokemon(rng.clone(), &settings);
+
+            assert_eq!(
+                result.as_ref(),
+                Some(expected_result),
+                "Mismatch on advance {}",
+                advance
+            );
+            rng.next();
+        }
+    }
+
+    #[test]
+    fn should_filter_pokemon() {
+        let settings = Settings {
+            nature_filter: vec![25],
+            encounter_filter: vec![12],
+            rng_state: vec![1, 2, 3, 4],
+            delay: 0,
+            min: 0,
+            max: 10000,
+            gender_ratio: enums::GenderRatio::Male50Female50,
+            lead_filter: enums::LeadFilter::None,
+            shiny_filter: enums::ShinyFilter::Both,
+            ability_filter: enums::AbilityFilter::Any,
+            gender_filter: enums::GenderFilter::Any,
+            min_ivs: vec![0, 0, 0, 0, 0, 0],
+            max_ivs: vec![31, 31, 31, 31, 31, 31],
+        };
+
+        let expected_results = Result {
+            state0: 3298367444,
+            state1: 2621101892,
+            state2: 3417870565,
+            state3: 4276622010,
+            advances: 4396,
+            shiny_value: enums::Shiny::Star,
+            pid: 0x906f73f0,
+            ec: 0x2fa7e388,
+            nature: enums::Nature::Hasty,
+            ivs: vec![5, 29, 27, 28, 11, 27],
+            ability: enums::Ability::Ability1,
+            gender: enums::Gender::Female,
+            encounter: 7,
+        };
+
+        let results = generate_wild(settings);
+        for (advance, result) in results.into_iter().enumerate() {
+            assert_eq!(result, expected_results, "Mismatch on advance {}", advance);
+        }
+    }
 }
