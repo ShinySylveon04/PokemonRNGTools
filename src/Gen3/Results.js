@@ -34,6 +34,16 @@ const showAbility = ability => {
   }
 };
 
+const showNature = (state, nature, synch, t) => {
+  // if using synchronize and nature is synchable show Synchronize
+  if (state.lead_filter === 1 && synch) {
+    return t('Synchronize');
+  } else {
+    // else display actual nature generated
+    return t(`nature.${nature}`);
+  }
+};
+
 const ShowResults = ({ results, state, t }) => {
   return results.map((result, index) => (
     <TableRow
@@ -43,7 +53,9 @@ const ShowResults = ({ results, state, t }) => {
       <TableCell align="left">{result.advances}</TableCell>
       <TableCell align="left">{t(`${result.shiny_value}`)}</TableCell>
       <TableCell align="left">{result.encounter}</TableCell>
-      <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
+      <TableCell align="left">
+        {showNature(state, result.nature, result.is_synch, t)}
+      </TableCell>
       <TableCell align="left">{showAbility(result.ability)}</TableCell>
       <TableCell align="left">
         {state.genderRatio === 256 ? '-' : showGender(result.gender)}

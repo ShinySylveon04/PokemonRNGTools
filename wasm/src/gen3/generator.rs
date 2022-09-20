@@ -13,6 +13,7 @@ pub struct Pokemon {
     pub ability: enums::Ability,
     pub gender: enums::Gender,
     pub encounter: u8,
+    pub is_synch: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -26,6 +27,7 @@ pub struct Result {
     pub ability: enums::Ability,
     pub gender: enums::Gender,
     pub encounter: u8,
+    pub is_synch: bool,
 }
 
 type IVs = Vec<u16>;
@@ -44,11 +46,26 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
 
     rng.next_u32();
 
-    let nature_rand = rng.next_u16() % 25;
-    let nature = match enums::get_sync_nature(&settings.lead_filter) {
-        Some(set_nature) => set_nature,
-        None => enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy),
+    let nature_rand;
+    let mut is_synch = false;
+
+    match settings.lead_filter {
+        enums::LeadFilter::None => {
+            nature_rand = rng.next_u16() % 25;
+        }
+        enums::LeadFilter::Synchronize => {
+            if (rng.next_u16() & 1) == 0 {
+                // if synchronized, nature set doesn't matter
+                nature_rand = 0;
+                is_synch = true;
+            } else {
+                nature_rand = rng.next_u16() % 25;
+            }
+        }
+        _ => nature_rand = 0,
     };
+
+    let nature = enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy);
 
     let natures: Vec<enums::NatureFilter> = settings
         .nature_filter
@@ -99,8 +116,25 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         return None;
     }
 
-    let iv1 = rng.next_u16();
-    let iv2 = rng.next_u16();
+    let iv1;
+    let iv2;
+
+    match settings.method_filter {
+        enums::MethodFilter::MethodH1 => {
+            iv1 = rng.next_u16();
+            iv2 = rng.next_u16();
+        }
+        enums::MethodFilter::MethodH2 => {
+            rng.next_u16();
+            iv1 = rng.next_u16();
+            iv2 = rng.next_u16();
+        }
+        _ => {
+            iv1 = rng.next_u16();
+            rng.next_u16();
+            iv2 = rng.next_u16();
+        }
+    };
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
 
@@ -143,6 +177,7 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         ability,
         gender,
         encounter,
+        is_synch,
     })
 }
 
@@ -167,6 +202,7 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
                 ability: pokemon.ability,
                 gender: pokemon.gender,
                 encounter: pokemon.encounter,
+                is_synch: pokemon.is_synch,
             };
             results.push(result);
         }
@@ -201,6 +237,7 @@ mod test {
             max_ivs: vec![31, 31, 31, 31, 31, 31],
             tid: 0,
             sid: 0,
+            method_filter: enums::MethodFilter::MethodH1,
         };
 
         let expected_results = vec![
@@ -212,6 +249,7 @@ mod test {
                 ability: enums::Ability::Ability0,
                 gender: enums::Gender::Female,
                 encounter: 5,
+                is_synch: false,
             },
             Pokemon {
                 shiny: enums::Shiny::None,
@@ -221,6 +259,7 @@ mod test {
                 ability: enums::Ability::Ability1,
                 gender: enums::Gender::Female,
                 encounter: 0,
+                is_synch: false,
             },
         ];
 

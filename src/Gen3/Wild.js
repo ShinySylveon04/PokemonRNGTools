@@ -77,7 +77,7 @@ export function Gen3Wild() {
       advances: 0,
       shiny_value: 'None',
       rng_state: 0,
-      ec: 0,
+      is_synch: false,
       pid: 0,
       encounter: 0,
       nature: 'Any',

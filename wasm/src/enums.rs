@@ -14,6 +14,15 @@ pub enum LeadFilter {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
+pub enum MethodFilter {
+    MethodH1 = 1,
+    MethodH2 = 2,
+    MethodH4 = 4,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[repr(u32)]
 pub enum AbilityFilter {
     Any = 3,
     Ability0 = 0,
