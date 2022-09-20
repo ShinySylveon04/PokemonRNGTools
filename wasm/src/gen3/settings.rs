@@ -18,4 +18,5 @@ pub struct Settings {
     pub max_ivs: Vec<u16>,
     pub tid: u32,
     pub sid: u32,
+    pub method_filter: enums::MethodFilter,
 }

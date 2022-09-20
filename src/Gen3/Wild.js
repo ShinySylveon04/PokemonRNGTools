@@ -44,6 +44,7 @@ const formatSettings = state => {
     delay: state.delay,
     tid: parseInt(state.tid, 10),
     sid: parseInt(state.sid, 10),
+    method_filter: state.method_filter,
   };
   return settings;
 };
@@ -68,6 +69,7 @@ export function Gen3Wild() {
     lead_filter: 0,
     tid: 0,
     sid: 0,
+    method_filter: 1,
   });
 
   const [results, setResults] = React.useState([
@@ -75,7 +77,7 @@ export function Gen3Wild() {
       advances: 0,
       shiny_value: 'None',
       rng_state: 0,
-      ec: 0,
+      is_synch: false,
       pid: 0,
       encounter: 0,
       nature: 'Any',
