@@ -37,9 +37,12 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 }
 
 pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> {
-    rng.next_u32();
-    rng.next_u32();
-    rng.next_u32();
+    rng.next_u32(); // unknown
+
+    // encounter slot
+    let encounter_rand = rng.next_u16() % 100;
+
+    rng.next_u32(); // level
 
     let nature_rand = rng.next_u16() % 25;
     let nature = match enums::get_sync_nature(&settings.lead_filter) {
@@ -104,6 +107,26 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         return None;
     }
 
+    let encounter_slots: [u16; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
+
+    let encounter = encounter_slots
+        .iter()
+        .position(|enc| encounter_rand < *enc)
+        .unwrap_or(0) as u8;
+
+    let encounters: Vec<enums::EncounterSlotFilter> = settings
+        .encounter_filter
+        .iter()
+        .map(|encounter| {
+            enums::EncounterSlotFilter::try_from(*encounter)
+                .unwrap_or(enums::EncounterSlotFilter::Slot0)
+        })
+        .collect();
+
+    if !encounters.iter().any(|slot| *slot == encounter) {
+        return None;
+    }
+
     Some(Pokemon {
         shiny: enums::Shiny::None,
         pid: pid.into(),
@@ -111,7 +134,7 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         ivs,
         ability,
         gender,
-        encounter: 4,
+        encounter,
     })
 }
 
@@ -178,7 +201,7 @@ mod test {
                 ivs: vec![11, 25, 10, 25, 3, 24],
                 ability: enums::Ability::Ability0,
                 gender: enums::Gender::Female,
-                encounter: 4,
+                encounter: 5,
             },
             Pokemon {
                 shiny: enums::Shiny::None,
@@ -187,7 +210,7 @@ mod test {
                 ivs: vec![9, 9, 7, 20, 26, 13],
                 ability: enums::Ability::Ability1,
                 gender: enums::Gender::Female,
-                encounter: 4,
+                encounter: 0,
             },
         ];
 

@@ -41,7 +41,9 @@ const ShowResults = ({ results, state, t }) => {
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{t(`${result.shiny_value}`)}</TableCell>
+      <TableCell align="left">
+        {result.shiny_value === 'None' ? '' : t(`${result.shiny_value}`)}
+      </TableCell>
       <TableCell align="left">{result.encounter}</TableCell>
       <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
       <TableCell align="left">{showAbility(result.ability)}</TableCell>

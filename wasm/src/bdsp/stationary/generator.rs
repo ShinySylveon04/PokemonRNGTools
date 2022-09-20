@@ -3,7 +3,7 @@ use crate::bdsp::roamer;
 use crate::enums;
 use crate::rng::Xorshift;
 use serde::{Deserialize, Serialize};
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(getter_with_clone)]
@@ -34,8 +34,8 @@ pub fn generate_stationary(settings: Settings) -> Vec<Result> {
     let mut rng = Xorshift::from_state(states);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
-    let values = settings.min..=settings.max;
-    rng.advance(settings.min);
+    let values = settings.min_advances..=settings.max_advances;
+    rng.advance(settings.min_advances);
 
     for value in values {
         let generate_result = match settings.is_roamer {
@@ -147,8 +147,8 @@ pub fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemo
     let nature = match enums::get_sync_nature(&settings.lead_filter) {
         Some(set_nature) => set_nature,
         None => {
-            let nature_rand: u16 = rng.next().try_into().unwrap();
-            enums::Nature::try_from(nature_rand - (nature_rand / 25) * 25)
+            let nature_rand = rng.next();
+            enums::Nature::try_from((nature_rand - (nature_rand / 25) * 25) as u16)
                 .unwrap_or(enums::Nature::Hardy)
         }
     };
@@ -188,8 +188,8 @@ mod test {
             nature_filter: vec![25],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
@@ -251,8 +251,8 @@ mod test {
             nature_filter: vec![25],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Genderless,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
@@ -313,8 +313,8 @@ mod test {
             nature_filter: vec![25],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10000,
+            min_advances: 0,
+            max_advances: 10000,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::Both,

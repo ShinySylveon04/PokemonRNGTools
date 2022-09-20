@@ -55,7 +55,7 @@ export function RS() {
     shiny_filter: 4,
     min_advances: 0,
     max_advances: 10000,
-    delay: 1,
+    delay: 0,
     nature_filter: [25],
     ability_filter: 3,
     encounter_filter: [12],
