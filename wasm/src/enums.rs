@@ -40,7 +40,7 @@ pub enum Ability {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
-#[repr(u32)]
+#[repr(u16)]
 pub enum NatureFilter {
     #[num_enum(default)]
     Hardy = 0,
@@ -73,7 +73,7 @@ pub enum NatureFilter {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
-#[repr(u32)]
+#[repr(u16)]
 pub enum Nature {
     #[num_enum(default)]
     Hardy = 0,
@@ -157,22 +157,27 @@ pub enum Shiny {
 }
 
 impl Shiny {
-    pub fn from_xor(xor: u32) -> Self {
-        if xor < 0x10 {
-            return Self::Star;
-        }
-
+    pub fn from_xor(xor: u16, compare: u16) -> Self {
         if xor == 0 {
             return Self::Square;
+        }
+
+        if xor < compare {
+            return Self::Star;
         }
 
         Self::None
     }
 
-    pub fn from_pid_shiny_rand(pid: u32, shiny_rand: u32) -> Self {
+    pub fn calculate_shiny_gen8(pid: u32, shiny_rand: u32) -> Self {
         let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
         let tsv = pid >> 0x10 ^ pid & 0xFFFF;
-        Self::from_xor(psv ^ tsv)
+        Self::from_xor((psv ^ tsv) as u16, 0x10)
+    }
+
+    pub fn calculate_shiny_gen3(pid: u32, tsv: u16) -> Self {
+        let psv = ((pid & 0xFFFF) ^ (pid >> 0x10)) as u16;
+        Self::from_xor(psv ^ tsv, 8)
     }
 }
 

@@ -7,6 +7,7 @@ extern crate console_error_panic_hook;
 
 mod bdsp;
 mod enums;
+mod gen3;
 mod rng;
 mod swsh;
 
@@ -25,7 +26,19 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
 }
 
 #[wasm_bindgen]
-pub fn get_wild(settings: &JsValue) -> JsValue {
+pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: gen3::settings::Settings = settings.into_serde().unwrap();
+
+    let results = gen3::generator::generate_wild(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
+// Begin BdSp functions
+
+#[wasm_bindgen]
+pub fn get_bdsp_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::wild::settings::Settings = settings.into_serde().unwrap();
 
@@ -181,7 +194,9 @@ pub fn calculate_pokemon_bdsp_underground(
     init_panic_hook();
     let natures: Vec<enums::NatureFilter> = nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
     let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
     rng.advance(delay);

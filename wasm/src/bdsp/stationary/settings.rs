@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct Settings {
     pub rng_state: Vec<u32>,
     pub shiny_filter: enums::ShinyFilter,
-    pub min: usize,
-    pub max: usize,
+    pub min_advances: usize,
+    pub max_advances: usize,
     pub delay: usize,
     pub nature_filter: Vec<u32>,
     pub ability_filter: enums::AbilityFilter,

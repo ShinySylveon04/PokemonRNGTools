@@ -41,8 +41,8 @@ const formatSettings = state => {
     rng_state: [state.state0, state.state1, state.state2, state.state3].map(
       num => parseInt(num, 16),
     ),
-    min: state.min_advances,
-    max: state.max_advances,
+    min_advances: state.min_advances,
+    max_advances: state.max_advances,
     delay: state.delay,
   };
   return settings;

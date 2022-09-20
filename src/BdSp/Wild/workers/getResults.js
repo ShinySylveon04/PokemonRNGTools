@@ -1,4 +1,4 @@
 import { expose } from 'comlink';
-import { get_wild } from '../../../../wasm/Cargo.toml';
+import { get_bdsp_wild } from '../../../../wasm/Cargo.toml';
 
-expose(get_wild);
+expose(get_bdsp_wild);

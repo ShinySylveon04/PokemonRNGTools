@@ -22,7 +22,7 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
     let shiny_rand = rng.next_bdsp();
     let pid = rng.next_bdsp();
 
-    let shiny = enums::Shiny::from_pid_shiny_rand(pid, shiny_rand);
+    let shiny = enums::Shiny::calculate_shiny_gen8(pid, shiny_rand);
 
     if settings.shiny_filter != shiny {
         return None;
@@ -79,14 +79,16 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
         Some(set_nature) => set_nature,
         None => {
             let nature_rand = rng.next_bdsp() % 25;
-            enums::Nature::try_from(nature_rand).unwrap_or(enums::Nature::Hardy)
+            enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy)
         }
     };
 
     let natures: Vec<enums::NatureFilter> = settings
         .nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
 
     if !natures.iter().any(|nat| *nat == nature) {
@@ -97,7 +99,7 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
         shiny,
         pid,
         ec,
-        nature,
+        nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
         ivs,
         ability,
         gender,
@@ -116,8 +118,8 @@ mod test {
             nature_filter: vec![25],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Genderless,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,

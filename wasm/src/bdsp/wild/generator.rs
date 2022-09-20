@@ -47,7 +47,7 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
-    let shiny = enums::Shiny::from_pid_shiny_rand(pid, shiny_rand);
+    let shiny = enums::Shiny::calculate_shiny_gen8(pid, shiny_rand);
 
     if settings.shiny_filter != shiny {
         return None;
@@ -87,7 +87,7 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
         Some(set_nature) => set_nature,
         None => {
             let nature_rand = rng.next();
-            enums::Nature::try_from(nature_rand - (nature_rand / 25) * 25)
+            enums::Nature::try_from((nature_rand - (nature_rand / 25) * 25) as u16)
                 .unwrap_or(enums::Nature::Hardy)
         }
     };
@@ -95,7 +95,9 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
     let natures: Vec<enums::NatureFilter> = settings
         .nature_filter
         .iter()
-        .map(|nature| enums::NatureFilter::try_from(*nature).unwrap_or(enums::NatureFilter::Hardy))
+        .map(|nature| {
+            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+        })
         .collect();
 
     if !natures.iter().any(|nat| *nat == nature) {
@@ -144,8 +146,8 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
     let mut rng = rng::Xorshift::from_state(states);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
-    let values = settings.min..=settings.max;
-    rng.advance(settings.min);
+    let values = settings.min_advances..=settings.max_advances;
+    rng.advance(settings.min_advances);
     for value in values {
         let generate_result = generate_pokemon(rng, &settings);
         if let Some(pokemon) = generate_result {
@@ -187,8 +189,8 @@ mod test {
             encounter_filter: vec![12],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10,
+            min_advances: 0,
+            max_advances: 10,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
@@ -471,8 +473,8 @@ mod test {
             encounter_filter: vec![12],
             rng_state: vec![1, 2, 3, 4],
             delay: 0,
-            min: 0,
-            max: 10000,
+            min_advances: 0,
+            max_advances: 10000,
             gender_ratio: enums::GenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::Both,
