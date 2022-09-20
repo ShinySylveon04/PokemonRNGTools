@@ -9,7 +9,7 @@ import { Wild } from './BdSp/Wild/Wild';
 import { Stationary } from './BdSp/Stationary/Stationary';
 import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
-import { RS } from './RS/RS';
+import { Gen3Wild } from './Gen3/Wild';
 
 import { MetaTags } from './Components/MetaTags';
 
@@ -24,7 +24,7 @@ ReactDOM.render(
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="translate" element={<Translate />} />
-          <Route path="rs" element={<RS />} />
+          <Route path="gen3/wild" element={<Gen3Wild />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
           <Route path="bdsp/static" element={<Stationary />} />

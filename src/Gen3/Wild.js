@@ -48,7 +48,7 @@ const formatSettings = state => {
   return settings;
 };
 
-export function RS() {
+export function Gen3Wild() {
   const { t } = useTranslation();
   const [searching, setSearching] = React.useState(false);
 
