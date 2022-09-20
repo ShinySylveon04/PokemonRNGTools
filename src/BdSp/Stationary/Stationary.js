@@ -41,8 +41,8 @@ const formatSettings = state => {
       num => parseInt(num, 16),
     ),
     set_ivs: state.set_ivs,
-    min: state.min_advances,
-    max: state.max_advances,
+    min_advances: state.min_advances,
+    max_advances: state.max_advances,
     delay: state.delay,
     is_roamer: state.is_roamer,
   };
