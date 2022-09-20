@@ -47,7 +47,7 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
     let ec = rng.next();
     let shiny_rand = rng.next();
     let pid = rng.next();
-    let shiny = enums::Shiny::from_pid_shiny_rand(pid, shiny_rand);
+    let shiny = enums::Shiny::calculate_shiny_gen8(pid, shiny_rand);
 
     if settings.shiny_filter != shiny {
         return None;

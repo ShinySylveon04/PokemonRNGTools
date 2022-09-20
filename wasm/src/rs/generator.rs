@@ -1,5 +1,5 @@
 use super::settings::Settings;
-use crate::enums;
+use crate::enums::{self, Shiny};
 use crate::rng::Lcrng;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
@@ -42,7 +42,7 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
     // encounter slot
     let encounter_rand = rng.next_u16() % 100;
 
-    rng.next_u32(); // level
+    rng.next_u32();
 
     let nature_rand = rng.next_u16() % 25;
     let nature = match enums::get_sync_nature(&settings.lead_filter) {
@@ -70,6 +70,14 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         if pid % 25 == nature_rand as u32 {
             break;
         }
+    }
+
+    let tsv = (settings.tid ^ settings.sid) as u16;
+
+    let shiny = Shiny::calculate_shiny_gen3(pid, tsv);
+
+    if settings.shiny_filter != shiny {
+        return None;
     }
 
     let ability_rand = pid & 1;
@@ -128,7 +136,7 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
     }
 
     Some(Pokemon {
-        shiny: enums::Shiny::None,
+        shiny,
         pid: pid.into(),
         nature,
         ivs,
@@ -191,6 +199,8 @@ mod test {
             gender_filter: enums::GenderFilter::Any,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
+            tid: 0,
+            sid: 0,
         };
 
         let expected_results = vec![

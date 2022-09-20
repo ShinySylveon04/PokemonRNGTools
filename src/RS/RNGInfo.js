@@ -6,8 +6,6 @@ import TextField from '@mui/material/TextField';
 
 import { useTranslation } from 'react-i18next';
 
-import { LeadFilter } from '../Components/LeadFilter';
-import { RNGStates } from '../Components/RNGStates';
 import { RNGAdvances } from '../Components/RNGAdvances';
 import { RNGDelay } from '../Components/RNGDelay';
 
@@ -28,7 +26,7 @@ export const RNGInfo = ({ setState, state }) => {
             {t('RNG Info')}
           </Typography>
         </Grid>
-        <Grid container item sm={6} xs={12} justifyContent="center">
+        <Grid container item sm={3} xs={12} justifyContent="center">
           <TextField
             fullWidth
             autoComplete="off"
@@ -48,11 +46,48 @@ export const RNGInfo = ({ setState, state }) => {
             }}
           />
         </Grid>
+        <Grid container item sm={3} xs={12} justifyContent="center">
+          <TextField
+            fullWidth
+            autoComplete="off"
+            inputProps={{
+              inputMode: 'text',
+              maxLength: 5,
+            }}
+            value={state.tid}
+            id="tid"
+            label={t('TID')}
+            variant="outlined"
+            onChange={event => {
+              setState(state => ({
+                ...state,
+                tid: event.target.value,
+              }));
+            }}
+          />
+        </Grid>
+        <Grid container item sm={3} xs={12} justifyContent="center">
+          <TextField
+            fullWidth
+            autoComplete="off"
+            inputProps={{
+              inputMode: 'text',
+              maxLength: 5,
+            }}
+            value={state.sid}
+            id="sid"
+            label={t('SID')}
+            variant="outlined"
+            onChange={event => {
+              setState(state => ({
+                ...state,
+                sid: event.target.value,
+              }));
+            }}
+          />
+        </Grid>
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
-        <Grid item sm={6} md={3} xs={12}>
-          <LeadFilter state={state} setState={setState} />
-        </Grid>
       </Grid>
     </Paper>
   );

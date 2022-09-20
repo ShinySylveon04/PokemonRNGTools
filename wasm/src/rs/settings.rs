@@ -16,4 +16,6 @@ pub struct Settings {
     pub gender_filter: enums::GenderFilter,
     pub min_ivs: Vec<u16>,
     pub max_ivs: Vec<u16>,
+    pub tid: u32,
+    pub sid: u32,
 }

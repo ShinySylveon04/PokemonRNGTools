@@ -22,7 +22,7 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
     let shiny_rand = rng.next_bdsp();
     let pid = rng.next_bdsp();
 
-    let shiny = enums::Shiny::from_pid_shiny_rand(pid, shiny_rand);
+    let shiny = enums::Shiny::calculate_shiny_gen8(pid, shiny_rand);
 
     if settings.shiny_filter != shiny {
         return None;

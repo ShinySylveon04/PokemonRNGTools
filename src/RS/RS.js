@@ -42,6 +42,8 @@ const formatSettings = state => {
     min_advances: state.min_advances,
     max_advances: state.max_advances,
     delay: state.delay,
+    tid: parseInt(state.tid, 10),
+    sid: parseInt(state.sid, 10),
   };
   return settings;
 };
@@ -64,6 +66,8 @@ export function RS() {
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
     lead_filter: 0,
+    tid: 0,
+    sid: 0,
   });
 
   const [results, setResults] = React.useState([
