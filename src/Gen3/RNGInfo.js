@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import { RNGAdvances } from '../Components/RNGAdvances';
 import { RNGDelay } from '../Components/RNGDelay';
+import { MethodFilter } from '../Components/MethodFilter';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
@@ -88,6 +89,7 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
+        <MethodFilter state={state} setState={setState} />
       </Grid>
     </Paper>
   );
