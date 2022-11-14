@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 
 export const ColorModeContext = React.createContext({
@@ -9,14 +8,13 @@ export const ColorModeContext = React.createContext({
 });
 
 export const ColorMode = ({ children }) => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const preferredMode = prefersDarkMode ? 'dark' : 'light';
-  const [mode, setMode] = React.useState(preferredMode);
+  const savedMode = JSON.parse(localStorage.getItem('ColorMode'));
+  const [mode, setMode] = React.useState(savedMode ?? 'light');
   const theme = React.useMemo(() => createTheme({ palette: { mode } }), [mode]);
 
   React.useEffect(() => {
-    setMode(preferredMode);
-  }, [preferredMode]);
+    localStorage.setItem('ColorMode', JSON.stringify(mode));
+  }, [mode]);
 
   const colorMode = React.useMemo(
     () => ({
