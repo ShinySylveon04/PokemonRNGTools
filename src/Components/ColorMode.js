@@ -8,12 +8,12 @@ export const ColorModeContext = React.createContext({
 });
 
 export const ColorMode = ({ children }) => {
-  const savedMode = JSON.parse(localStorage.getItem('ColorMode'));
+  const savedMode = localStorage.getItem('ColorMode');
   const [mode, setMode] = React.useState(savedMode ?? 'light');
   const theme = React.useMemo(() => createTheme({ palette: { mode } }), [mode]);
 
   React.useEffect(() => {
-    localStorage.setItem('ColorMode', JSON.stringify(mode));
+    localStorage.setItem('ColorMode', mode);
   }, [mode]);
 
   const colorMode = React.useMemo(
