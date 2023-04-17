@@ -6,3 +6,6 @@ pub use xoroshiro::*;
 
 mod xorshift;
 pub use xorshift::*;
+
+mod mt;
+pub use mt::*;
