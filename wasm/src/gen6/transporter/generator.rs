@@ -1,12 +1,10 @@
 use super::settings::Settings;
-use crate::enums;
 use crate::rng::MT;
 use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
-    pub ec: u32,
     pub pid: u32,
     pub ivs: Vec<u32>,
 }
@@ -27,7 +25,7 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 }
 
 pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
-    let ec = rng.next();
+    let _ec = rng.next();
     let pid = rng.next();
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
@@ -53,7 +51,7 @@ pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
         return None;
     }
 
-    Some(Pokemon { ec, pid, ivs })
+    Some(Pokemon { pid, ivs })
 }
 
 pub fn generate_transporter(settings: Settings) -> Vec<Result> {
@@ -103,7 +101,6 @@ mod test {
         let result = generate_pokemon(&mut rng, &settings);
 
         let expected_result = Pokemon {
-            ec: 295873325,
             pid: 0x0250eff9,
             ivs: vec![6, 31, 31, 6, 31, 31],
         };

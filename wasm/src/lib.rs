@@ -36,6 +36,16 @@ pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+#[wasm_bindgen]
+pub fn get_transporter(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: gen6::transporter::settings::Settings = settings.into_serde().unwrap();
+
+    let results = gen6::transporter::generator::generate_transporter(parsed_settings);
+
+    JsValue::from_serde(&results).unwrap()
+}
+
 // Begin BdSp functions
 
 #[wasm_bindgen]

@@ -62,7 +62,6 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
                 nature_rand = rng.next_u16() % 25;
             }
         }
-        _ => nature_rand = 0,
     };
 
     let nature = enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy);
