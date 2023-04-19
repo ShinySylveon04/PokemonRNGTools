@@ -53,7 +53,7 @@ export const RNGInfo = ({ setState, state }) => {
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
         <Grid item sm={3} xs={12}>
-          <FormControl>
+          <FormControl fullWidth>
             <InputLabel id="pokemon">{t('Pokemon')}</InputLabel>
             <Select
               sx={{ minWidth: '150px' }}
