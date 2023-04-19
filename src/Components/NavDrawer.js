@@ -26,6 +26,18 @@ const NavItems = ({ handleDrawerClose, location }) => (
         <ListItemText primary="Wild" />
       </ListItemButton>
       <ListItem>
+        <ListItemText primary="Gen 6" />
+      </ListItem>
+      <ListItemButton
+        selected={location === '/gen6/transporter'}
+        onClick={handleDrawerClose}
+        component={Link}
+        to="gen6/transporter"
+        sx={{ pl: 4 }}
+      >
+        <ListItemText primary="Transporter" />
+      </ListItemButton>
+      <ListItem>
         <ListItemText primary="Sword & Shield" />
       </ListItem>
       <ListItemButton

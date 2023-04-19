@@ -1,12 +1,16 @@
 use super::settings::Settings;
+use crate::enums::HiddenPower;
 use crate::rng::MT;
 use serde::Deserialize;
 use serde::Serialize;
+use std::convert::TryFrom;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Pokemon {
     pub pid: u32,
     pub ivs: Vec<u32>,
+    pub psv: u32,
+    pub hidden_power: HiddenPower,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -14,6 +18,8 @@ pub struct Result {
     pub advances: usize,
     pub pid: u32,
     pub ivs: Vec<u32>,
+    pub psv: u32,
+    pub hidden_power: HiddenPower,
 }
 
 type IVs = Vec<u32>;
@@ -27,6 +33,7 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
     let _ec = rng.next();
     let pid = rng.next();
+    let psv = ((pid >> 16) ^ (pid & 0xffff)) >> 4;
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
 
@@ -51,23 +58,42 @@ pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
         return None;
     }
 
-    Some(Pokemon { pid, ivs })
+    let hidden_power = {
+        ((((ivs[0] & 1)
+            + ((ivs[1] & 1) << 1)
+            + ((ivs[2] & 1) << 2)
+            + ((ivs[3] & 1) << 3)
+            + ((ivs[4] & 1) << 4)
+            + ((ivs[5] & 1) << 5)) as u16
+            * 15) as u16
+            / 63) as u8
+    };
+
+    Some(Pokemon {
+        pid,
+        ivs,
+        psv,
+        hidden_power: HiddenPower::try_from(hidden_power as u8).unwrap_or(HiddenPower::Invalid),
+    })
 }
 
 pub fn generate_transporter(settings: Settings) -> Vec<Result> {
     let mut rng = MT::new(settings.rng_state);
+    rng.advance(settings.min_advances);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
     let values = settings.min_advances..=settings.max_advances;
-    rng.advance(settings.min_advances);
 
     for value in values {
-        let generate_result = generate_pokemon(&mut rng, &settings);
+        let mut rng_clone = rng.clone();
+        let generate_result = generate_pokemon(&mut rng_clone, &settings);
         if let Some(pokemon) = generate_result {
             let result = Result {
                 advances: value,
                 pid: pokemon.pid,
                 ivs: pokemon.ivs,
+                psv: pokemon.psv,
+                hidden_power: pokemon.hidden_power,
             };
             results.push(result);
         }
@@ -93,7 +119,6 @@ mod test {
             delay: 27,
             min_advances: 0,
             max_advances: 1000,
-            gender_ratio: enums::GenderRatio::Male50Female50,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
         };
@@ -103,6 +128,8 @@ mod test {
         let expected_result = Pokemon {
             pid: 0x0250eff9,
             ivs: vec![6, 31, 31, 6, 31, 31],
+            psv: 3802,
+            hidden_power: HiddenPower::Psychic,
         };
         assert_eq!(result, Some(expected_result))
     }

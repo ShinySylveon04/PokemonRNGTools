@@ -4,7 +4,31 @@ use serde_repr::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum HiddenPower {
+    Fighting = 0,
+    Flying = 1,
+    Poison = 2,
+    Ground = 3,
+    Rock = 4,
+    Bug = 5,
+    Ghost = 6,
+    Steel = 7,
+    Fire = 8,
+    Water = 9,
+    Grass = 10,
+    Electric = 11,
+    Psychic = 12,
+    Ice = 13,
+    Dragon = 14,
+    Dark = 15,
+    #[num_enum(default)]
+    Invalid = 16,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum LeadFilter {
     None = 0,
@@ -12,7 +36,7 @@ pub enum LeadFilter {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum MethodFilter {
     MethodH1 = 1,
@@ -21,7 +45,7 @@ pub enum MethodFilter {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum AbilityFilter {
     Any = 3,

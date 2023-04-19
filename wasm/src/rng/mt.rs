@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct MT {
     index: usize,
     mt: [u32; 624],
@@ -23,7 +23,7 @@ impl MT {
         }
     }
 
-    fn init(&mut self, seed: u32) {
+    pub fn init(&mut self, seed: u32) {
         self.mt[0] = seed;
 
         let mut seed = seed;

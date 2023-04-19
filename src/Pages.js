@@ -9,6 +9,7 @@ import { Stationary } from './BdSp/Stationary/Stationary';
 import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
+import { Gen6Transporter } from './Gen6/Transporter';
 
 export const Pages = () => {
   return (
@@ -18,6 +19,7 @@ export const Pages = () => {
           <Route index element={<Home />} />
           <Route path="translate" element={<Translate />} />
           <Route path="gen3/wild" element={<Gen3Wild />} />
+          <Route path="gen6/transporter" element={<Gen6Transporter />} />
           <Route path="swsh" element={<SwSh />} />
           <Route path="bdsp" element={<Wild />} />
           <Route path="bdsp/static" element={<Stationary />} />
