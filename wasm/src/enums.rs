@@ -28,7 +28,7 @@ pub enum HiddenPower {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum LeadFilter {
     None = 0,
@@ -36,7 +36,7 @@ pub enum LeadFilter {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum MethodFilter {
     MethodH1 = 1,
@@ -45,7 +45,7 @@ pub enum MethodFilter {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum AbilityFilter {
     Any = 3,

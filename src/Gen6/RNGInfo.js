@@ -3,6 +3,10 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 import { useTranslation } from 'react-i18next';
 
@@ -48,6 +52,27 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
+        <Grid item sm={3} xs={12}>
+          <FormControl>
+            <InputLabel id="pokemon">{t('Pokemon')}</InputLabel>
+            <Select
+              sx={{ minWidth: '150px' }}
+              labelId="pokemon"
+              id="pokemon"
+              value={state.iv_rolls}
+              label={t('Pokemon')}
+              onChange={event =>
+                setState(state => ({
+                  ...state,
+                  iv_rolls: event.target.value,
+                }))
+              }
+            >
+              <MenuItem value={3}>{t('Other')}</MenuItem>
+              <MenuItem value={5}>{t('Mew or Celebi')}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
     </Paper>
   );
