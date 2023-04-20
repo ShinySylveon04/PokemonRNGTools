@@ -14,10 +14,16 @@ import { RNGDelay } from '../Components/RNGDelay';
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
 
-  const [checked, setChecked] = React.useState(false);
-  const handleChange = event => {
+  const [mythicChecked, setMythicChecked] = React.useState(false);
+  const handleChangeMythic = event => {
     setState({ ...state, iv_rolls: event.target.checked });
-    setChecked(event.target.checked);
+    setMythicChecked(event.target.checked);
+  };
+
+  const [shinyChecked, setShinyChecked] = React.useState(false);
+  const handleChangeShiny = event => {
+    setState({ ...state, is_shiny: event.target.checked });
+    setShinyChecked(event.target.checked);
   };
 
   return (
@@ -56,12 +62,44 @@ export const RNGInfo = ({ setState, state }) => {
         </Grid>
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
-        <Grid item sm={3} xs={12}>
+        <Grid container item sm={3} xs={12} justifyContent="center">
+          <TextField
+            fullWidth
+            autoComplete="off"
+            inputProps={{
+              inputMode: 'text',
+              maxLength: 5,
+            }}
+            value={state.tid}
+            id="tid"
+            label={t('TID')}
+            variant="outlined"
+            onChange={event => {
+              setState(state => ({
+                ...state,
+                tid: event.target.value,
+              }));
+            }}
+          />
+        </Grid>
+        <Grid item sm={3} xs={12} textAlign="center">
           <FormControlLabel
             control={
               <Checkbox
-                checked={checked}
-                onChange={handleChange}
+                checked={shinyChecked}
+                onChange={handleChangeShiny}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label={t('Shiny Pokemon')}
+          />
+        </Grid>
+        <Grid item sm={3} xs={12} textAlign="center">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={mythicChecked}
+                onChange={handleChangeMythic}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }

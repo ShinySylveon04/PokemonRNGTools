@@ -36,6 +36,8 @@ const formatSettings = state => {
     max_advances: state.max_advances,
     delay: state.delay,
     iv_rolls: state.iv_rolls,
+    is_shiny: state.is_shiny,
+    tid: parseInt(state.tid, 10),
   };
   return settings;
 };
@@ -52,6 +54,8 @@ export function Gen6Transporter() {
     minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
     iv_rolls: false,
+    is_shiny: false,
+    tid: 0,
   });
 
   const [results, setResults] = React.useState([

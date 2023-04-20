@@ -9,4 +9,6 @@ pub struct Settings {
     pub min_ivs: Vec<u32>,
     pub max_ivs: Vec<u32>,
     pub iv_rolls: bool,
+    pub tid: u32,
+    pub is_shiny: bool,
 }

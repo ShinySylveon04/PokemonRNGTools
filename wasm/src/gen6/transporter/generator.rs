@@ -32,8 +32,19 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 
 pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
     let _ec = rng.next();
-    let pid = rng.next();
-    let psv = ((pid >> 16) ^ (pid & 0xffff)) >> 4;
+    let mut pid = rng.next();
+    let mut psv = ((pid >> 16) ^ (pid & 0xffff)) >> 4;
+    let tsv = settings.tid >> 4;
+
+    if settings.is_shiny {
+        let pid_low = pid & 0xffff;
+        pid = ((settings.tid ^ pid_low) << 16) | pid_low;
+        psv = (pid >> 16 ^ pid_low) >> 4;
+    } else {
+        if psv == tsv {
+            pid = pid ^ 0x10000000
+        }
+    }
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
 
@@ -118,12 +129,14 @@ mod test {
 
         let settings = Settings {
             rng_state: 0x9ae265ea,
-            delay: 27,
+            delay: 28,
             min_advances: 0,
             max_advances: 1000,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
             iv_rolls: false,
+            is_shiny: false,
+            tid: 0,
         };
 
         let result = generate_pokemon(&mut rng, &settings);
@@ -133,6 +146,36 @@ mod test {
             ivs: vec![6, 31, 31, 6, 31, 31],
             psv: 3802,
             hidden_power: HiddenPower::Psychic,
+        };
+        assert_eq!(result, Some(expected_result))
+    }
+
+    #[test]
+    fn should_generate_shiny_pokemon() {
+        let mut rng = MT::new(0xaea136ac);
+        rng.advance(2317);
+        // Constant delay with patch (you're welcome :p)
+        rng.advance(28);
+
+        let settings = Settings {
+            rng_state: 0xaea136ac,
+            delay: 28,
+            min_advances: 0,
+            max_advances: 1000,
+            min_ivs: vec![0, 0, 0, 0, 0, 0],
+            max_ivs: vec![31, 31, 31, 31, 31, 31],
+            iv_rolls: false,
+            is_shiny: true,
+            tid: 14979,
+        };
+
+        let result = generate_pokemon(&mut rng, &settings);
+
+        let expected_result = Pokemon {
+            pid: 0xb1e08b63,
+            ivs: vec![31, 6, 31, 31, 7, 19],
+            psv: 0936,
+            hidden_power: HiddenPower::Dragon,
         };
         assert_eq!(result, Some(expected_result))
     }
