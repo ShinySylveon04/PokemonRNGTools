@@ -8,5 +8,5 @@ pub struct Settings {
     pub max_advances: usize,
     pub min_ivs: Vec<u32>,
     pub max_ivs: Vec<u32>,
-    pub iv_rolls: u8,
+    pub iv_rolls: bool,
 }

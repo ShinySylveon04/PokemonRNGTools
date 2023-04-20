@@ -3,10 +3,8 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useTranslation } from 'react-i18next';
 
@@ -15,6 +13,12 @@ import { RNGDelay } from '../Components/RNGDelay';
 
 export const RNGInfo = ({ setState, state }) => {
   const { t } = useTranslation();
+
+  const [checked, setChecked] = React.useState(false);
+  const handleChange = event => {
+    setState({ ...state, iv_rolls: event.target.checked });
+    setChecked(event.target.checked);
+  };
 
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
@@ -53,25 +57,16 @@ export const RNGInfo = ({ setState, state }) => {
         <RNGAdvances state={state} setState={setState} />
         <RNGDelay state={state} setState={setState} />
         <Grid item sm={3} xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="pokemon">{t('Pokemon')}</InputLabel>
-            <Select
-              sx={{ minWidth: '150px' }}
-              labelId="pokemon"
-              id="pokemon"
-              value={state.iv_rolls}
-              label={t('Pokemon')}
-              onChange={event =>
-                setState(state => ({
-                  ...state,
-                  iv_rolls: event.target.value,
-                }))
-              }
-            >
-              <MenuItem value={3}>{t('Other')}</MenuItem>
-              <MenuItem value={5}>{t('Mew or Celebi')}</MenuItem>
-            </Select>
-          </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label={t('Mew or Celebi')}
+          />
         </Grid>
       </Grid>
     </Paper>

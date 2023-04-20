@@ -37,7 +37,9 @@ pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
 
     let mut ivs = vec![32, 32, 32, 32, 32, 32];
 
-    for _ in 0..settings.iv_rolls {
+    let iv_rolls = if settings.iv_rolls { 5 } else { 3 };
+
+    for _ in 0..iv_rolls {
         let mut index: usize;
         loop {
             index = (rng.rand_max(6)) as usize;
@@ -121,7 +123,7 @@ mod test {
             max_advances: 1000,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
-            iv_rolls: 3,
+            iv_rolls: false,
         };
 
         let result = generate_pokemon(&mut rng, &settings);
