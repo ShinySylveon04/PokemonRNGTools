@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
 import { useTranslation } from 'react-i18next';
+import { NoResults } from '../../Components/NoResults';
 
 const showGender = num => {
   switch (num) {
@@ -35,30 +36,34 @@ const showAbility = ability => {
 };
 
 const ShowResults = ({ results, state, t }) => {
-  return results.map((result, index) => (
-    <TableRow
-      key={index}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{t(`${result.shiny_value}`)}</TableCell>
-      <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
-      <TableCell align="left">{showAbility(result.ability)}</TableCell>
-      <TableCell align="left">
-        {state.genderRatio === 256 ? '-' : showGender(result.gender)}
-      </TableCell>
-      <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
-        {`${result.ivs[0]} /
+  if (results.length === 0) {
+    return <NoResults t={t} />;
+  } else {
+    return results.map((result, index) => (
+      <TableRow
+        key={index}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        <TableCell align="left">{result.advances}</TableCell>
+        <TableCell align="left">{t(`${result.shiny_value}`)}</TableCell>
+        <TableCell align="left">{t(`nature.${result.nature}`)}</TableCell>
+        <TableCell align="left">{showAbility(result.ability)}</TableCell>
+        <TableCell align="left">
+          {state.genderRatio === 256 ? '-' : showGender(result.gender)}
+        </TableCell>
+        <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
+          {`${result.ivs[0]} /
           ${result.ivs[1]} /
           ${result.ivs[2]} /
           ${result.ivs[3]} /
           ${result.ivs[4]} /
           ${result.ivs[5]}`}
-      </TableCell>
-      <TableCell align="left">{result.pid.toString(16)}</TableCell>
-      <TableCell align="left">{result.ec.toString(16)}</TableCell>
-    </TableRow>
-  ));
+        </TableCell>
+        <TableCell align="left">{result.pid.toString(16)}</TableCell>
+        <TableCell align="left">{result.ec.toString(16)}</TableCell>
+      </TableRow>
+    ));
+  }
 };
 
 export const Results = ({ results, state }) => {

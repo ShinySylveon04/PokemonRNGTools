@@ -9,20 +9,25 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
 import { useTranslation } from 'react-i18next';
+import { NoResults } from '../../Components/NoResults';
 
-const ShowResults = ({ results, state }) => {
-  return results.map((result, index) => (
-    <TableRow
-      key={index}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{result.g8tid}</TableCell>
-      <TableCell align="left">{result.tid}</TableCell>
-      <TableCell align="left">{result.sid}</TableCell>
-      <TableCell align="left">{result.tsv}</TableCell>
-    </TableRow>
-  ));
+const ShowResults = ({ results, t }) => {
+  if (results.length === 0) {
+    return <NoResults t={t} />;
+  } else {
+    return results.map((result, index) => (
+      <TableRow
+        key={index}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        <TableCell align="left">{result.advances}</TableCell>
+        <TableCell align="left">{result.g8tid}</TableCell>
+        <TableCell align="left">{result.tid}</TableCell>
+        <TableCell align="left">{result.sid}</TableCell>
+        <TableCell align="left">{result.tsv}</TableCell>
+      </TableRow>
+    ));
+  }
 };
 
 export const Results = ({ results, state }) => {
@@ -59,6 +64,7 @@ export const Results = ({ results, state }) => {
           </TableHead>
           <TableBody>
             <ShowResults
+              t={t}
               results={
                 rowsPerPage > 0
                   ? results.slice(

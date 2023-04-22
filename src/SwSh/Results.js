@@ -8,7 +8,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
+import { useTranslation } from 'react-i18next';
+
 import { natures } from '../natures';
+import { NoResults } from '../Components/NoResults';
 
 const shinyType = value => {
   switch (value) {
@@ -30,29 +33,36 @@ const abilityType = value => {
   }
 };
 
-const ShowResults = ({ results }) => {
-  return results.map((result, index) => (
-    <TableRow
-      key={index}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left">{shinyType(result.shiny_value)}</TableCell>
-      <TableCell align="left">{natures[result.nature]}</TableCell>
-      <TableCell align="left">{abilityType(result.ability)}</TableCell>
-      <TableCell align="left">
-        {BigInt(result.state0, 16).toString(16)}
-      </TableCell>
-      <TableCell align="left">
-        {BigInt(result.state1, 16).toString(16)}
-      </TableCell>
-      <TableCell align="left">{BigInt(result.ec, 16).toString(16)}</TableCell>
-      <TableCell align="left">{BigInt(result.pid, 16).toString(16)}</TableCell>
-    </TableRow>
-  ));
+const ShowResults = ({ results, t }) => {
+  if (results.length === 0) {
+    return <NoResults t={t} />;
+  } else {
+    return results.map((result, index) => (
+      <TableRow
+        key={index}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        <TableCell align="left">{result.advances}</TableCell>
+        <TableCell align="left">{shinyType(result.shiny_value)}</TableCell>
+        <TableCell align="left">{natures[result.nature]}</TableCell>
+        <TableCell align="left">{abilityType(result.ability)}</TableCell>
+        <TableCell align="left">
+          {BigInt(result.state0, 16).toString(16)}
+        </TableCell>
+        <TableCell align="left">
+          {BigInt(result.state1, 16).toString(16)}
+        </TableCell>
+        <TableCell align="left">{BigInt(result.ec, 16).toString(16)}</TableCell>
+        <TableCell align="left">
+          {BigInt(result.pid, 16).toString(16)}
+        </TableCell>
+      </TableRow>
+    ));
+  }
 };
 
 export const Results = ({ results }) => {
+  const { t } = useTranslation();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
@@ -87,6 +97,7 @@ export const Results = ({ results }) => {
           </TableHead>
           <TableBody>
             <ShowResults
+              t={t}
               results={
                 rowsPerPage > 0
                   ? results.slice(

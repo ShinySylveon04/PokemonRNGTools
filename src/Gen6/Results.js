@@ -9,30 +9,34 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
 import { useTranslation } from 'react-i18next';
+import { NoResults } from '../Components/NoResults';
 
 const ShowResults = ({ results, t }) => {
-  console.log('result.hidden_power', results);
-  return results.map((result, index) => (
-    <TableRow
-      key={index}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCell align="left">{result.advances}</TableCell>
-      <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
-        {`${result.ivs[0]} /
+  if (results.length === 0) {
+    return <NoResults t={t} />;
+  } else {
+    return results.map((result, index) => (
+      <TableRow
+        key={index}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        <TableCell align="left">{result.advances}</TableCell>
+        <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
+          {`${result.ivs[0]} /
           ${result.ivs[1]} /
           ${result.ivs[2]} /
           ${result.ivs[3]} /
           ${result.ivs[4]} /
           ${result.ivs[5]}`}
-      </TableCell>
-      <TableCell align="left">
-        {t(`hiddenpower.${result.hidden_power}`)}
-      </TableCell>
-      <TableCell align="left">{result.psv}</TableCell>
-      <TableCell align="left">{result.pid.toString(16)}</TableCell>
-    </TableRow>
-  ));
+        </TableCell>
+        <TableCell align="left">
+          {t(`hiddenpower.${result.hidden_power}`)}
+        </TableCell>
+        <TableCell align="left">{result.psv}</TableCell>
+        <TableCell align="left">{result.pid.toString(16)}</TableCell>
+      </TableRow>
+    ));
+  }
 };
 
 export const Results = ({ results, state }) => {
