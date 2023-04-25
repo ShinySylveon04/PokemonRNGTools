@@ -56,6 +56,14 @@ export function Gen6Transporter() {
     iv_rolls: false,
     is_shiny: false,
     tid: 0,
+    target: {
+      set: false,
+      advance: 0,
+      psv: 0,
+      ivs: [0, 0, 0, 0, 0, 0],
+      hidden_power: 'Fighting',
+      pid: 0,
+    },
   });
 
   const [results, setResults] = React.useState([
@@ -64,7 +72,7 @@ export function Gen6Transporter() {
       psv: 0,
       pid: 0,
       ivs: [0, 0, 0, 0, 0, 0],
-      hidden_power: 0,
+      hidden_power: 'Fighting',
     },
   ]);
 

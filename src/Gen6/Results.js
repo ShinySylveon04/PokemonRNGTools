@@ -10,6 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { useTranslation } from 'react-i18next';
 import { NoResults } from '../Components/NoResults';
+import { Target } from './Target';
 
 const ShowResults = ({ results, t }) => {
   if (results.length === 0) {
@@ -71,6 +72,7 @@ export const Results = ({ results, state }) => {
             </TableRow>
           </TableHead>
           <TableBody>
+            <Target state={state} />
             <ShowResults
               results={
                 rowsPerPage > 0
