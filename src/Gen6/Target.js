@@ -2,12 +2,10 @@ import React from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
-import { useTranslation } from 'react-i18next';
-
-const Result = ({ target }) => {
+const Result = ({ target, t }) => {
   return (
     <React.Fragment>
-      <TableCell align="left">{target.advance}</TableCell>
+      <TableCell align="left">{target.advances}</TableCell>
       <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
         {`${target.ivs[0]} /
           ${target.ivs[1]} /
@@ -25,15 +23,14 @@ const Result = ({ target }) => {
   );
 };
 
-export const Target = ({ state }) => {
-  const { t } = useTranslation();
+export const Target = ({ state, t }) => {
   const { target } = state;
 
   return (
     <React.Fragment>
-      <TableRow>
-        {target.set ? (
-          <Result target={target} />
+      <TableRow selected={true}>
+        {target.is_set ? (
+          <Result target={target} t={t} />
         ) : (
           <TableCell colSpan={6} align="left">
             {t('Click or tap a result to set as target')}

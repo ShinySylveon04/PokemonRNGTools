@@ -12,38 +12,44 @@ import { useTranslation } from 'react-i18next';
 import { NoResults } from '../Components/NoResults';
 import { Target } from './Target';
 
-const ShowResults = ({ results, t }) => {
+const ShowResults = ({ results, t, handleClick, selected }) => {
   if (results.length === 0) {
     return <NoResults t={t} />;
   } else {
-    return results.map((result, index) => (
-      <TableRow
-        key={index}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      >
-        <TableCell align="left">{result.advances}</TableCell>
-        <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
-          {`${result.ivs[0]} /
+    return results.map((result, index) => {
+      const isItemSelected = selected === result.pid;
+      return (
+        <TableRow
+          selected={isItemSelected}
+          onClick={event => handleClick(event, result.pid, result)}
+          key={result.pid}
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell align="left">{result.advances}</TableCell>
+          <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
+            {`${result.ivs[0]} /
           ${result.ivs[1]} /
           ${result.ivs[2]} /
           ${result.ivs[3]} /
           ${result.ivs[4]} /
           ${result.ivs[5]}`}
-        </TableCell>
-        <TableCell align="left">
-          {t(`hiddenpower.${result.hidden_power}`)}
-        </TableCell>
-        <TableCell align="left">{result.psv}</TableCell>
-        <TableCell align="left">{result.pid.toString(16)}</TableCell>
-      </TableRow>
-    ));
+          </TableCell>
+          <TableCell align="left">
+            {t(`hiddenpower.${result.hidden_power}`)}
+          </TableCell>
+          <TableCell align="left">{result.psv}</TableCell>
+          <TableCell align="left">{result.pid.toString(16)}</TableCell>
+        </TableRow>
+      );
+    });
   }
 };
 
-export const Results = ({ results, state }) => {
+export const Results = ({ setState, results, state }) => {
   const { t } = useTranslation();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
+  const [selected, setSelected] = React.useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -52,6 +58,11 @@ export const Results = ({ results, state }) => {
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleClick = (event, pid, result) => {
+    setSelected(pid);
+    setState({ ...state, target: { is_set: true, ...result } });
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -72,8 +83,10 @@ export const Results = ({ results, state }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <Target state={state} />
+            <Target state={state} t={t} />
             <ShowResults
+              selected={selected}
+              handleClick={handleClick}
               results={
                 rowsPerPage > 0
                   ? results.slice(

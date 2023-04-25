@@ -57,8 +57,8 @@ export function Gen6Transporter() {
     is_shiny: false,
     tid: 0,
     target: {
-      set: false,
-      advance: 0,
+      is_set: false,
+      advances: 0,
       psv: 0,
       ivs: [0, 0, 0, 0, 0, 0],
       hidden_power: 'Fighting',
@@ -115,7 +115,7 @@ export function Gen6Transporter() {
       >
         {searching ? <CircularProgress size={24} /> : t('Search')}
       </Button>
-      <Results results={results} state={state} />
+      <Results setState={setState} results={results} state={state} />
     </Box>
   );
 }
