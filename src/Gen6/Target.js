@@ -2,17 +2,14 @@ import React from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
+import { formatIVs } from '../Utils/formatIVs';
+
 const Result = ({ target, t }) => {
   return (
     <React.Fragment>
       <TableCell align="left">{target.advances}</TableCell>
       <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
-        {`${target.ivs[0]} /
-          ${target.ivs[1]} /
-          ${target.ivs[2]} /
-          ${target.ivs[3]} /
-          ${target.ivs[4]} /
-          ${target.ivs[5]}`}
+        {formatIVs(target.ivs)}
       </TableCell>
       <TableCell align="left">
         {t(`hiddenpower.${target.hidden_power}`)}

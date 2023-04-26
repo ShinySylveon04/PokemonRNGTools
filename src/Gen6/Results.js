@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 import { NoResults } from '../Components/NoResults';
 import { Target } from './Target';
 
+import { formatIVs } from '../Utils/formatIVs';
+
 const ShowResults = ({ results, t, handleClick, selected }) => {
   if (results.length === 0) {
     return <NoResults t={t} />;
@@ -26,14 +28,7 @@ const ShowResults = ({ results, t, handleClick, selected }) => {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           <TableCell align="left">{result.advances}</TableCell>
-          <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
-            {`${result.ivs[0]} /
-          ${result.ivs[1]} /
-          ${result.ivs[2]} /
-          ${result.ivs[3]} /
-          ${result.ivs[4]} /
-          ${result.ivs[5]}`}
-          </TableCell>
+          <TableCell align="left">{formatIVs(result.ivs)}</TableCell>
           <TableCell align="left">
             {t(`hiddenpower.${result.hidden_power}`)}
           </TableCell>
