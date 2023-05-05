@@ -10,13 +10,6 @@ import Paper from '@mui/material/Paper';
 import { natures } from '../natures';
 
 export const Filters = ({ setState, state }) => {
-  const [mark, setMark] = React.useState('None');
-  const [slot, setSlot] = React.useState('Any');
-
-  const handleChange = event => {
-    setEncounter(event.target.value);
-  };
-
   return (
     <Paper variant="outlined" sx={{ padding: '10px', m: '10px' }}>
       <Grid

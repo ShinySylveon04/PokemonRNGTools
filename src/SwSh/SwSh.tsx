@@ -1,5 +1,5 @@
 import React from 'react';
-import { calculate_pokemon } from '../../wasm/Cargo.toml';
+import { calculate_pokemon } from '~/../wasm/Cargo.toml';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
@@ -159,8 +159,6 @@ export function SwSh() {
         state={state}
         state0Error={state0Error}
         state1Error={state1Error}
-        setState0Error={setState0Error}
-        setState1Error={setState1Error}
       />
       <Filters setState={setState} state={state} />
       <Button

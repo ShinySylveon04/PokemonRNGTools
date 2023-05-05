@@ -36,7 +36,7 @@ export const Home = () => {
       <Typography variant="h4" gutterBottom>
         What is Chatot?
       </Typography>
-      <Typography varaint="body1" paragraph>
+      <Typography variant="body1" paragraph>
         Chatot is a web based app with tools for use with Pokemon games to RNG
         the Pokemon you want. For more information on what RNG is and how to do
         it, visit the main site at{' '}
