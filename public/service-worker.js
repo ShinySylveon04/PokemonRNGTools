@@ -1,4 +1,5 @@
-import { registerRoute } from 'workbox-routing';
+import { registerRoute as _registerRoute } from 'workbox-routing';
+import { precacheAndRoute as _precacheAndRoute } from 'workbox-precaching';
 import {
   NetworkFirst,
   StaleWhileRevalidate,
@@ -10,7 +11,12 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 // Used to limit entries in cache, remove entries after a certain period of time
 import { ExpirationPlugin } from 'workbox-expiration';
 
-import { precacheAndRoute } from 'workbox-precaching';
+const noop = () => {};
+
+const IS_DEV = process.env.NODE_ENV === 'development';
+
+const registerRoute = IS_DEV ? noop : _registerRoute;
+const precacheAndRoute = IS_DEV ? noop : _precacheAndRoute;
 
 // Cache page navigations (html) with a Network First strategy
 registerRoute(
