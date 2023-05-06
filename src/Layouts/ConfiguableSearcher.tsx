@@ -64,7 +64,7 @@ export function ConfiguableSearcher({
       <Toolbar />
 
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {props => {
+        {() => {
           return (
             <Box
               component={Form}

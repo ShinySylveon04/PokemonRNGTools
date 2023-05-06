@@ -9,8 +9,12 @@ import { Stationary } from './BdSp/Stationary/Stationary';
 import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
-import { Gen6Transporter } from './Gen6/Transporter';
+import {
+  Gen6Transporter,
+  calculatePokemon as calculateTransporterPokemon,
+} from './Gen6/Transporter';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
+import { formatIVs } from './Utils/formatIVs';
 
 export const Pages = () => {
   return (
@@ -182,23 +186,46 @@ export const Pages = () => {
                   'PSV',
                   'PID',
                 ]}
-                generateResults={values => {
-                  const minAdvances = parseInt(values.min_advances, 10) || 0;
-                  const maxAdvances = parseInt(values.max_advances, 10) || 0;
-                  const totalResults = Math.max(0, maxAdvances - minAdvances);
-                  const results = new Array(totalResults)
-                    .fill(0)
-                    .map((_, i) => [
-                      (minAdvances + i).toString(10),
-                      '10/31/29/5/30/4',
-                      'Fighting',
-                      '1234',
-                      'AABBCCDD',
-                    ]);
+                generateResults={async values => {
+                  const parsedSettings = {
+                    min_ivs: [
+                      parseInt(values.min_hp_iv, 10),
+                      parseInt(values.min_atk_iv, 10),
+                      parseInt(values.min_def_iv, 10),
+                      parseInt(values.min_spa_iv, 10),
+                      parseInt(values.min_spd_iv, 10),
+                      parseInt(values.min_spe_iv, 10),
+                    ],
+                    max_ivs: [
+                      parseInt(values.max_hp_iv, 10),
+                      parseInt(values.max_atk_iv, 10),
+                      parseInt(values.max_def_iv, 10),
+                      parseInt(values.max_spa_iv, 10),
+                      parseInt(values.max_spd_iv, 10),
+                      parseInt(values.max_spe_iv, 10),
+                    ],
+                    rng_state: parseInt(values.seed, 16),
+                    min_advances: parseInt(values.min_advances, 10),
+                    max_advances: parseInt(values.max_advances, 10),
+                    delay: parseInt(values.delay, 10),
+                    iv_rolls: values.mew_or_celebi === 'true',
+                    is_shiny: values.shiny_pokemon === 'true',
+                    tid: parseInt(values.tid, 10),
+                  };
 
-                  return new Promise(resolve => {
-                    setTimeout(resolve, 1000, results);
+                  const results = await calculateTransporterPokemon(
+                    parsedSettings,
+                  );
+                  const formattedResults = results.map(result => {
+                    return [
+                      result.advances.toString(),
+                      formatIVs(result.ivs),
+                      result.hidden_power,
+                      result.psv.toString(),
+                      result.pid.toString(16),
+                    ];
                   });
+                  return formattedResults;
                 }}
               />
             }
