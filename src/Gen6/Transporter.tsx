@@ -11,7 +11,7 @@ import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
-export const calculatePokemon = wrap<AnyPromiseFunction>(
+const calculatePokemon = wrap<AnyPromiseFunction>(
   new Worker('./workers/getResults.ts'),
 );
 

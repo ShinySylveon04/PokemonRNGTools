@@ -1,6 +1,7 @@
 use num_enum::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use serde_repr::*;
+use std::fmt;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -25,6 +26,12 @@ pub enum HiddenPower {
     Dark = 15,
     #[num_enum(default)]
     Invalid = 16,
+}
+
+impl fmt::Display for HiddenPower {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[wasm_bindgen]

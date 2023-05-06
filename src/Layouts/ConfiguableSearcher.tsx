@@ -31,8 +31,8 @@ function mapFieldComponents<Result>(
 }
 
 export type SearcherConfig = {
-  fieldGroups: FieldGroup[];
-  resultColumns: string[];
+  getFieldGroups: () => FieldGroup[];
+  getResultColumns: () => string[];
   generateResults: (
     formValues: Record<string, string>,
   ) => ResultRow[] | Promise<ResultRow[]>;
@@ -43,11 +43,14 @@ type Props = {
 };
 
 export function ConfiguableSearcher({
-  config: { fieldGroups, resultColumns, generateResults },
+  config: { getFieldGroups, getResultColumns, generateResults },
 }: Props) {
   const { t } = useTranslation();
   const [isSearching, setIsSearching] = React.useState(false);
   const [results, setResults] = React.useState([]);
+
+  const fieldGroups = React.useMemo(getFieldGroups, [getFieldGroups]);
+  const resultColumns = React.useMemo(getResultColumns, [getResultColumns]);
 
   const initialValues = React.useMemo(() => {
     return mapFieldComponents(fieldGroups, component =>
