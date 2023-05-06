@@ -8,10 +8,27 @@ import { useTranslation } from 'react-i18next';
 import { Formik, Form } from 'formik';
 import { ResultRow, ResultTable } from '../Components/ResultTable';
 import {
+  FieldComponent,
   FieldGroup,
   FieldGroupComponent,
   InputFieldGroup,
 } from '../Components/FieldGroup';
+import { getValueParser } from '../Components/InputField';
+
+function mapFieldComponents<Result>(
+  fieldGroups: FieldGroup[],
+  mapper: (FieldComponent) => Result,
+): Record<string, Result> {
+  const fields: FieldGroupComponent[] = fieldGroups.flatMap(
+    fieldGroup => fieldGroup.components,
+  );
+  return fields.reduce((acc, component) => {
+    if (component.type !== 'label') {
+      acc[component.id] = mapper(component);
+    }
+    return acc;
+  }, {});
+}
 
 export type SearcherConfig = {
   fieldGroups: FieldGroup[];
@@ -33,22 +50,23 @@ export function ConfiguableSearcher({
   const [results, setResults] = React.useState([]);
 
   const initialValues = React.useMemo(() => {
-    const fields: FieldGroupComponent[] = fieldGroups.flatMap(
-      fieldGroup => fieldGroup.components,
+    return mapFieldComponents(fieldGroups, component =>
+      component.type === 'checkbox' ? false : component.defaultValue,
     );
-    return fields.reduce((acc, component) => {
-      if (component.type !== 'label') {
-        acc[component.id] =
-          component.type === 'checkbox' ? false : component.defaultValue;
-      }
-      return acc;
-    }, {});
+  }, [fieldGroups]);
+
+  const valueParsers = React.useMemo(() => {
+    return mapFieldComponents(fieldGroups, component =>
+      getValueParser(component.type),
+    );
   }, [fieldGroups]);
 
   const handleSubmit = React.useCallback(
     async values => {
       setIsSearching(true);
-      const stringifiedValues = mapValues(values, String);
+      const stringifiedValues = mapValues(values, (value, key) => {
+        return valueParsers[key](String(value));
+      });
       try {
         const newResults = await generateResults(stringifiedValues);
         setResults(newResults);

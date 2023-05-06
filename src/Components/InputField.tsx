@@ -2,7 +2,6 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
@@ -10,6 +9,9 @@ import { useFormikContext } from 'formik';
 type SharedConfig = {
   id: string;
   label: string;
+  // Normally each field would have a specific type,
+  // but we should be defensive against bad external configs.
+  // This will also make types easier on the wasm side.
   defaultValue: string;
   required?: boolean;
 };
@@ -134,4 +136,18 @@ export const InputField = ({
       </TextField>
     );
   }
+};
+
+type ValueParser = (value: string) => string | boolean | number;
+
+const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
+  checkbox: value => value === 'true',
+  hex_number: value => parseInt(value, 16) ?? 0,
+  number: value => parseInt(value, 10) ?? 0,
+  select: value => value,
+  text: value => value,
+};
+
+export const getValueParser = (type: FieldConfig['type']): ValueParser => {
+  return VALUE_PARSERS[type] ?? VALUE_PARSERS.text;
 };
