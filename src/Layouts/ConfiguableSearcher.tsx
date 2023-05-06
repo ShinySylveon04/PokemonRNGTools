@@ -13,7 +13,7 @@ import {
   InputFieldGroup,
 } from '../Components/FieldGroup';
 
-type Props = {
+export type SearcherConfig = {
   fieldGroups: FieldGroup[];
   resultColumns: string[];
   generateResults: (
@@ -21,10 +21,12 @@ type Props = {
   ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
+type Props = {
+  config: SearcherConfig;
+};
+
 export function ConfiguableSearcher({
-  fieldGroups,
-  resultColumns,
-  generateResults,
+  config: { fieldGroups, resultColumns, generateResults },
 }: Props) {
   const { t } = useTranslation();
   const [isSearching, setIsSearching] = React.useState(false);
