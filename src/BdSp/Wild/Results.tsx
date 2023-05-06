@@ -37,7 +37,7 @@ const showAbility = ability => {
 
 const ShowResults = ({ results, state, t }) => {
   if (results.length === 0) {
-    return <NoResults t={t} />;
+    return <NoResults />;
   } else {
     return results.map((result, index) => (
       <TableRow

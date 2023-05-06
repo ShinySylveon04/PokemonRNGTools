@@ -13,7 +13,7 @@ import { NoResults } from '../../Components/NoResults';
 
 const ShowResults = ({ results, t }) => {
   if (results.length === 0) {
-    return <NoResults t={t} />;
+    return <NoResults />;
   } else {
     return results.map((result, index) => (
       <TableRow
