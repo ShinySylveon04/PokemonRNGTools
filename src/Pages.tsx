@@ -186,7 +186,7 @@ export const Pages = () => {
                   const minAdvances = parseInt(values.min_advances, 10) || 0;
                   const maxAdvances = parseInt(values.max_advances, 10) || 0;
                   const totalResults = Math.max(0, maxAdvances - minAdvances);
-                  return new Array(totalResults)
+                  const results = new Array(totalResults)
                     .fill(0)
                     .map((_, i) => [
                       (minAdvances + i).toString(10),
@@ -195,6 +195,10 @@ export const Pages = () => {
                       '1234',
                       'AABBCCDD',
                     ]);
+
+                  return new Promise(resolve => {
+                    setTimeout(resolve, 1000, results);
+                  });
                 }}
               />
             }

@@ -16,7 +16,9 @@ import {
 type Props = {
   fieldGroups: FieldGroup[];
   resultColumns: string[];
-  generateResults: (formValues: Record<string, string>) => ResultRow[];
+  generateResults: (
+    formValues: Record<string, string>,
+  ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
 export function ConfiguableSearcher({
@@ -42,12 +44,17 @@ export function ConfiguableSearcher({
   }, [fieldGroups]);
 
   const handleSubmit = React.useCallback(
-    values => {
+    async values => {
       setIsSearching(true);
       const stringifiedValues = mapValues(values, String);
-      const newResults = generateResults(stringifiedValues);
-      setResults(newResults);
-      setIsSearching(false);
+      try {
+        const newResults = await generateResults(stringifiedValues);
+        setResults(newResults);
+      } catch {
+        setResults([]);
+      } finally {
+        setIsSearching(false);
+      }
     },
     [generateResults],
   );
