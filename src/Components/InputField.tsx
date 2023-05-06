@@ -20,15 +20,7 @@ export type FieldConfig = SharedConfig &
         options: string[];
       }
     | {
-        type: 'hex_number';
-        options?: never;
-      }
-    | {
-        type: 'number';
-        options?: never;
-      }
-    | {
-        type: 'checkbox';
+        type: 'hex_number' | 'number' | 'text' | 'checkbox';
         options?: never;
       }
   );
@@ -84,6 +76,23 @@ export const InputField = ({
     );
   }
 
+  if (type === 'text') {
+    return (
+      <TextField
+        fullWidth
+        required
+        id={id}
+        label={label}
+        variant="outlined"
+        autoComplete="off"
+        onChange={formik.handleChange}
+        value={value}
+        error={error}
+        helperText={helperText}
+      />
+    );
+  }
+
   if (type === 'hex_number') {
     return (
       <TextField
@@ -103,10 +112,12 @@ export const InputField = ({
 
   if (type === 'select') {
     return (
-      <Select
+      <TextField
+        select
         fullWidth
         required
         id={id}
+        name={id}
         label={label}
         autoComplete="off"
         onChange={formik.handleChange}
@@ -118,7 +129,7 @@ export const InputField = ({
             {option}
           </MenuItem>
         ))}
-      </Select>
+      </TextField>
     );
   }
 };
