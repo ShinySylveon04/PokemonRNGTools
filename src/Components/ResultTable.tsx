@@ -14,19 +14,34 @@ import { NoResults } from '../Components/NoResults';
 export type ResultRow = string[];
 
 type ResultRowsProps = {
+  page: number;
+  rowsPerPage: number;
   results: ResultRow[];
 };
 
-const ResultRows = ({ results }: ResultRowsProps) => {
+const ResultRows = ({ page, rowsPerPage, results }: ResultRowsProps) => {
   const { t } = useTranslation();
+
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const viewableResults =
+    rowsPerPage > 0 ? results.slice(startIndex, endIndex) : results;
 
   return (
     <>
-      {results.map(resultRow => {
+      {viewableResults.map((resultRow, rowIndex) => {
+        const resultIndex = startIndex + rowIndex;
         return (
-          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-            {resultRow.map(result => {
-              return <TableCell align="left">{t(result)}</TableCell>;
+          <TableRow
+            key={resultIndex}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          >
+            {resultRow.map((result, columnIndex) => {
+              return (
+                <TableCell key={`${resultIndex}-${columnIndex}`} align="left">
+                  {t(result)}
+                </TableCell>
+              );
             })}
           </TableRow>
         );
@@ -44,7 +59,6 @@ export const ResultTable = ({ columns, results }: Props) => {
   const { t } = useTranslation();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
-  const [selected, setSelected] = React.useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -62,20 +76,15 @@ export const ResultTable = ({ columns, results }: Props) => {
           <TableHead>
             <TableRow>
               {columns.map(column => (
-                <TableCell>{t(column)}</TableCell>
+                <TableCell key={column}>{t(column)}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             <ResultRows
-              results={
-                rowsPerPage > 0
-                  ? results.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage,
-                    )
-                  : results
-              }
+              page={page}
+              rowsPerPage={rowsPerPage}
+              results={results}
             />
             {results.length === 0 && <NoResults colSpan={columns.length} />}
           </TableBody>

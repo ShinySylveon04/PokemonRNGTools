@@ -10,36 +10,34 @@ import { useFormikContext } from 'formik';
 type SharedConfig = {
   id: string;
   label: string;
+  defaultValue: string;
 };
 
-export type Props = SharedConfig &
+export type FieldConfig = SharedConfig &
   (
     | {
         type: 'select';
-        defaultValue?: string;
         options: string[];
       }
     | {
         type: 'hex_number';
-        defaultValue?: number;
         options?: never;
       }
     | {
         type: 'number';
-        defaultValue?: number;
         options?: never;
       }
     | {
         type: 'checkbox';
-        defaultValue?: boolean;
         options?: never;
       }
   );
 
+type Props = FieldConfig;
+
 export const InputField = ({
   id,
   type,
-  defaultValue,
   label: nonTranslatedLabel,
   options,
 }: Props) => {
@@ -60,7 +58,6 @@ export const InputField = ({
           <Checkbox
             id={id}
             checked={!!value}
-            defaultChecked={defaultValue ?? false}
             onChange={formik.handleChange}
             inputProps={{ 'aria-label': label }}
           />
@@ -79,7 +76,6 @@ export const InputField = ({
         variant="outlined"
         type="number"
         autoComplete="off"
-        defaultValue={defaultValue}
         onChange={formik.handleChange}
         value={value}
         error={error}
@@ -97,7 +93,6 @@ export const InputField = ({
         label={label}
         variant="outlined"
         autoComplete="off"
-        defaultValue={defaultValue?.toString(16)}
         onChange={formik.handleChange}
         value={value}
         error={error}
@@ -114,7 +109,6 @@ export const InputField = ({
         id={id}
         label={label}
         autoComplete="off"
-        defaultValue={defaultValue}
         onChange={formik.handleChange}
         value={value}
         error={error}

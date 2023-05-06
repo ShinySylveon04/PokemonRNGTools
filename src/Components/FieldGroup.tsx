@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
-import { Props as FieldConfig, InputField } from '../Components/InputField';
+import { FieldConfig, InputField } from '../Components/InputField';
 
 type LabelComponent = {
   type: 'label';
@@ -11,7 +11,9 @@ type LabelComponent = {
   id: string;
 };
 
-export type FieldComponent = FieldConfig & { size?: 'large' | 'small' };
+export type FieldComponent = FieldConfig & {
+  size?: 'large' | 'small';
+};
 
 export type FieldGroupComponent = FieldComponent | LabelComponent;
 
