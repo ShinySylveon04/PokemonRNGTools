@@ -5,70 +5,66 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useTranslation } from 'react-i18next';
+import { useFormikContext } from 'formik';
 
-type SelectInput = {
-  type: 'select';
-  label: string;
-  options: string[];
-};
-
-type HexNumberInput = {
-  type: 'hex_number';
+type SharedConfig = {
+  id: string;
   label: string;
 };
 
-type NumberInput = {
-  type: 'number';
-  label: string;
-};
+export type Props = SharedConfig &
+  (
+    | {
+        type: 'select';
+        defaultValue?: string;
+        options: string[];
+      }
+    | {
+        type: 'hex_number';
+        defaultValue?: number;
+        options?: never;
+      }
+    | {
+        type: 'number';
+        defaultValue?: number;
+        options?: never;
+      }
+    | {
+        type: 'checkbox';
+        defaultValue?: boolean;
+        options?: never;
+      }
+  );
 
-type CheckboxInput = {
-  type: 'checkbox';
-  label: string;
-};
-
-export type Props =
-  | {
-      type: SelectInput['type'];
-      config: Omit<SelectInput, 'type'>;
-      defaultValue?: string;
-      onChange: (newValue: string) => void;
-    }
-  | {
-      type: NumberInput['type'];
-      config: Omit<NumberInput, 'type'>;
-      defaultValue?: number;
-      onChange: (newValue: number) => void;
-    }
-  | {
-      type: HexNumberInput['type'];
-      config: Omit<HexNumberInput, 'type'>;
-      defaultValue?: number;
-      onChange: (newValue: number) => void;
-    }
-  | {
-      type: CheckboxInput['type'];
-      config: Omit<CheckboxInput, 'type'>;
-      defaultValue?: boolean;
-      onChange: (newValue: boolean) => void;
-    };
-
-export const InputField = ({ type, config, defaultValue, onChange }: Props) => {
+export const InputField = ({
+  id,
+  type,
+  defaultValue,
+  label: nonTranslatedLabel,
+  options,
+}: Props) => {
   const { t } = useTranslation();
-  const label = t(config.label);
+  const label = t(nonTranslatedLabel);
+  const formik = useFormikContext<Record<string, unknown>>();
+
+  const value = formik.values[id];
+  const error = formik.touched[id] && Boolean(formik.errors[id]);
+  const helperText = formik.touched[id] && formik.errors[id];
 
   if (type === 'checkbox') {
     return (
       <FormControlLabel
         sx={{ userSelect: 'none' }}
+        label={label}
         control={
           <Checkbox
-            defaultChecked={defaultValue}
-            onChange={event => onChange(event.target.checked)}
+            id={id}
+            checked={!!value}
+            defaultChecked={defaultValue ?? false}
+            onChange={formik.handleChange}
             inputProps={{ 'aria-label': label }}
           />
         }
-        label={label}
       />
     );
   }
@@ -77,11 +73,17 @@ export const InputField = ({ type, config, defaultValue, onChange }: Props) => {
     return (
       <TextField
         fullWidth
+        required
+        id={id}
         label={label}
         variant="outlined"
         type="number"
+        autoComplete="off"
         defaultValue={defaultValue}
-        onChange={event => onChange(parseInt(event.target.value, 10))}
+        onChange={formik.handleChange}
+        value={value}
+        error={error}
+        helperText={helperText}
       />
     );
   }
@@ -90,10 +92,16 @@ export const InputField = ({ type, config, defaultValue, onChange }: Props) => {
     return (
       <TextField
         fullWidth
+        required
+        id={id}
         label={label}
         variant="outlined"
+        autoComplete="off"
         defaultValue={defaultValue?.toString(16)}
-        onChange={event => onChange(parseInt(event.target.value, 16))}
+        onChange={formik.handleChange}
+        value={value}
+        error={error}
+        helperText={helperText}
       />
     );
   }
@@ -102,11 +110,16 @@ export const InputField = ({ type, config, defaultValue, onChange }: Props) => {
     return (
       <Select
         fullWidth
+        required
+        id={id}
         label={label}
+        autoComplete="off"
         defaultValue={defaultValue}
-        onChange={event => onChange(event.target.value)}
+        onChange={formik.handleChange}
+        value={value}
+        error={error}
       >
-        {config.options.map(option => (
+        {options.map(option => (
           <MenuItem key={option} value={option}>
             {option}
           </MenuItem>

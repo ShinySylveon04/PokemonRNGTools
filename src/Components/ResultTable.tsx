@@ -11,7 +11,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { useTranslation } from 'react-i18next';
 import { NoResults } from '../Components/NoResults';
 
-type ResultRow = string[];
+export type ResultRow = string[];
 
 type ResultRowsProps = {
   results: ResultRow[];

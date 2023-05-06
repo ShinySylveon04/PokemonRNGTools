@@ -8,11 +8,12 @@ import { Props as FieldConfig, InputField } from '../Components/InputField';
 type LabelComponent = {
   type: 'label';
   label: string;
+  id: string;
 };
 
-type FieldComponent = FieldConfig & { size?: 'large' | 'small' };
+export type FieldComponent = FieldConfig & { size?: 'large' | 'small' };
 
-type FieldGroupComponent = FieldComponent | LabelComponent;
+export type FieldGroupComponent = FieldComponent | LabelComponent;
 
 export type FieldGroup = {
   label: string;
@@ -44,7 +45,7 @@ export function InputFieldGroup({ fieldGroup }: Props) {
         {fieldGroup.components.map(field => {
           if (field.type === 'label') {
             return (
-              <Grid item xs={12}>
+              <Grid key={field.id} item xs={12}>
                 <Typography variant="body1" align="left" color="primary">
                   {t(field.label)}
                 </Typography>
@@ -54,14 +55,14 @@ export function InputFieldGroup({ fieldGroup }: Props) {
 
           return (
             <Grid
-              key={field.config.label}
+              key={field.id}
               item
               sm={field.size === 'small' ? 6 : 3}
               md={field.size === 'small' ? 2 : 3}
               xs={field.size === 'small' ? 4 : 12}
               justifyContent="center"
             >
-              <InputField key={field.config.label} {...field} />
+              <InputField {...field} />
             </Grid>
           );
         })}

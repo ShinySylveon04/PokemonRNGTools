@@ -12,7 +12,22 @@ export const ColorMode = ({ children }) => {
   const savedMode =
     localStorage.getItem('ColorMode') === 'light' ? 'light' : 'dark';
   const [mode, setMode] = React.useState<PaletteMode>(savedMode ?? 'light');
-  const theme = React.useMemo(() => createTheme({ palette: { mode } }), [mode]);
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: { mode },
+        components: {
+          MuiFormLabel: {
+            styleOverrides: {
+              // All fields are required.
+              // This prevents the asterisk showing on every field.
+              asterisk: { display: 'none' },
+            },
+          },
+        },
+      }),
+    [mode],
+  );
 
   React.useEffect(() => {
     localStorage.setItem('ColorMode', mode);

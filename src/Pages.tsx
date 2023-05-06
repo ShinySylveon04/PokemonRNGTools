@@ -36,56 +36,42 @@ export const Pages = () => {
                     components: [
                       {
                         type: 'hex_number',
-                        onChange: () => {},
-                        config: {
-                          label: 'Seed',
-                        },
+                        id: 'seed',
+                        label: 'Seed',
                       },
                       {
                         type: 'number',
-                        onChange: () => {},
+                        id: 'min_advances',
                         defaultValue: 0,
-                        config: {
-                          label: 'Min Advances',
-                        },
+                        label: 'Min Advances',
                       },
                       {
                         type: 'number',
-                        onChange: () => {},
+                        id: 'max_advances',
                         defaultValue: 10000,
-                        config: {
-                          label: 'Max Advances',
-                        },
+                        label: 'Max Advances',
                       },
                       {
                         type: 'number',
-                        onChange: () => {},
+                        id: 'delay',
                         defaultValue: 0,
-                        config: {
-                          label: 'Delay',
-                        },
+                        label: 'Delay',
                       },
                       {
                         type: 'number',
-                        onChange: () => {},
+                        id: 'tid',
                         defaultValue: 0,
-                        config: {
-                          label: 'TID',
-                        },
+                        label: 'TID',
                       },
                       {
                         type: 'checkbox',
-                        onChange: () => {},
-                        config: {
-                          label: 'Shiny Pokemon',
-                        },
+                        id: 'shiny_pokemon',
+                        label: 'Shiny Pokemon',
                       },
                       {
                         type: 'checkbox',
-                        onChange: () => {},
-                        config: {
-                          label: 'Mew or Celebi',
-                        },
+                        id: 'mew_or_celebi',
+                        label: 'Mew or Celebi',
                       },
                     ],
                   },
@@ -95,118 +81,96 @@ export const Pages = () => {
                       {
                         type: 'label',
                         label: 'Min IVs',
+                        id: 'min_ivs_label',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_hp_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'HP',
-                        },
+                        label: 'HP',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_atk_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'Attack',
-                        },
+                        label: 'Attack',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_def_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'Defense',
-                        },
+                        label: 'Defense',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_spa_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'Special Attack',
-                        },
+                        label: 'Special Attack',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_spd_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'Special Defense',
-                        },
+                        label: 'Special Defense',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'min_spe_iv',
                         defaultValue: 0,
-                        config: {
-                          label: 'Speed',
-                        },
+                        label: 'Speed',
                       },
                       {
                         type: 'label',
                         label: 'Max IVs',
+                        id: 'max_ivs_label',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_hp_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'HP',
-                        },
+                        label: 'HP',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_atk_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'Attack',
-                        },
+                        label: 'Attack',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_def_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'Defense',
-                        },
+                        label: 'Defense',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_spa_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'Special Attack',
-                        },
+                        label: 'Special Attack',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_spd_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'Special Defense',
-                        },
+                        label: 'Special Defense',
                       },
                       {
                         type: 'number',
                         size: 'small',
-                        onChange: () => {},
+                        id: 'max_spe_iv',
                         defaultValue: 31,
-                        config: {
-                          label: 'Speed',
-                        },
+                        label: 'Speed',
                       },
                     ],
                   },
@@ -218,11 +182,14 @@ export const Pages = () => {
                   'PSV',
                   'PID',
                 ]}
-                generateResults={() => {
-                  return new Array(100)
+                generateResults={values => {
+                  const minAdvances = parseInt(values.min_advances, 10) || 0;
+                  const maxAdvances = parseInt(values.max_advances, 10) || 0;
+                  const totalResults = Math.max(0, maxAdvances - minAdvances);
+                  return new Array(totalResults)
                     .fill(0)
                     .map((_, i) => [
-                      i.toString(10),
+                      (minAdvances + i).toString(10),
                       '10/31/29/5/30/4',
                       'Fighting',
                       '1234',
