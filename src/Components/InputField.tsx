@@ -11,6 +11,7 @@ type SharedConfig = {
   id: string;
   label: string;
   defaultValue: string;
+  required?: boolean;
 };
 
 export type FieldConfig = SharedConfig &
@@ -32,6 +33,7 @@ export const InputField = ({
   type,
   label: nonTranslatedLabel,
   options,
+  required = true,
 }: Props) => {
   const { t } = useTranslation();
   const label = t(nonTranslatedLabel);
@@ -62,7 +64,7 @@ export const InputField = ({
     return (
       <TextField
         fullWidth
-        required
+        required={required}
         id={id}
         label={label}
         variant="outlined"
@@ -80,7 +82,7 @@ export const InputField = ({
     return (
       <TextField
         fullWidth
-        required
+        required={required}
         id={id}
         label={label}
         variant="outlined"
@@ -97,7 +99,7 @@ export const InputField = ({
     return (
       <TextField
         fullWidth
-        required
+        required={required}
         id={id}
         label={label}
         variant="outlined"
@@ -115,7 +117,7 @@ export const InputField = ({
       <TextField
         select
         fullWidth
-        required
+        required={required}
         id={id}
         name={id}
         label={label}

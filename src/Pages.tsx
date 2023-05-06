@@ -11,6 +11,7 @@ import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
 import { Gen6Transporter } from './Gen6/Transporter';
 import { TRANSPORTER_CONFIG } from './Gen6/Transporter2';
+import { BDSP_TID_CONFIG } from './BdSp/TID/TID2';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
 
 export const Pages = () => {
@@ -30,6 +31,10 @@ export const Pages = () => {
           <Route
             path="gen6/transporter2"
             element={<ConfiguableSearcher config={TRANSPORTER_CONFIG} />}
+          />
+          <Route
+            path="bdsp/tid2"
+            element={<ConfiguableSearcher config={BDSP_TID_CONFIG} />}
           />
         </Route>
       </Routes>

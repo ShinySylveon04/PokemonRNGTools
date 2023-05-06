@@ -19,7 +19,7 @@ export const ColorMode = ({ children }) => {
         components: {
           MuiFormLabel: {
             styleOverrides: {
-              // All fields are required.
+              // Nearly fields are required.
               // This prevents the asterisk showing on every field.
               asterisk: { display: 'none' },
             },

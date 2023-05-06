@@ -180,7 +180,7 @@ export const TRANSPORTER_CONFIG: SearcherConfig = {
     };
 
     const results = await calculateTransporterPokemon(parsedSettings);
-    const formattedResults = results.map(result => {
+    return results.map(result => {
       return [
         result.advances.toString(),
         formatIVs(result.ivs),
@@ -189,6 +189,5 @@ export const TRANSPORTER_CONFIG: SearcherConfig = {
         result.pid.toString(16),
       ];
     });
-    return formattedResults;
   },
 };
