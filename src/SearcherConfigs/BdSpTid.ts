@@ -1,6 +1,6 @@
-import { calculateTID } from './TID';
-import { SearcherConfig } from '../../Layouts/ConfiguableSearcher';
-import { FieldGroup } from '../../Components/FieldGroup';
+import { calculateTID } from '../BdSp/TID/TID';
+import { SearcherConfig } from '../Layouts/ConfiguableSearcher';
+import type { FieldGroup } from '../Components/FieldGroup';
 
 const FIELD_GROUPS: FieldGroup[] = [
   {

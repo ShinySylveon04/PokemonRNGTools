@@ -10,8 +10,8 @@ import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
 import { Gen6Transporter } from './Gen6/Transporter';
-import { TRANSPORTER_CONFIG } from './Gen6/Transporter2';
-import { BDSP_TID_CONFIG } from './BdSp/TID/TID2';
+import { TRANSPORTER_CONFIG } from './SearcherConfigs/Transporter';
+import { BDSP_TID_CONFIG } from './SearcherConfigs/BdspTid';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
 
 export const Pages = () => {
