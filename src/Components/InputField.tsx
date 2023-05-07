@@ -152,7 +152,7 @@ export const InputField = ({
   }
 
   if (type === 'multiselect') {
-    const safeValue = value as string[];
+    const safeValue = isArray(value) ? value : String(value).split(',');
     return (
       <FormControl fullWidth>
         <InputLabel id={`${id}-label`}>{label}</InputLabel>
@@ -211,17 +211,17 @@ const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
 
 export const getValueParser = (type: FieldConfig['type']): ValueParser => {
   const parser = VALUE_PARSERS[type];
-  return parser == null ? null : VALUE_PARSERS.text;
+  return parser == null ? VALUE_PARSERS.text : parser;
 };
 
-export const isArray = (value: ParsedValue): value is string[] => {
+export const isArray = (value: unknown): value is string[] => {
   return _isArray(value);
 };
 
-export const isNumber = (value: ParsedValue): value is number => {
+export const isNumber = (value: unknown): value is number => {
   return _isNumber(value);
 };
 
-export const isString = (value: ParsedValue): value is string => {
+export const isString = (value: unknown): value is string => {
   return _isString(value);
 };

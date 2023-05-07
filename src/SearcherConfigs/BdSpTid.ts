@@ -80,12 +80,8 @@ export const BDSP_TID_CONFIG: SearcherConfig = {
   generateResults: async values => {
     const parsedSettings = {
       rng_state: [values.seed_0, values.seed_1, values.seed_2, values.seed_3],
-      min_advances: isString(values.min_advances)
-        ? parseInt(values.min_advances, 10)
-        : 0,
-      max_advances: isString(values.max_advances)
-        ? parseInt(values.max_advances, 10)
-        : 0,
+      min_advances: values.min_advances,
+      max_advances: values.max_advances,
       id: isString(values.ids)
         ? values.ids
             .split('\n')
