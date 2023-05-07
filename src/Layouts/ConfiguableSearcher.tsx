@@ -13,11 +13,11 @@ import {
   FieldGroupComponent,
   InputFieldGroup,
 } from '../Components/FieldGroup';
-import { getValueParser } from '../Components/InputField';
+import { ParsedValue, getValueParser } from '../Components/InputField';
 
 function mapFieldComponents<Result>(
   fieldGroups: FieldGroup[],
-  mapper: (FieldComponent) => Result,
+  mapper: (component: FieldComponent) => Result,
 ): Record<string, Result> {
   const fields: FieldGroupComponent[] = fieldGroups.flatMap(
     fieldGroup => fieldGroup.components,
@@ -34,7 +34,7 @@ export type SearcherConfig = {
   getFieldGroups: () => FieldGroup[];
   getResultColumns: () => string[];
   generateResults: (
-    formValues: Record<string, string>,
+    formValues: Record<string, ParsedValue>,
   ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
@@ -52,16 +52,18 @@ export function ConfiguableSearcher({
   const fieldGroups = React.useMemo(getFieldGroups, [getFieldGroups]);
   const resultColumns = React.useMemo(getResultColumns, [getResultColumns]);
 
-  const initialValues = React.useMemo(() => {
-    return mapFieldComponents(fieldGroups, component =>
-      component.type === 'checkbox' ? false : component.defaultValue,
-    );
-  }, [fieldGroups]);
-
   const valueParsers = React.useMemo(() => {
     return mapFieldComponents(fieldGroups, component =>
       getValueParser(component.type),
     );
+  }, [fieldGroups]);
+
+  const initialValues = React.useMemo(() => {
+    return mapFieldComponents(fieldGroups, component => {
+      return component.defaultValue.length === 0
+        ? component.defaultValue
+        : valueParsers[component.id](component.defaultValue);
+    });
   }, [fieldGroups]);
 
   const handleSubmit = React.useCallback(

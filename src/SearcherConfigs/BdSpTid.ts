@@ -1,5 +1,6 @@
 import { calculateTID } from '../BdSp/TID/TID';
-import { SearcherConfig } from '../Layouts/ConfiguableSearcher';
+import { isString, isArray } from '../Components/InputField';
+import type { SearcherConfig } from '../Layouts/ConfiguableSearcher';
 import type { FieldGroup } from '../Components/FieldGroup';
 
 const FIELD_GROUPS: FieldGroup[] = [
@@ -53,7 +54,13 @@ const FIELD_GROUPS: FieldGroup[] = [
         id: 'id_type',
         defaultValue: 'None',
         label: 'ID Filter',
-        options: ['None', 'TID', 'SID', 'TSV', 'G8TID'],
+        options: [
+          { label: 'None', value: 'None' },
+          { label: 'TID', value: 'TID' },
+          { label: 'SID', value: 'SID' },
+          { label: 'TSV', value: 'TSV' },
+          { label: 'Gen 8 TID', value: 'G8TID' },
+        ],
       },
       {
         type: 'text',
@@ -72,18 +79,19 @@ export const BDSP_TID_CONFIG: SearcherConfig = {
   getResultColumns: () => ['Advances', 'Gen 8 TID', 'TID', 'SID', 'TSV'],
   generateResults: async values => {
     const parsedSettings = {
-      rng_state: [
-        values.seed_0,
-        values.seed_1,
-        values.seed_2,
-        values.seed_3,
-      ].map(num => parseInt(num, 16)),
-      min_advances: parseInt(values.min_advances, 10),
-      max_advances: parseInt(values.max_advances, 10),
-      id: values.ids
-        .split('\n')
-        .filter(id => id.trim().length !== 0)
-        .map(id => parseInt(id, 10)),
+      rng_state: [values.seed_0, values.seed_1, values.seed_2, values.seed_3],
+      min_advances: isString(values.min_advances)
+        ? parseInt(values.min_advances, 10)
+        : 0,
+      max_advances: isString(values.max_advances)
+        ? parseInt(values.max_advances, 10)
+        : 0,
+      id: isString(values.ids)
+        ? values.ids
+            .split('\n')
+            .filter(id => id.trim().length !== 0)
+            .map(id => parseInt(id, 10))
+        : [],
       filter_type: values.id_type,
     };
 

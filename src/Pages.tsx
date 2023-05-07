@@ -11,7 +11,8 @@ import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
 import { Gen6Transporter } from './Gen6/Transporter';
 import { TRANSPORTER_CONFIG } from './SearcherConfigs/Transporter';
-import { BDSP_TID_CONFIG } from './SearcherConfigs/BdspTid';
+import { BDSP_TID_CONFIG } from './SearcherConfigs/BdSpTid';
+import { BDSP_UNDERGROUND_CONFIG } from './SearcherConfigs/BdSpUnderground';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
 
 export const Pages = () => {
@@ -35,6 +36,10 @@ export const Pages = () => {
           <Route
             path="bdsp/tid2"
             element={<ConfiguableSearcher config={BDSP_TID_CONFIG} />}
+          />
+          <Route
+            path="bdsp/underground2"
+            element={<ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />}
           />
         </Route>
       </Routes>
