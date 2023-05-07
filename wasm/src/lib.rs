@@ -7,7 +7,7 @@ extern crate console_error_panic_hook;
 
 mod bdsp;
 mod enums;
-mod field_config;
+mod form_config;
 mod gen3;
 mod gen6;
 mod rng;

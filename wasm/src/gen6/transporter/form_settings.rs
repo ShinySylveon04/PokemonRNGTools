@@ -1,33 +1,33 @@
 use super::{generator, settings};
-use crate::field_config::{FieldComponent, FieldGroup};
+use crate::form_config::{FieldGroup, LargeComponent, SmallComponent};
 use serde::{Deserialize, Serialize};
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
     let rng_info_components = vec![
-        FieldComponent::hex_number("seed", "Seed", None),
-        FieldComponent::number("min_advances", "Min Advances", Some(0)),
-        FieldComponent::number("max_advances", "Max Advances", Some(10000)),
-        FieldComponent::number("delay", "Delay", Some(0)),
-        FieldComponent::number("tid", "TID", Some(0)),
-        FieldComponent::checkbox("shiny_pokemon", "Shiny Pokemon"),
-        FieldComponent::checkbox("mew_or_celebi", "Mew or Celebi"),
+        LargeComponent::hex_number("seed", "Seed", None),
+        LargeComponent::number("min_advances", "Min Advances", Some(0)),
+        LargeComponent::number("max_advances", "Max Advances", Some(10000)),
+        LargeComponent::number("delay", "Delay", Some(0)),
+        LargeComponent::number("tid", "TID", Some(0)),
+        LargeComponent::checkbox("shiny_pokemon", "Shiny Pokemon"),
+        LargeComponent::checkbox("mew_or_celebi", "Mew or Celebi"),
     ];
 
     let filer_components = vec![
-        FieldComponent::label("min_ivs_label", "Min IVs"),
-        FieldComponent::number("min_hp_iv", "HP", Some(0)),
-        FieldComponent::number("min_atk_iv", "Attack", Some(0)),
-        FieldComponent::number("min_def_iv", "Defense", Some(0)),
-        FieldComponent::number("min_spa_iv", "Special Attack", Some(0)),
-        FieldComponent::number("min_spd_iv", "Special Defense", Some(0)),
-        FieldComponent::number("min_spe_iv", "Speed", Some(0)),
-        FieldComponent::label("max_ivs_label", "Max IVs"),
-        FieldComponent::number("max_hp_iv", "HP", Some(31)),
-        FieldComponent::number("max_atk_iv", "Attack", Some(31)),
-        FieldComponent::number("max_def_iv", "Defense", Some(31)),
-        FieldComponent::number("max_spa_iv", "Special Attack", Some(31)),
-        FieldComponent::number("max_spd_iv", "Special Defense", Some(31)),
-        FieldComponent::number("max_spe_iv", "Speed", Some(31)),
+        LargeComponent::label("min_ivs_label", "Min IVs"),
+        SmallComponent::number("min_hp_iv", "HP", Some(0)),
+        SmallComponent::number("min_atk_iv", "Attack", Some(0)),
+        SmallComponent::number("min_def_iv", "Defense", Some(0)),
+        SmallComponent::number("min_spa_iv", "Special Attack", Some(0)),
+        SmallComponent::number("min_spd_iv", "Special Defense", Some(0)),
+        SmallComponent::number("min_spe_iv", "Speed", Some(0)),
+        LargeComponent::label("max_ivs_label", "Max IVs"),
+        SmallComponent::number("max_hp_iv", "HP", Some(31)),
+        SmallComponent::number("max_atk_iv", "Attack", Some(31)),
+        SmallComponent::number("max_def_iv", "Defense", Some(31)),
+        SmallComponent::number("max_spa_iv", "Special Attack", Some(31)),
+        SmallComponent::number("max_spd_iv", "Special Defense", Some(31)),
+        SmallComponent::number("max_spe_iv", "Speed", Some(31)),
     ];
 
     vec![
