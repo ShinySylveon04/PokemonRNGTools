@@ -1,13 +1,13 @@
 import React from 'react';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
+import { TextTableRow } from './TextTableRow';
+import { useTranslation } from 'react-i18next';
 
-export const NoResults = ({ t }) => {
-  return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell align="center" colSpan={3}>
-        {t(`No Results Found`)}
-      </TableCell>
-    </TableRow>
-  );
+type Props = {
+  colSpan?: number;
+  selected?: boolean;
+};
+
+export const NoResults = ({ colSpan = 3 }: Props) => {
+  const { t } = useTranslation();
+  return <TextTableRow colSpan={colSpan}>{t(`No Results Found`)}</TextTableRow>;
 };

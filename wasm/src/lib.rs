@@ -7,6 +7,7 @@ extern crate console_error_panic_hook;
 
 mod bdsp;
 mod enums;
+mod form_config;
 mod gen3;
 mod gen6;
 mod rng;
@@ -242,5 +243,26 @@ pub fn calculate_pokemon_bdsp_underground(
 
     let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
 
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_transporter_field_groups() -> JsValue {
+    let result = gen6::transporter::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_transporter_result_columns() -> JsValue {
+    let result = gen6::transporter::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_transporter(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: gen6::transporter::form_settings::Settings =
+        settings.into_serde().unwrap();
+    let results = gen6::transporter::form_settings::generate_transporter(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }

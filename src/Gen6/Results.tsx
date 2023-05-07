@@ -16,7 +16,7 @@ import { formatIVs } from '../Utils/formatIVs';
 
 const ShowResults = ({ results, t, handleClick, selected }) => {
   if (results.length === 0) {
-    return <NoResults t={t} />;
+    return <NoResults />;
   } else {
     return results.map((result, index) => {
       const isItemSelected = selected === result.pid;

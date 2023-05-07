@@ -11,7 +11,7 @@ import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
-const calculateTID = wrap<AnyPromiseFunction>(
+export const calculateTID = wrap<AnyPromiseFunction>(
   new Worker('./workers/getResults.ts'),
 );
 
