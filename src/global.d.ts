@@ -2,7 +2,7 @@
 type AnyPromiseFunction = (...props: any[]) => Promise<any>;
 type AnyFunction = (...props: any[]) => any;
 
-declare module '~/../wasm/Cargo.toml' {
+declare module '~/../wasm/chatot/Cargo.toml' {
   const get_bdsp_stationary: AnyPromiseFunction;
   const get_bdsp_tid: AnyPromiseFunction;
   const calculate_pokemon_bdsp_underground: AnyPromiseFunction;

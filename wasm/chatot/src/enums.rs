@@ -223,7 +223,7 @@ impl Shiny {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
-#[repr(usize)]
+#[repr(u32)]
 pub enum EncounterSlotFilter {
     #[num_enum(default)]
     Any = 12,
@@ -243,7 +243,7 @@ pub enum EncounterSlotFilter {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive)]
-#[repr(usize)]
+#[repr(u32)]
 pub enum EncounterSlot {
     #[num_enum(default)]
     Slot0 = 0,

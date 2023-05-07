@@ -1,5 +1,5 @@
 use super::{generator, settings};
-use crate::form_config::{FieldGroup, LargeComponent, SmallComponent};
+use chatot_forms::{FieldGroup, LargeComponent, SmallComponent};
 use serde::{Deserialize, Serialize};
 
 pub fn get_field_groups() -> Vec<FieldGroup> {

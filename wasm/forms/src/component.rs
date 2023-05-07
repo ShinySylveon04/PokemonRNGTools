@@ -123,90 +123,54 @@ impl FieldComponent {
     }
 }
 
-pub struct LargeComponent;
+macro_rules! impl_sized_component {
+    ($component:ident, $field_size:tt) => {
+        impl $component {
+            pub fn label(id: impl ToString, label: impl ToString) -> FieldComponent {
+                FieldComponent::label(id, label, FieldSize::$field_size)
+            }
 
-impl LargeComponent {
-    pub fn label(id: impl ToString, label: impl ToString) -> FieldComponent {
-        FieldComponent::label(id, label, FieldSize::Large)
-    }
+            pub fn number(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::number(id, label, default_value, FieldSize::$field_size)
+            }
 
-    pub fn number(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: Option<u32>,
-    ) -> FieldComponent {
-        FieldComponent::number(id, label, default_value, FieldSize::Large)
-    }
+            pub fn hex_number(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::hex_number(id, label, default_value, FieldSize::$field_size)
+            }
 
-    pub fn hex_number(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: Option<u32>,
-    ) -> FieldComponent {
-        FieldComponent::hex_number(id, label, default_value, FieldSize::Large)
-    }
+            pub fn text(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: impl ToString,
+            ) -> FieldComponent {
+                FieldComponent::text(id, label, default_value, FieldSize::$field_size)
+            }
 
-    pub fn text(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: impl ToString,
-    ) -> FieldComponent {
-        FieldComponent::text(id, label, default_value, FieldSize::Large)
-    }
+            pub fn checkbox(id: impl ToString, label: impl ToString) -> FieldComponent {
+                FieldComponent::checkbox(id, label, FieldSize::$field_size)
+            }
 
-    pub fn checkbox(id: impl ToString, label: impl ToString) -> FieldComponent {
-        FieldComponent::checkbox(id, label, FieldSize::Large)
-    }
-
-    pub fn select(
-        id: impl ToString,
-        label: impl ToString,
-        options: &[impl ToString],
-    ) -> FieldComponent {
-        FieldComponent::select(id, label, options, FieldSize::Large)
-    }
+            pub fn select(
+                id: impl ToString,
+                label: impl ToString,
+                options: &[impl ToString],
+            ) -> FieldComponent {
+                FieldComponent::select(id, label, options, FieldSize::$field_size)
+            }
+        }
+    };
 }
 
+pub struct LargeComponent;
 pub struct SmallComponent;
 
-impl SmallComponent {
-    pub fn label(id: impl ToString, label: impl ToString) -> FieldComponent {
-        FieldComponent::label(id, label, FieldSize::Small)
-    }
-
-    pub fn number(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: Option<u32>,
-    ) -> FieldComponent {
-        FieldComponent::number(id, label, default_value, FieldSize::Small)
-    }
-
-    pub fn hex_number(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: Option<u32>,
-    ) -> FieldComponent {
-        FieldComponent::hex_number(id, label, default_value, FieldSize::Small)
-    }
-
-    pub fn text(
-        id: impl ToString,
-        label: impl ToString,
-        default_value: impl ToString,
-    ) -> FieldComponent {
-        FieldComponent::text(id, label, default_value, FieldSize::Small)
-    }
-
-    pub fn checkbox(id: impl ToString, label: impl ToString) -> FieldComponent {
-        FieldComponent::checkbox(id, label, FieldSize::Small)
-    }
-
-    pub fn select(
-        id: impl ToString,
-        label: impl ToString,
-        options: &[impl ToString],
-    ) -> FieldComponent {
-        FieldComponent::select(id, label, options, FieldSize::Small)
-    }
-}
+impl_sized_component!(LargeComponent, Large);
+impl_sized_component!(SmallComponent, Small);

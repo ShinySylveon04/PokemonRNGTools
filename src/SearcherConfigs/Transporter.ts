@@ -3,7 +3,7 @@ import {
   get_transporter_field_groups,
   get_transporter_result_columns,
   generate_transporter,
-} from '~/../wasm/Cargo.toml';
+} from '~/../wasm/chatot/Cargo.toml';
 
 export const TRANSPORTER_CONFIG: SearcherConfig = {
   getFieldGroups: get_transporter_field_groups,

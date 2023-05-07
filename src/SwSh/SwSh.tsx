@@ -1,5 +1,5 @@
 import React from 'react';
-import { calculate_pokemon } from '~/../wasm/Cargo.toml';
+import { calculate_pokemon } from '~/../wasm/chatot/Cargo.toml';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
