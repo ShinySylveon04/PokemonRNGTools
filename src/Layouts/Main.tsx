@@ -19,6 +19,7 @@ export const MainLayout = () => {
   const isLargerScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [isopen, setOpen] = React.useState(false);
 
+  // @ts-ignore
   window.gtag('event', 'page_view', { page_location: useLocation().pathname });
 
   React.useEffect(() => {

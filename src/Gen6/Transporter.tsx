@@ -11,48 +11,70 @@ import { RNGInfo } from './RNGInfo';
 import { Filters } from './Filters';
 import { Results } from './Results';
 
-const calculateTID = wrap(new Worker('./workers/getResults.js'));
+const calculatePokemon = wrap<AnyPromiseFunction>(
+  new Worker('./workers/getResults.ts'),
+);
 
 const formatSettings = state => {
   const settings = {
-    rng_state: [state.state0, state.state1, state.state2, state.state3].map(
-      num => parseInt(num, 16),
-    ),
+    min_ivs: [
+      parseInt(state.minIVs.hp),
+      parseInt(state.minIVs.atk),
+      parseInt(state.minIVs.def),
+      parseInt(state.minIVs.spa),
+      parseInt(state.minIVs.spd),
+      parseInt(state.minIVs.spe),
+    ],
+    max_ivs: [
+      parseInt(state.maxIVs.hp),
+      parseInt(state.maxIVs.atk),
+      parseInt(state.maxIVs.def),
+      parseInt(state.maxIVs.spa),
+      parseInt(state.maxIVs.spd),
+      parseInt(state.maxIVs.spe),
+    ],
+    rng_state: parseInt(state.rng_state, 16),
     min_advances: state.min_advances,
     max_advances: state.max_advances,
-    id: state.id
-      .split('\n')
-      .filter(id => id.length !== 0)
-      .map(id => parseInt(id, 10)),
-    filter_type: state.id_filter,
+    delay: state.delay,
+    iv_rolls: state.iv_rolls,
+    is_shiny: state.is_shiny,
+    tid: parseInt(state.tid, 10),
   };
   return settings;
 };
 
-export function TID() {
+export function Gen6Transporter() {
   const { t } = useTranslation();
-
   const [searching, setSearching] = React.useState(false);
+
   const [state, setState] = React.useState({
-    state0: '',
-    state1: '',
-    state2: '',
-    state3: '',
+    rng_state: '',
     min_advances: 0,
     max_advances: 10000,
-    id: '',
-    id_filter: 'None',
+    delay: 0,
+    minIVs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+    maxIVs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+    iv_rolls: false,
+    is_shiny: false,
+    tid: 0,
+    target: {
+      is_set: false,
+      advances: 0,
+      psv: 0,
+      ivs: [0, 0, 0, 0, 0, 0],
+      hidden_power: 'Fighting',
+      pid: 0,
+    },
   });
 
   const [results, setResults] = React.useState([
     {
       advances: 0,
-      state0: 0,
-      state1: 0,
-      g8tid: 0,
-      tid: 0,
-      sid: 0,
-      tsv: 0,
+      psv: 0,
+      pid: 0,
+      ivs: [0, 0, 0, 0, 0, 0],
+      hidden_power: 'Fighting',
     },
   ]);
 
@@ -63,7 +85,7 @@ export function TID() {
 
     setSearching(true);
 
-    return calculateTID(settings).then(data => {
+    return calculatePokemon(settings).then(data => {
       setResults(data), setSearching(false);
     });
   };
@@ -95,7 +117,7 @@ export function TID() {
       >
         {searching ? <CircularProgress size={24} /> : t('Search')}
       </Button>
-      <Results results={results} state={state} />
+      <Results setState={setState} results={results} state={state} />
     </Box>
   );
 }

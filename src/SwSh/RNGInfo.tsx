@@ -2,26 +2,13 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-export const RNGInfo = ({
-  setState,
-  state,
-  state0Error,
-  state1Error,
-  setState0Error,
-  setState1Error,
-}) => {
-  const handleChange = event => {
-    setEncounter(event.target.value);
-  };
-
+export const RNGInfo = ({ setState, state, state0Error, state1Error }) => {
   const regex = /[0-9A-Fa-f]{16}/;
 
   return (

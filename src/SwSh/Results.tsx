@@ -46,16 +46,10 @@ const ShowResults = ({ results, t }) => {
         <TableCell align="left">{shinyType(result.shiny_value)}</TableCell>
         <TableCell align="left">{natures[result.nature]}</TableCell>
         <TableCell align="left">{abilityType(result.ability)}</TableCell>
-        <TableCell align="left">
-          {BigInt(result.state0, 16).toString(16)}
-        </TableCell>
-        <TableCell align="left">
-          {BigInt(result.state1, 16).toString(16)}
-        </TableCell>
-        <TableCell align="left">{BigInt(result.ec, 16).toString(16)}</TableCell>
-        <TableCell align="left">
-          {BigInt(result.pid, 16).toString(16)}
-        </TableCell>
+        <TableCell align="left">{result.state0}</TableCell>
+        <TableCell align="left">{result.state1}</TableCell>
+        <TableCell align="left">{result.ec}</TableCell>
+        <TableCell align="left">{result.pid}</TableCell>
       </TableRow>
     ));
   }

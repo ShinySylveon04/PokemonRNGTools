@@ -2,14 +2,16 @@ import React from 'react';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { PaletteMode } from '@mui/material';
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
 export const ColorMode = ({ children }) => {
-  const savedMode = localStorage.getItem('ColorMode');
-  const [mode, setMode] = React.useState(savedMode ?? 'light');
+  const savedMode =
+    localStorage.getItem('ColorMode') === 'light' ? 'light' : 'dark';
+  const [mode, setMode] = React.useState<PaletteMode>(savedMode ?? 'light');
   const theme = React.useMemo(() => createTheme({ palette: { mode } }), [mode]);
 
   React.useEffect(() => {

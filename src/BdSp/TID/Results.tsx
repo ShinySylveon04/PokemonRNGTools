@@ -73,7 +73,6 @@ export const Results = ({ results, state }) => {
                     )
                   : results
               }
-              state={state}
             />
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>

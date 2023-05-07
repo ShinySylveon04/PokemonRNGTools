@@ -26,7 +26,7 @@ export const Translate = () => {
       <Typography variant="h4" gutterBottom>
         Help Translate Chatot
       </Typography>
-      <Typography varaint="body1" paragraph>
+      <Typography variant="body1" paragraph>
         If you would like to help translate Chatot into other languages, you can
         join the Pokemon RNG Discord and let me (Shiny_Sylveon) know that you
         are interested in helping translate.
