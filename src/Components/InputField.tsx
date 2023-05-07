@@ -170,10 +170,12 @@ export const InputField = ({
           labelId={`${id}-label`}
           renderValue={selectedValues => {
             return selectedValues
-              .map(
-                selectedValue =>
-                  options.find(option => option.value == selectedValue)?.label,
-              )
+              .map(selectedValue => {
+                const option = options.find(
+                  option => option.value == selectedValue,
+                );
+                return option == null ? null : option.label;
+              })
               .join(', ');
           }}
         >
@@ -194,15 +196,22 @@ type ValueParser = (value: string) => ParsedValue;
 
 const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
   checkbox: value => value === 'true',
-  hex_number: value => parseInt(value, 16) ?? 0,
-  number: value => parseInt(value, 10) ?? 0,
+  hex_number: value => {
+    const num = parseInt(value, 16);
+    return isNaN(num) ? 0 : num;
+  },
+  number: value => {
+    const num = parseInt(value, 10);
+    return isNaN(num) ? 0 : num;
+  },
   select: value => value,
   text: value => value,
   multiselect: value => value.split(','),
 };
 
 export const getValueParser = (type: FieldConfig['type']): ValueParser => {
-  return VALUE_PARSERS[type] ?? VALUE_PARSERS.text;
+  const parser = VALUE_PARSERS[type];
+  return parser == null ? null : VALUE_PARSERS.text;
 };
 
 export const isArray = (value: ParsedValue): value is string[] => {

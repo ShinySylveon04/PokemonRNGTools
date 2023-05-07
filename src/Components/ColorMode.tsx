@@ -11,7 +11,7 @@ export const ColorModeContext = React.createContext({
 export const ColorMode = ({ children }) => {
   const savedMode =
     localStorage.getItem('ColorMode') === 'light' ? 'light' : 'dark';
-  const [mode, setMode] = React.useState<PaletteMode>(savedMode ?? 'light');
+  const [mode, setMode] = React.useState<PaletteMode>(savedMode);
   const theme = React.useMemo(
     () =>
       createTheme({
