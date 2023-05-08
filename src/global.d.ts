@@ -13,6 +13,9 @@ declare module '~/../wasm/chatot/Cargo.toml' {
   const get_transporter_field_groups: AnyFunction;
   const get_transporter_result_columns: AnyFunction;
   const generate_transporter: AnyFunction;
+  const get_gen3_wild_field_groups: AnyFunction;
+  const get_gen3_wild_result_columns: AnyFunction;
+  const generate_gen3_wild: AnyFunction;
 }
 
 declare module '*.png' {

@@ -9,11 +9,11 @@ pub struct Settings {
     pub delay: usize,
     pub min_advances: usize,
     pub max_advances: usize,
-    pub gender_ratio: enums::GenderRatio,
+    pub gender_ratio: enums::DeprecatedGenderRatio,
     pub lead_filter: enums::LeadFilter,
     pub shiny_filter: enums::ShinyFilter,
     pub ability_filter: enums::AbilityFilter,
-    pub gender_filter: enums::GenderFilter,
+    pub gender_filter: enums::DeprecatedGenderFilter,
     pub min_ivs: Vec<u32>,
     pub max_ivs: Vec<u32>,
 }

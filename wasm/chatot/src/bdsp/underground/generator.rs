@@ -61,7 +61,7 @@ pub fn generate_size_slots(rng: &mut Xorshift) -> u32 {
 
 pub fn generate_pokemon(
     mut rng: Xorshift,
-    gender_ratio: enums::GenderRatio,
+    gender_ratio: enums::DeprecatedGenderRatio,
     advances: usize,
     tiles: usize,
     large_room: bool,
@@ -144,7 +144,7 @@ pub fn generate_pokemon(
 
     fn generate_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::GenderRatio,
+        gender_ratio: enums::DeprecatedGenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> Pokemon {
@@ -215,7 +215,7 @@ pub fn generate_pokemon(
 
     fn generate_rare_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::GenderRatio,
+        gender_ratio: enums::DeprecatedGenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> Pokemon {
