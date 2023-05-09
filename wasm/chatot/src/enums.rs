@@ -121,6 +121,15 @@ pub enum Ability {
     Ability1 = 1,
 }
 
+impl fmt::Display for Ability {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Self::Ability0 => write!(f, "0"),
+            Self::Ability1 => write!(f, "1"),
+        }
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, FromPrimitive, Serialize, Deserialize)]
 #[repr(u16)]

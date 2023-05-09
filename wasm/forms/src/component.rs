@@ -209,6 +209,18 @@ macro_rules! impl_sized_component {
             pub fn seed() -> FieldComponent {
                 $component::hex_number("seed", "Seed", None)
             }
+            pub fn seed_0() -> FieldComponent {
+                $component::hex_number("seed_0", "Seed 0", None)
+            }
+            pub fn seed_1() -> FieldComponent {
+                $component::hex_number("seed_1", "Seed 1", None)
+            }
+            pub fn seed_2() -> FieldComponent {
+                $component::hex_number("seed_2", "Seed 2", None)
+            }
+            pub fn seed_3() -> FieldComponent {
+                $component::hex_number("seed_3", "Seed 3", None)
+            }
             pub fn min_advances() -> FieldComponent {
                 $component::number("min_advances", "Min Advances", Some(0))
             }
