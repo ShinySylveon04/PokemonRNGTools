@@ -83,11 +83,12 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
         }
     };
 
-    let natures: Vec<enums::NatureFilter> = settings
+    let natures: Vec<enums::DeprecatedNatureFilter> = settings
         .nature_filter
         .iter()
         .map(|nature| {
-            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+            enums::DeprecatedNatureFilter::try_from(*nature as u16)
+                .unwrap_or(enums::DeprecatedNatureFilter::Hardy)
         })
         .collect();
 
@@ -120,11 +121,11 @@ mod test {
             delay: 0,
             min_advances: 0,
             max_advances: 10,
-            gender_ratio: enums::GenderRatio::Genderless,
+            gender_ratio: enums::DeprecatedGenderRatio::Genderless,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
             ability_filter: enums::AbilityFilter::Any,
-            gender_filter: enums::GenderFilter::Any,
+            gender_filter: enums::DeprecatedGenderFilter::Any,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
             set_ivs: true,

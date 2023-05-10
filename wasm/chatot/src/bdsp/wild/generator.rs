@@ -92,11 +92,12 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
         }
     };
 
-    let natures: Vec<enums::NatureFilter> = settings
+    let natures: Vec<enums::DeprecatedNatureFilter> = settings
         .nature_filter
         .iter()
         .map(|nature| {
-            enums::NatureFilter::try_from(*nature as u16).unwrap_or(enums::NatureFilter::Hardy)
+            enums::DeprecatedNatureFilter::try_from(*nature as u16)
+                .unwrap_or(enums::DeprecatedNatureFilter::Hardy)
         })
         .collect();
 
@@ -111,12 +112,12 @@ fn generate_pokemon(mut rng: Xorshift, settings: &Settings) -> Option<Pokemon> {
         .position(|enc| encounter_rand < *enc)
         .unwrap_or(0) as u8;
 
-    let encounters: Vec<enums::EncounterSlotFilter> = settings
+    let encounters: Vec<enums::DeprecatedEncounterSlotFilter> = settings
         .encounter_filter
         .iter()
         .map(|encounter| {
-            enums::EncounterSlotFilter::try_from(*encounter)
-                .unwrap_or(enums::EncounterSlotFilter::Slot0)
+            enums::DeprecatedEncounterSlotFilter::try_from(*encounter)
+                .unwrap_or(enums::DeprecatedEncounterSlotFilter::Slot0)
         })
         .collect();
 
@@ -191,11 +192,11 @@ mod test {
             delay: 0,
             min_advances: 0,
             max_advances: 10,
-            gender_ratio: enums::GenderRatio::Male50Female50,
+            gender_ratio: enums::DeprecatedGenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::None,
             ability_filter: enums::AbilityFilter::Any,
-            gender_filter: enums::GenderFilter::Any,
+            gender_filter: enums::DeprecatedGenderFilter::Any,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
         };
@@ -475,11 +476,11 @@ mod test {
             delay: 0,
             min_advances: 0,
             max_advances: 10000,
-            gender_ratio: enums::GenderRatio::Male50Female50,
+            gender_ratio: enums::DeprecatedGenderRatio::Male50Female50,
             lead_filter: enums::LeadFilter::None,
             shiny_filter: enums::ShinyFilter::Both,
             ability_filter: enums::AbilityFilter::Any,
-            gender_filter: enums::GenderFilter::Any,
+            gender_filter: enums::DeprecatedGenderFilter::Any,
             min_ivs: vec![0, 0, 0, 0, 0, 0],
             max_ivs: vec![31, 31, 31, 31, 31, 31],
         };

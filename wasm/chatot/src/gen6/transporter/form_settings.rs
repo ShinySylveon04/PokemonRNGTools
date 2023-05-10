@@ -1,33 +1,35 @@
+use crate::utils::format_ivs;
+
 use super::{generator, settings};
 use chatot_forms::{FieldGroup, LargeComponent, SmallComponent};
 use serde::{Deserialize, Serialize};
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
     let rng_info_components = vec![
-        LargeComponent::hex_number("seed", "Seed", None),
-        LargeComponent::number("min_advances", "Min Advances", Some(0)),
-        LargeComponent::number("max_advances", "Max Advances", Some(10000)),
-        LargeComponent::number("delay", "Delay", Some(0)),
-        LargeComponent::number("tid", "TID", Some(0)),
+        LargeComponent::seed(),
+        LargeComponent::min_advances(),
+        LargeComponent::max_advances(),
+        LargeComponent::delay(),
+        LargeComponent::tid(),
         LargeComponent::checkbox("shiny_pokemon", "Shiny Pokemon"),
         LargeComponent::checkbox("mew_or_celebi", "Mew or Celebi"),
     ];
 
     let filer_components = vec![
-        LargeComponent::label("min_ivs_label", "Min IVs"),
-        SmallComponent::number("min_hp_iv", "HP", Some(0)),
-        SmallComponent::number("min_atk_iv", "Attack", Some(0)),
-        SmallComponent::number("min_def_iv", "Defense", Some(0)),
-        SmallComponent::number("min_spa_iv", "Special Attack", Some(0)),
-        SmallComponent::number("min_spd_iv", "Special Defense", Some(0)),
-        SmallComponent::number("min_spe_iv", "Speed", Some(0)),
-        LargeComponent::label("max_ivs_label", "Max IVs"),
-        SmallComponent::number("max_hp_iv", "HP", Some(31)),
-        SmallComponent::number("max_atk_iv", "Attack", Some(31)),
-        SmallComponent::number("max_def_iv", "Defense", Some(31)),
-        SmallComponent::number("max_spa_iv", "Special Attack", Some(31)),
-        SmallComponent::number("max_spd_iv", "Special Defense", Some(31)),
-        SmallComponent::number("max_spe_iv", "Speed", Some(31)),
+        LargeComponent::min_ivs_label(),
+        SmallComponent::min_hp_iv(),
+        SmallComponent::min_atk_iv(),
+        SmallComponent::min_def_iv(),
+        SmallComponent::min_spa_iv(),
+        SmallComponent::min_spd_iv(),
+        SmallComponent::min_spe_iv(),
+        LargeComponent::max_ivs_label(),
+        SmallComponent::max_hp_iv(),
+        SmallComponent::max_atk_iv(),
+        SmallComponent::max_def_iv(),
+        SmallComponent::max_spa_iv(),
+        SmallComponent::max_spd_iv(),
+        SmallComponent::max_spe_iv(),
     ];
 
     vec![
@@ -103,15 +105,7 @@ pub fn generate_transporter(settings: Settings) -> Vec<Vec<String>> {
         .map(|result| {
             vec![
                 result.advances.to_string(),
-                format!(
-                    "{} / {} / {} / {} / {} / {}",
-                    result.ivs[0],
-                    result.ivs[1],
-                    result.ivs[2],
-                    result.ivs[3],
-                    result.ivs[4],
-                    result.ivs[5]
-                ),
+                format_ivs(result.ivs),
                 result.hidden_power.to_string(),
                 result.psv.to_string(),
                 format!("{:x}", result.pid),
