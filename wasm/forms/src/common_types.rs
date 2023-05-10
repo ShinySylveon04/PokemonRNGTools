@@ -140,3 +140,15 @@ pub enum GenderFilter {
 }
 
 impl_display!(GenderFilter);
+
+#[wasm_bindgen]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub enum IDFilter {
+    TID,
+    SID,
+    TSV,
+    G8TID,
+    None,
+}
+
+impl_display!(IDFilter);
