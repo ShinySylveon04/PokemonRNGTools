@@ -182,8 +182,7 @@ pub fn calculate_pokemon(
     shiny_results.into_iter().map(JsValue::from).collect()
 }
 
-#[wasm_bindgen]
-pub fn calculate_pokemon_bdsp_underground(
+pub fn _calculate_pokemon_bdsp_underground(
     seed1: u32,
     seed2: u32,
     seed3: u32,
@@ -202,8 +201,7 @@ pub fn calculate_pokemon_bdsp_underground(
     diglett_boost: bool,
     min_ivs: Vec<u32>,
     max_ivs: Vec<u32>,
-) -> JsValue {
-    init_panic_hook();
+) -> Vec<bdsp::underground::generator::Pokemon> {
     let natures: Vec<enums::DeprecatedNatureFilter> = nature_filter
         .iter()
         .map(|nature| {
@@ -242,8 +240,51 @@ pub fn calculate_pokemon_bdsp_underground(
         rng.next();
     }
 
-    let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
+    pokemon_results.into_iter().collect()
+}
 
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_underground(
+    seed1: u32,
+    seed2: u32,
+    seed3: u32,
+    seed4: u32,
+    shiny_filter: enums::ShinyFilter,
+    min_advances: usize,
+    max_advances: usize,
+    delay: usize,
+    nature_filter: Vec<u32>,
+    ability_filter: enums::AbilityFilter,
+    _encounter_filter: enums::DeprecatedEncounterSlotFilter,
+    gender_ratio: enums::DeprecatedGenderRatio,
+    gender_filter: enums::DeprecatedGenderFilter,
+    tiles: usize,
+    large_room: bool,
+    diglett_boost: bool,
+    min_ivs: Vec<u32>,
+    max_ivs: Vec<u32>,
+) -> JsValue {
+    init_panic_hook();
+    let results = _calculate_pokemon_bdsp_underground(
+        seed1,
+        seed2,
+        seed3,
+        seed4,
+        shiny_filter,
+        min_advances,
+        max_advances,
+        delay,
+        nature_filter,
+        ability_filter,
+        _encounter_filter,
+        gender_ratio,
+        gender_filter,
+        tiles,
+        large_room,
+        diglett_boost,
+        min_ivs,
+        max_ivs,
+    );
     JsValue::from_serde(&results).unwrap()
 }
 
@@ -325,5 +366,46 @@ pub fn generate_bdsp_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::wild::form_settings::Settings = settings.into_serde().unwrap();
     let results = bdsp::wild::form_settings::generate_wild(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_field_groups() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_result_columns() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_bdsp_static(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::stationary::form_settings::Settings = settings.into_serde().unwrap();
+    let results = bdsp::stationary::form_settings::generate_stationary(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_underground_field_groups() -> JsValue {
+    let result = bdsp::underground::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_underground_result_columns() -> JsValue {
+    let result = bdsp::underground::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_bdsp_underground(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::underground::form_settings::Settings =
+        settings.into_serde().unwrap();
+    let results = bdsp::underground::form_settings::generate_underground(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }

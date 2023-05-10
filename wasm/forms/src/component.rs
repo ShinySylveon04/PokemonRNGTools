@@ -14,6 +14,13 @@ impl SelectOption {
             value: value.to_string(),
         }
     }
+
+    pub fn new_simple(label: impl ToString) -> Self {
+        Self {
+            label: label.to_string(),
+            value: label.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]

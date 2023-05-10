@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
-use std::fmt;
 use wasm_bindgen::prelude::*;
 
+#[macro_export]
 macro_rules! impl_display {
     ($enum:ident) => {
-        impl fmt::Display for $enum {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        impl std::fmt::Display for $enum {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
                 write!(f, "{:?}", self)
             }
         }

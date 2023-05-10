@@ -445,7 +445,7 @@ pub enum Gender {
 impl fmt::Display for Gender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Self::Genderless => write!(f, "Genderless"),
+            Self::Genderless => write!(f, "-"),
             Self::Male => write!(f, "♂"),
             Self::Female => write!(f, "♀"),
         }

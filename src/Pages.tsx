@@ -15,6 +15,7 @@ import { BDSP_TID_CONFIG } from './SearcherConfigs/BdSpTid';
 import { BDSP_UNDERGROUND_CONFIG } from './SearcherConfigs/BdSpUnderground';
 import { GEN3_WILD_CONFIG } from './SearcherConfigs/Gen3Wild';
 import { BDSP_WILD_CONFIG } from './SearcherConfigs/BdSpWild';
+import { BDSP_STATIC_CONFIG } from './SearcherConfigs/BdSpStatic';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
 
 export const Pages = () => {
@@ -50,6 +51,14 @@ export const Pages = () => {
           <Route
             path="bdsp2"
             element={<ConfiguableSearcher config={BDSP_WILD_CONFIG} />}
+          />
+          <Route
+            path="bdsp/static2"
+            element={<ConfiguableSearcher config={BDSP_STATIC_CONFIG} />}
+          />
+          <Route
+            path="bdsp/underground"
+            element={<ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />}
           />
         </Route>
       </Routes>
