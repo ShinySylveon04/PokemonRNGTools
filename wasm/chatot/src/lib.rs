@@ -307,3 +307,23 @@ pub fn generate_bdsp_wild(settings: &JsValue) -> JsValue {
     let results = bdsp::wild::form_settings::generate_wild(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_field_groups() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_result_columns() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_bdsp_static(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::stationary::form_settings::Settings = settings.into_serde().unwrap();
+    let results = bdsp::stationary::form_settings::generate_stationary(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}

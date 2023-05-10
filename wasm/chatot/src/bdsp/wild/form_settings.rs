@@ -1,6 +1,8 @@
-use crate::enums::{DeprecatedEncounterSlotFilter, DeprecatedNatureFilter};
-
 use super::{generator, settings};
+use crate::{
+    enums::{DeprecatedEncounterSlotFilter, DeprecatedNatureFilter},
+    utils::format_ivs,
+};
 use chatot_forms::{
     EncounterSlotFilter, FieldGroup, Gen3AbilityFilter, Gen3Lead, GenderFilter, GenderRatio,
     LargeComponent, NatureFilter, ShinyTypeFilter, SmallComponent,
@@ -137,15 +139,7 @@ pub fn generate_wild(settings: Settings) -> Vec<Vec<String>> {
                 result.nature.to_string(),
                 result.ability.to_string(),
                 result.gender.to_string(),
-                format!(
-                    "{} / {} / {} / {} / {} / {}",
-                    result.ivs[0],
-                    result.ivs[1],
-                    result.ivs[2],
-                    result.ivs[3],
-                    result.ivs[4],
-                    result.ivs[5]
-                ),
+                format_ivs(result.ivs),
                 format!("{:x}", result.pid),
                 format!("{:x}", result.ec),
             ]
