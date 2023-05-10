@@ -299,6 +299,19 @@ macro_rules! impl_sized_component {
                     ],
                 )
             }
+            pub fn gen8_id_type() -> FieldComponent {
+                $component::select(
+                    "gen8_id_type",
+                    "ID Filter",
+                    vec![
+                        SelectOption::new("None", IDFilter::None),
+                        SelectOption::new("TID", IDFilter::TID),
+                        SelectOption::new("SID", IDFilter::SID),
+                        SelectOption::new("TSV", IDFilter::TSV),
+                        SelectOption::new("G8TID", IDFilter::G8TID),
+                    ],
+                )
+            }
             pub fn shiny_type() -> FieldComponent {
                 $component::select(
                     "shiny_type",

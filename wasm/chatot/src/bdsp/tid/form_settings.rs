@@ -1,20 +1,21 @@
+use std::convert::TryInto;
+
 use super::{generator, settings};
 use chatot_forms::{FieldGroup, LargeComponent, SmallComponent};
 use serde::{Deserialize, Serialize};
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
     let rng_info_components = vec![
-        LargeComponent::hex_number("seed0", "Seed 0", None),
-        LargeComponent::hex_number("seed1", "Seed 1", None),
-        LargeComponent::hex_number("seed2", "Seed 2", None),
-        LargeComponent::hex_number("seed3", "Seed 3", None),
-        LargeComponent::number("min_advances", "Min Advances", Some(0)),
-        LargeComponent::number("max_advances", "Max Advances", Some(10000)),
+        LargeComponent::seed_0(),
+        LargeComponent::seed_1(),
+        LargeComponent::seed_2(),
+        LargeComponent::seed_3(),
+        LargeComponent::min_advances(),
+        LargeComponent::max_advances(),
     ];
-    let tid_options = vec!["None", "TID", "SID", "TSV", "G8TID"];
     let filer_components = vec![
-        SmallComponent::select("id_type", "ID Filter", &tid_options),
-        SmallComponent::text("ids", "IDs", None),
+        SmallComponent::gen8_id_type(),
+        SmallComponent::text("ids", "IDs", "None"),
     ];
 
     vec![
@@ -36,9 +37,9 @@ pub struct Settings {
     seed1: u32,
     seed2: u32,
     seed3: u32,
-    min_advances: usize,
-    max_advances: usize,
-    id_type: Vec<u32>,
+    min_advances: u32,
+    max_advances: u32,
+    gen8_id_type: chatot_forms::IDFilter,
     ids: String,
 }
 
@@ -50,10 +51,10 @@ impl From<Settings> for settings::Settings {
                 .split("\n")
                 .map(|id| id.parse::<u32>().unwrap_or_default())
                 .collect(),
-            filter_type: value.id_type,
-            rng_state: vec![result.seed0, result.seed1, result.seed2, result.seed3],
-            min_advances: value.min_advances,
-            max_advances: value.max_advances,
+            filter_type: value.gen8_id_type.into(),
+            rng_state: vec![value.seed0, value.seed1, value.seed2, value.seed3],
+            min_advances: value.min_advances.try_into().unwrap_or_default(),
+            max_advances: value.max_advances.try_into().unwrap_or_default(),
         }
     }
 }

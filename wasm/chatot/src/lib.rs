@@ -249,13 +249,13 @@ pub fn calculate_pokemon_bdsp_underground(
 
 #[wasm_bindgen]
 pub fn get_bdsp_tid_field_groups() -> JsValue {
-    let result = bdsp::tid::get_field_groups();
+    let result = bdsp::tid::form_settings::get_field_groups();
     JsValue::from_serde(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_tid_result_columns() -> JsValue {
-    let result = bdsp::tid::get_result_columns();
+    let result = bdsp::tid::form_settings::get_result_columns();
     JsValue::from_serde(&result).unwrap()
 }
 

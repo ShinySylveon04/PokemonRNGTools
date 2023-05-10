@@ -19,6 +19,9 @@ declare module '~/../wasm/chatot/Cargo.toml' {
   const get_bdsp_wild_field_groups: AnyFunction;
   const get_bdsp_wild_result_columns: AnyFunction;
   const generate_bdsp_wild: AnyFunction;
+  const get_bdsp_tid_field_groups: AnyFunction;
+  const get_bdsp_tid_result_columns: AnyFunction;
+  const generate_tid: AnyFunction;
 }
 
 declare module '*.png' {

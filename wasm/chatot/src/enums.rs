@@ -493,6 +493,18 @@ pub enum IDFilter {
     None = "None",
 }
 
+impl From<chatot_forms::IDFilter> for IDFilter {
+    fn from(value: chatot_forms::IDFilter) -> Self {
+        match value {
+            chatot_forms::IDFilter::None => Self::None,
+            chatot_forms::IDFilter::TID => Self::TID,
+            chatot_forms::IDFilter::SID => Self::SID,
+            chatot_forms::IDFilter::TSV => Self::TSV,
+            chatot_forms::IDFilter::G8TID => Self::G8TID,
+        }
+    }
+}
+
 pub fn get_sync_nature(lead_filter: &LeadFilter) -> Option<Nature> {
     match lead_filter {
         LeadFilter::Synchronize => Some(Nature::Synchronize),
