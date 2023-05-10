@@ -246,6 +246,26 @@ pub fn calculate_pokemon_bdsp_underground(
 }
 
 #[wasm_bindgen]
+pub fn get_bdsp_tid_field_groups() -> JsValue {
+    let result = bdsp::tid::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_tid_result_columns() -> JsValue {
+    let result = bdsp::tid::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_tid(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::tid::form_settings::Settings = settings.into_serde().unwrap();
+    let results = bdsp::tid::form_settings::generate_tid(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
 pub fn get_transporter_field_groups() -> JsValue {
     let result = gen6::transporter::get_field_groups();
     JsValue::from_serde(&result).unwrap()
