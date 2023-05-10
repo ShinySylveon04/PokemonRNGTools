@@ -56,6 +56,10 @@ export const Pages = () => {
             path="bdsp/static2"
             element={<ConfiguableSearcher config={BDSP_STATIC_CONFIG} />}
           />
+          <Route
+            path="bdsp/underground"
+            element={<ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />}
+          />
         </Route>
       </Routes>
     </HashRouter>
