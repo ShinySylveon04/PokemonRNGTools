@@ -28,6 +28,9 @@ declare module '~/../wasm/chatot/Cargo.toml' {
   const get_bdsp_underground_field_groups: AnyFunction;
   const get_bdsp_underground_result_columns: AnyFunction;
   const generate_bdsp_underground: AnyFunction;
+  const get_swsh_overworld_field_groups: AnyFunction;
+  const get_swsh_overworld_result_columns: AnyFunction;
+  const generate_swsh_overworld: AnyFunction;
 }
 
 declare module '*.png' {

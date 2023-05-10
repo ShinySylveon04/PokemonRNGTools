@@ -16,6 +16,7 @@ import { BDSP_UNDERGROUND_CONFIG } from './SearcherConfigs/BdSpUnderground';
 import { GEN3_WILD_CONFIG } from './SearcherConfigs/Gen3Wild';
 import { BDSP_WILD_CONFIG } from './SearcherConfigs/BdSpWild';
 import { BDSP_STATIC_CONFIG } from './SearcherConfigs/BdSpStatic';
+import { SWSH_OVERWORLD_CONFIG } from './SearcherConfigs/SwShOverworld';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
 
 export const Pages = () => {
@@ -59,6 +60,10 @@ export const Pages = () => {
           <Route
             path="bdsp/underground"
             element={<ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />}
+          />
+          <Route
+            path="swsh2"
+            element={<ConfiguableSearcher config={SWSH_OVERWORLD_CONFIG} />}
           />
         </Route>
       </Routes>

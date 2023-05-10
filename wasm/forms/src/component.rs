@@ -90,6 +90,27 @@ impl FieldComponent {
         }
     }
 
+    pub fn hex_u64(
+        id: impl ToString,
+        label: impl ToString,
+        default_value: Option<u32>,
+        size: FieldSize,
+    ) -> Self {
+        let default_value = match default_value {
+            Some(num) => num.to_string(),
+            None => "".to_string(),
+        };
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: default_value,
+            required: true,
+            r#type: "hex_u64".to_string(),
+            options: None,
+            size: size.to_string(),
+        }
+    }
+
     pub fn text(
         id: impl ToString,
         label: impl ToString,
@@ -185,6 +206,14 @@ macro_rules! impl_sized_component {
                 FieldComponent::hex_number(id, label, default_value, FieldSize::$field_size)
             }
 
+            pub fn hex_u64(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::hex_u64(id, label, default_value, FieldSize::$field_size)
+            }
+
             pub fn text(
                 id: impl ToString,
                 label: impl ToString,
@@ -227,6 +256,14 @@ macro_rules! impl_sized_component {
             }
             pub fn seed_3() -> FieldComponent {
                 $component::hex_number("seed_3", "Seed 3", None)
+            }
+            // Adding for when we implement validation
+            pub fn seed_u64_0() -> FieldComponent {
+                $component::hex_u64("seed_u64_0", "Seed 0", None)
+            }
+            // Adding for when we implement validation
+            pub fn seed_u64_1() -> FieldComponent {
+                $component::hex_u64("seed_u64_1", "Seed 1", None)
             }
             pub fn min_advances() -> FieldComponent {
                 $component::number("min_advances", "Min Advances", Some(0))
@@ -331,6 +368,40 @@ macro_rules! impl_sized_component {
                     ],
                 )
             }
+            pub fn nature() -> FieldComponent {
+                $component::select(
+                    "nature",
+                    "Nature",
+                    vec![
+                        SelectOption::new("Any", NatureFilter::Any),
+                        SelectOption::new("Hardy", NatureFilter::Hardy),
+                        SelectOption::new("Lonely", NatureFilter::Lonely),
+                        SelectOption::new("Brave", NatureFilter::Brave),
+                        SelectOption::new("Adamant", NatureFilter::Adamant),
+                        SelectOption::new("Naughty", NatureFilter::Naughty),
+                        SelectOption::new("Bold", NatureFilter::Bold),
+                        SelectOption::new("Docile", NatureFilter::Docile),
+                        SelectOption::new("Relaxed", NatureFilter::Relaxed),
+                        SelectOption::new("Impish", NatureFilter::Impish),
+                        SelectOption::new("Lax", NatureFilter::Lax),
+                        SelectOption::new("Timid", NatureFilter::Timid),
+                        SelectOption::new("Hasty", NatureFilter::Hasty),
+                        SelectOption::new("Serious", NatureFilter::Serious),
+                        SelectOption::new("Jolly", NatureFilter::Jolly),
+                        SelectOption::new("Naive", NatureFilter::Naive),
+                        SelectOption::new("Modest", NatureFilter::Modest),
+                        SelectOption::new("Mild", NatureFilter::Mild),
+                        SelectOption::new("Quiet", NatureFilter::Quiet),
+                        SelectOption::new("Bashful", NatureFilter::Bashful),
+                        SelectOption::new("Rash", NatureFilter::Rash),
+                        SelectOption::new("Calm", NatureFilter::Calm),
+                        SelectOption::new("Gentle", NatureFilter::Gentle),
+                        SelectOption::new("Sassy", NatureFilter::Sassy),
+                        SelectOption::new("Careful", NatureFilter::Careful),
+                        SelectOption::new("Quirky", NatureFilter::Quirky),
+                    ],
+                )
+            }
             pub fn nature_multiselect() -> FieldComponent {
                 $component::multiselect(
                     "nature_multiselect",
@@ -423,6 +494,9 @@ macro_rules! impl_sized_component {
                         SelectOption::new("♀", GenderFilter::Female),
                     ],
                 )
+            }
+            pub fn shiny_charm() -> FieldComponent {
+                $component::checkbox("shiny_charm", "Shiny Charm")
             }
         }
     };

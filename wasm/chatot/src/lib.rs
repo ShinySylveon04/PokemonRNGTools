@@ -134,8 +134,7 @@ pub fn filter_bdsp_underground(
             .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
 }
 
-#[wasm_bindgen]
-pub fn calculate_pokemon(
+pub(crate) fn _calculate_pokemon(
     seed1: u64,
     seed2: u64,
     tid: u16,
@@ -147,7 +146,7 @@ pub fn calculate_pokemon(
     ability_filter: enums::AbilityFilter,
     min: u32,
     max: u32,
-) -> Array {
+) -> Vec<ShinyResult> {
     let mut rng = rng::Xoroshiro::from_state(seed1, seed2);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResult> = Vec::new();
@@ -179,10 +178,42 @@ pub fn calculate_pokemon(
         rng.next();
     }
 
-    shiny_results.into_iter().map(JsValue::from).collect()
+    shiny_results
 }
 
-pub fn _calculate_pokemon_bdsp_underground(
+#[wasm_bindgen]
+pub fn calculate_pokemon(
+    seed1: u64,
+    seed2: u64,
+    tid: u16,
+    sid: u16,
+    shiny_filter: enums::ShinyFilter,
+    encounter_type: enums::DeprecatedEncounterFilter,
+    shiny_charm: bool,
+    nature_filter: enums::DeprecatedNatureFilter,
+    ability_filter: enums::AbilityFilter,
+    min: u32,
+    max: u32,
+) -> Array {
+    _calculate_pokemon(
+        seed1,
+        seed2,
+        tid,
+        sid,
+        shiny_filter,
+        encounter_type,
+        shiny_charm,
+        nature_filter,
+        ability_filter,
+        min,
+        max,
+    )
+    .into_iter()
+    .map(JsValue::from)
+    .collect()
+}
+
+pub(crate) fn _calculate_pokemon_bdsp_underground(
     seed1: u32,
     seed2: u32,
     seed3: u32,
@@ -407,5 +438,25 @@ pub fn generate_bdsp_underground(settings: &JsValue) -> JsValue {
     let parsed_settings: bdsp::underground::form_settings::Settings =
         settings.into_serde().unwrap();
     let results = bdsp::underground::form_settings::generate_underground(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_swsh_overworld_field_groups() -> JsValue {
+    let result = swsh::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_swsh_overworld_result_columns() -> JsValue {
+    let result = swsh::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_swsh_overworld(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: swsh::form_settings::Settings = settings.into_serde().unwrap();
+    let results = swsh::form_settings::generate_overworld(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }

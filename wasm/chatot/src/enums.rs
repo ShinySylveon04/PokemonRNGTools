@@ -282,12 +282,14 @@ impl From<chatot_forms::ShinyTypeFilter> for ShinyFilter {
 }
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum DeprecatedEncounterFilter {
     Static = 0,
     Dynamic = 1,
 }
+
+impl_display!(DeprecatedEncounterFilter);
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

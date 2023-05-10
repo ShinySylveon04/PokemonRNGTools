@@ -37,7 +37,7 @@ export type FieldConfig = SharedConfig &
         options: SelectOption[];
       }
     | {
-        type: 'hex_number' | 'number' | 'text' | 'checkbox';
+        type: 'hex_u64' | 'hex_number' | 'number' | 'text' | 'checkbox';
         options?: never;
       }
   );
@@ -111,7 +111,7 @@ export const InputField = ({
     );
   }
 
-  if (type === 'hex_number') {
+  if (type === 'hex_number' || type === 'hex_u64') {
     return (
       <TextField
         fullWidth
@@ -196,6 +196,10 @@ type ValueParser = (value: string) => ParsedValue;
 
 const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
   checkbox: value => value === 'true',
+  // JS can only handle up to 0x1fffffffffffff
+  // and wasm can't natively handle bigint.
+  // Converting String -> u64 will happen in wasm.
+  hex_u64: value => value,
   hex_number: value => {
     const num = parseInt(value, 16);
     return isNaN(num) ? 0 : num;
