@@ -10,14 +10,16 @@ import { Underground } from './BdSp/Underground/Underground';
 import { TID } from './BdSp/TID/TID';
 import { Gen3Wild } from './Gen3/Wild';
 import { Gen6Transporter } from './Gen6/Transporter';
-import { TRANSPORTER_CONFIG } from './SearcherConfigs/Transporter';
-import { BDSP_TID_CONFIG } from './SearcherConfigs/BdSpTid';
-import { BDSP_UNDERGROUND_CONFIG } from './SearcherConfigs/BdSpUnderground';
-import { GEN3_WILD_CONFIG } from './SearcherConfigs/Gen3Wild';
-import { BDSP_WILD_CONFIG } from './SearcherConfigs/BdSpWild';
-import { BDSP_STATIC_CONFIG } from './SearcherConfigs/BdSpStatic';
-import { SWSH_OVERWORLD_CONFIG } from './SearcherConfigs/SwShOverworld';
 import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
+import {
+  TRANSPORTER_CONFIG,
+  BDSP_TID_CONFIG,
+  BDSP_UNDERGROUND_CONFIG,
+  GEN3_WILD_CONFIG,
+  BDSP_WILD_CONFIG,
+  BDSP_STATIC_CONFIG,
+  SWSH_OVERWORLD_CONFIG,
+} from './SearcherConfigs/configs';
 
 export const Pages = () => {
   return (
