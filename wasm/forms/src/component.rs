@@ -33,6 +33,8 @@ pub struct FieldComponent {
     r#type: String,
     size: String,
     options: Option<Vec<SelectOption>>,
+    min_value: Option<u32>,
+    max_value: Option<u32>,
 }
 
 impl FieldComponent {
@@ -45,6 +47,8 @@ impl FieldComponent {
             r#type: "label".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -66,6 +70,33 @@ impl FieldComponent {
             r#type: "number".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: Some(0),
+            max_value: None,
+        }
+    }
+
+    pub fn number_with_limits(
+        id: impl ToString,
+        label: impl ToString,
+        default_value: Option<u32>,
+        min_value: Option<u32>,
+        max_value: Option<u32>,
+        size: FieldSize,
+    ) -> Self {
+        let default_value = match default_value {
+            Some(num) => num.to_string(),
+            None => "".to_string(),
+        };
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: default_value,
+            required: true,
+            r#type: "number".to_string(),
+            options: None,
+            size: size.to_string(),
+            min_value,
+            max_value,
         }
     }
 
@@ -87,6 +118,8 @@ impl FieldComponent {
             r#type: "hex_number".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -108,6 +141,8 @@ impl FieldComponent {
             r#type: "hex_u64".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -125,6 +160,8 @@ impl FieldComponent {
             r#type: "text".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -137,6 +174,8 @@ impl FieldComponent {
             r#type: "checkbox".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -158,6 +197,8 @@ impl FieldComponent {
             r#type: "select".to_string(),
             options: Some(options),
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -179,6 +220,8 @@ impl FieldComponent {
             r#type: "multiselect".to_string(),
             options: Some(options),
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 }
@@ -196,6 +239,23 @@ macro_rules! impl_sized_component {
                 default_value: Option<u32>,
             ) -> FieldComponent {
                 FieldComponent::number(id, label, default_value, FieldSize::$field_size)
+            }
+
+            pub fn number_with_limits(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+                min_value: Option<u32>,
+                max_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::number_with_limits(
+                    id,
+                    label,
+                    default_value,
+                    min_value,
+                    max_value,
+                    FieldSize::$field_size,
+                )
             }
 
             pub fn hex_number(
@@ -242,6 +302,14 @@ macro_rules! impl_sized_component {
                 FieldComponent::multiselect(id, label, options, FieldSize::$field_size)
             }
 
+            fn min_iv(id: impl ToString, label: impl ToString) -> FieldComponent {
+                $component::number_with_limits(id, label, Some(0), Some(0), Some(31))
+            }
+
+            fn max_iv(id: impl ToString, label: impl ToString) -> FieldComponent {
+                $component::number_with_limits(id, label, Some(31), Some(0), Some(31))
+            }
+
             pub fn seed() -> FieldComponent {
                 $component::hex_number("seed", "Seed", None)
             }
@@ -275,52 +343,52 @@ macro_rules! impl_sized_component {
                 $component::number("delay", "Delay", Some(0))
             }
             pub fn tid() -> FieldComponent {
-                $component::number("tid", "TID", Some(0))
+                $component::number_with_limits("tid", "TID", Some(0), Some(0), Some(99999))
             }
             pub fn sid() -> FieldComponent {
-                $component::number("sid", "SID", Some(0))
+                $component::number_with_limits("sid", "SID", Some(0), Some(0), Some(99999))
             }
             pub fn min_ivs_label() -> FieldComponent {
                 $component::label("min_ivs_label", "Min IVs")
             }
             pub fn min_hp_iv() -> FieldComponent {
-                $component::number("min_hp_iv", "HP", Some(0))
+                $component::min_iv("min_hp_iv", "HP")
             }
             pub fn min_atk_iv() -> FieldComponent {
-                $component::number("min_atk_iv", "Attack", Some(0))
+                $component::min_iv("min_atk_iv", "Attack")
             }
             pub fn min_def_iv() -> FieldComponent {
-                $component::number("min_def_iv", "Defense", Some(0))
+                $component::min_iv("min_def_iv", "Defense")
             }
             pub fn min_spa_iv() -> FieldComponent {
-                $component::number("min_spa_iv", "Special Attack", Some(0))
+                $component::min_iv("min_spa_iv", "Special Attack")
             }
             pub fn min_spd_iv() -> FieldComponent {
-                $component::number("min_spd_iv", "Special Defense", Some(0))
+                $component::min_iv("min_spd_iv", "Special Defense")
             }
             pub fn min_spe_iv() -> FieldComponent {
-                $component::number("min_spe_iv", "Speed", Some(0))
+                $component::min_iv("min_spe_iv", "Speed")
             }
             pub fn max_ivs_label() -> FieldComponent {
                 $component::label("max_ivs_label", "Max IVs")
             }
             pub fn max_hp_iv() -> FieldComponent {
-                $component::number("max_hp_iv", "HP", Some(31))
+                $component::max_iv("max_hp_iv", "HP")
             }
             pub fn max_atk_iv() -> FieldComponent {
-                $component::number("max_atk_iv", "Attack", Some(31))
+                $component::max_iv("max_atk_iv", "Attack")
             }
             pub fn max_def_iv() -> FieldComponent {
-                $component::number("max_def_iv", "Defense", Some(31))
+                $component::max_iv("max_def_iv", "Defense")
             }
             pub fn max_spa_iv() -> FieldComponent {
-                $component::number("max_spa_iv", "Special Attack", Some(31))
+                $component::max_iv("max_spa_iv", "Special Attack")
             }
             pub fn max_spd_iv() -> FieldComponent {
-                $component::number("max_spd_iv", "Special Defense", Some(31))
+                $component::max_iv("max_spd_iv", "Special Defense")
             }
             pub fn max_spe_iv() -> FieldComponent {
-                $component::number("max_spe_iv", "Speed", Some(31))
+                $component::max_iv("max_spe_iv", "Speed")
             }
             pub fn gen3_method() -> FieldComponent {
                 $component::select(

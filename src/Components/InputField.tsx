@@ -35,10 +35,20 @@ export type FieldConfig = SharedConfig &
     | {
         type: 'select' | 'multiselect';
         options: SelectOption[];
+        minValue?: never;
+        maxValue?: never;
       }
     | {
-        type: 'hex_u64' | 'hex_number' | 'number' | 'text' | 'checkbox';
+        type: 'number';
         options?: never;
+        minValue?: number;
+        maxValue?: number;
+      }
+    | {
+        type: 'hex_u64' | 'hex_number' | 'text' | 'checkbox';
+        options?: never;
+        minValue?: never;
+        maxValue?: never;
       }
   );
 
@@ -50,10 +60,28 @@ export const InputField = ({
   label: nonTranslatedLabel,
   options,
   required = true,
+  minValue,
+  maxValue,
 }: Props) => {
   const { t } = useTranslation();
   const label = t(nonTranslatedLabel);
   const formik = useFormikContext<Record<string, unknown>>();
+
+  const inputProps = React.useMemo(() => {
+    if (type === 'number') {
+      return { min: minValue, max: maxValue };
+    }
+
+    if (type === 'hex_number') {
+      return { pattern: '[0-9A-Fa-f]{1,8}' };
+    }
+
+    if (type === 'hex_u64') {
+      return { pattern: '[0-9A-Fa-f]{1,16}' };
+    }
+
+    return {};
+  }, [type, minValue, maxValue]);
 
   const value = formik.values[id];
   const error = formik.touched[id] && Boolean(formik.errors[id]);
@@ -90,6 +118,7 @@ export const InputField = ({
         value={value}
         error={error}
         helperText={helperText}
+        inputProps={inputProps}
       />
     );
   }
@@ -124,6 +153,7 @@ export const InputField = ({
         value={value}
         error={error}
         helperText={helperText}
+        inputProps={inputProps}
       />
     );
   }
