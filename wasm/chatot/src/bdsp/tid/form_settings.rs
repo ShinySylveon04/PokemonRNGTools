@@ -33,10 +33,10 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    seed0: u32,
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
+    seed_0: u32,
+    seed_1: u32,
+    seed_2: u32,
+    seed_3: u32,
     min_advances: u32,
     max_advances: u32,
     gen8_id_type: chatot_forms::IDFilter,
@@ -52,7 +52,7 @@ impl From<Settings> for settings::Settings {
                 .map(|id| id.parse::<u32>().unwrap_or_default())
                 .collect(),
             filter_type: value.gen8_id_type.into(),
-            rng_state: vec![value.seed0, value.seed1, value.seed2, value.seed3],
+            rng_state: vec![value.seed_0, value.seed_1, value.seed_2, value.seed_3],
             min_advances: value.min_advances.try_into().unwrap_or_default(),
             max_advances: value.max_advances.try_into().unwrap_or_default(),
         }
