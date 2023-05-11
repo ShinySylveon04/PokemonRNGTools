@@ -144,7 +144,7 @@ export const InputField = ({
       >
         {options.map(option => (
           <MenuItem key={option.label} value={option.value}>
-            {option.label}
+            {t(option.label)}
           </MenuItem>
         ))}
       </TextField>
@@ -182,7 +182,7 @@ export const InputField = ({
           {options.map(option => (
             <MenuItem key={option.label} value={option.value}>
               <Checkbox checked={safeValue.includes(option.value)} />
-              <ListItemText primary={option.label} />
+              <ListItemText primary={t(option.label)} />
             </MenuItem>
           ))}
         </Select>
