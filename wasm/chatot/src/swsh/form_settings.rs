@@ -14,8 +14,8 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
             "encounter_type",
             "Encounter Type",
             vec![
-                SelectOption::new_simple(DeprecatedEncounterFilter::Static),
-                SelectOption::new_simple(DeprecatedEncounterFilter::Dynamic),
+                SelectOption::new(DeprecatedEncounterFilter::Static),
+                SelectOption::new(DeprecatedEncounterFilter::Dynamic),
             ],
         ),
         LargeComponent::tid(),

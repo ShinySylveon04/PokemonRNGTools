@@ -29,8 +29,8 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
             "room_size",
             "Room Size",
             vec![
-                SelectOption::new_simple(RoomSize::Small),
-                SelectOption::new_simple(RoomSize::Large),
+                SelectOption::new(RoomSize::Small),
+                SelectOption::new(RoomSize::Large),
             ],
         ),
         LargeComponent::checkbox("diglett_boost", "Diglett Boost"),
