@@ -1,6 +1,3 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Xoroshiro {
     s0: u64,
@@ -55,22 +52,6 @@ impl Xoroshiro {
 
     pub fn get_state(&self) -> (u64, u64) {
         (self.s0, self.s1)
-    }
-
-    pub fn advance_to_state(&mut self, state: (u64, u64)) -> Option<u64> {
-        let mut advances = 0;
-
-        // 10,000 is an arbitary limit to avoid an infinite loop
-        while self.get_state() != state {
-            self.next();
-            advances += 1;
-
-            if advances > 10_000 {
-                return None;
-            }
-        }
-
-        Some(advances)
     }
 
     fn get_mask(num: u32) -> u32 {

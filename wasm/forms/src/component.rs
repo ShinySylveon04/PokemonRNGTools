@@ -211,15 +211,11 @@ impl FieldComponent {
         options: Vec<SelectOption>,
         size: FieldSize,
     ) -> Self {
-        let default_value = options
-            .first()
-            .map(|string| string.value.to_string())
-            .unwrap_or_default();
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: Some(default_value),
-            required: true,
+            default_value: None,
+            required: false,
             r#type: "multiselect".to_string(),
             options: Some(options),
             size: size.to_string(),
@@ -413,7 +409,7 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn gen3_lead() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gen3_lead",
                     "Lead",
                     vec![SelectOption::new(Gen3Lead::Synchronize)],
@@ -432,13 +428,12 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn shiny_type() -> FieldComponent {
-                $component::optional_select(
+                $component::multiselect(
                     "shiny_type",
                     "Shiny",
                     vec![
-                        SelectOption::new(ShinyTypeFilter::Star),
-                        SelectOption::new(ShinyTypeFilter::Square),
-                        SelectOption::new_with_label("Star/Square", ShinyTypeFilter::Both),
+                        SelectOption::new(ShinyType::Star),
+                        SelectOption::new(ShinyType::Square),
                     ],
                 )
             }
@@ -447,31 +442,31 @@ macro_rules! impl_sized_component {
                     "nature",
                     "Nature",
                     vec![
-                        SelectOption::new(NatureFilter::Hardy),
-                        SelectOption::new(NatureFilter::Lonely),
-                        SelectOption::new(NatureFilter::Brave),
-                        SelectOption::new(NatureFilter::Adamant),
-                        SelectOption::new(NatureFilter::Naughty),
-                        SelectOption::new(NatureFilter::Bold),
-                        SelectOption::new(NatureFilter::Docile),
-                        SelectOption::new(NatureFilter::Relaxed),
-                        SelectOption::new(NatureFilter::Impish),
-                        SelectOption::new(NatureFilter::Lax),
-                        SelectOption::new(NatureFilter::Timid),
-                        SelectOption::new(NatureFilter::Hasty),
-                        SelectOption::new(NatureFilter::Serious),
-                        SelectOption::new(NatureFilter::Jolly),
-                        SelectOption::new(NatureFilter::Naive),
-                        SelectOption::new(NatureFilter::Modest),
-                        SelectOption::new(NatureFilter::Mild),
-                        SelectOption::new(NatureFilter::Quiet),
-                        SelectOption::new(NatureFilter::Bashful),
-                        SelectOption::new(NatureFilter::Rash),
-                        SelectOption::new(NatureFilter::Calm),
-                        SelectOption::new(NatureFilter::Gentle),
-                        SelectOption::new(NatureFilter::Sassy),
-                        SelectOption::new(NatureFilter::Careful),
-                        SelectOption::new(NatureFilter::Quirky),
+                        SelectOption::new(Nature::Hardy),
+                        SelectOption::new(Nature::Lonely),
+                        SelectOption::new(Nature::Brave),
+                        SelectOption::new(Nature::Adamant),
+                        SelectOption::new(Nature::Naughty),
+                        SelectOption::new(Nature::Bold),
+                        SelectOption::new(Nature::Docile),
+                        SelectOption::new(Nature::Relaxed),
+                        SelectOption::new(Nature::Impish),
+                        SelectOption::new(Nature::Lax),
+                        SelectOption::new(Nature::Timid),
+                        SelectOption::new(Nature::Hasty),
+                        SelectOption::new(Nature::Serious),
+                        SelectOption::new(Nature::Jolly),
+                        SelectOption::new(Nature::Naive),
+                        SelectOption::new(Nature::Modest),
+                        SelectOption::new(Nature::Mild),
+                        SelectOption::new(Nature::Quiet),
+                        SelectOption::new(Nature::Bashful),
+                        SelectOption::new(Nature::Rash),
+                        SelectOption::new(Nature::Calm),
+                        SelectOption::new(Nature::Gentle),
+                        SelectOption::new(Nature::Sassy),
+                        SelectOption::new(Nature::Careful),
+                        SelectOption::new(Nature::Quirky),
                     ],
                 )
             }
@@ -480,31 +475,31 @@ macro_rules! impl_sized_component {
                     "nature_multiselect",
                     "Nature",
                     vec![
-                        SelectOption::new(NatureFilter::Hardy),
-                        SelectOption::new(NatureFilter::Lonely),
-                        SelectOption::new(NatureFilter::Brave),
-                        SelectOption::new(NatureFilter::Adamant),
-                        SelectOption::new(NatureFilter::Naughty),
-                        SelectOption::new(NatureFilter::Bold),
-                        SelectOption::new(NatureFilter::Docile),
-                        SelectOption::new(NatureFilter::Relaxed),
-                        SelectOption::new(NatureFilter::Impish),
-                        SelectOption::new(NatureFilter::Lax),
-                        SelectOption::new(NatureFilter::Timid),
-                        SelectOption::new(NatureFilter::Hasty),
-                        SelectOption::new(NatureFilter::Serious),
-                        SelectOption::new(NatureFilter::Jolly),
-                        SelectOption::new(NatureFilter::Naive),
-                        SelectOption::new(NatureFilter::Modest),
-                        SelectOption::new(NatureFilter::Mild),
-                        SelectOption::new(NatureFilter::Quiet),
-                        SelectOption::new(NatureFilter::Bashful),
-                        SelectOption::new(NatureFilter::Rash),
-                        SelectOption::new(NatureFilter::Calm),
-                        SelectOption::new(NatureFilter::Gentle),
-                        SelectOption::new(NatureFilter::Sassy),
-                        SelectOption::new(NatureFilter::Careful),
-                        SelectOption::new(NatureFilter::Quirky),
+                        SelectOption::new(Nature::Hardy),
+                        SelectOption::new(Nature::Lonely),
+                        SelectOption::new(Nature::Brave),
+                        SelectOption::new(Nature::Adamant),
+                        SelectOption::new(Nature::Naughty),
+                        SelectOption::new(Nature::Bold),
+                        SelectOption::new(Nature::Docile),
+                        SelectOption::new(Nature::Relaxed),
+                        SelectOption::new(Nature::Impish),
+                        SelectOption::new(Nature::Lax),
+                        SelectOption::new(Nature::Timid),
+                        SelectOption::new(Nature::Hasty),
+                        SelectOption::new(Nature::Serious),
+                        SelectOption::new(Nature::Jolly),
+                        SelectOption::new(Nature::Naive),
+                        SelectOption::new(Nature::Modest),
+                        SelectOption::new(Nature::Mild),
+                        SelectOption::new(Nature::Quiet),
+                        SelectOption::new(Nature::Bashful),
+                        SelectOption::new(Nature::Rash),
+                        SelectOption::new(Nature::Calm),
+                        SelectOption::new(Nature::Gentle),
+                        SelectOption::new(Nature::Sassy),
+                        SelectOption::new(Nature::Careful),
+                        SelectOption::new(Nature::Quirky),
                     ],
                 )
             }
@@ -513,8 +508,8 @@ macro_rules! impl_sized_component {
                     "gen3_ability",
                     "Ability",
                     vec![
-                        SelectOption::new_with_label("0", Gen3AbilityFilter::Ability0),
-                        SelectOption::new_with_label("1", Gen3AbilityFilter::Ability1),
+                        SelectOption::new_with_label("0", Gen3Ability::Ability0),
+                        SelectOption::new_with_label("1", Gen3Ability::Ability1),
                     ],
                 )
             }
@@ -523,18 +518,18 @@ macro_rules! impl_sized_component {
                     "encounter_slot",
                     "Encounter Slot",
                     vec![
-                        SelectOption::new_with_label("0", EncounterSlotFilter::Slot0),
-                        SelectOption::new_with_label("1", EncounterSlotFilter::Slot1),
-                        SelectOption::new_with_label("2", EncounterSlotFilter::Slot2),
-                        SelectOption::new_with_label("3", EncounterSlotFilter::Slot3),
-                        SelectOption::new_with_label("4", EncounterSlotFilter::Slot4),
-                        SelectOption::new_with_label("5", EncounterSlotFilter::Slot5),
-                        SelectOption::new_with_label("6", EncounterSlotFilter::Slot6),
-                        SelectOption::new_with_label("7", EncounterSlotFilter::Slot7),
-                        SelectOption::new_with_label("8", EncounterSlotFilter::Slot8),
-                        SelectOption::new_with_label("9", EncounterSlotFilter::Slot9),
-                        SelectOption::new_with_label("10", EncounterSlotFilter::Slot10),
-                        SelectOption::new_with_label("11", EncounterSlotFilter::Slot11),
+                        SelectOption::new_with_label("0", EncounterSlot::Slot0),
+                        SelectOption::new_with_label("1", EncounterSlot::Slot1),
+                        SelectOption::new_with_label("2", EncounterSlot::Slot2),
+                        SelectOption::new_with_label("3", EncounterSlot::Slot3),
+                        SelectOption::new_with_label("4", EncounterSlot::Slot4),
+                        SelectOption::new_with_label("5", EncounterSlot::Slot5),
+                        SelectOption::new_with_label("6", EncounterSlot::Slot6),
+                        SelectOption::new_with_label("7", EncounterSlot::Slot7),
+                        SelectOption::new_with_label("8", EncounterSlot::Slot8),
+                        SelectOption::new_with_label("9", EncounterSlot::Slot9),
+                        SelectOption::new_with_label("10", EncounterSlot::Slot10),
+                        SelectOption::new_with_label("11", EncounterSlot::Slot11),
                     ],
                 )
             }
@@ -543,7 +538,6 @@ macro_rules! impl_sized_component {
                     "gender_ratio",
                     "Gender Ratio",
                     vec![
-                        SelectOption::new_with_label("No Set Gender", GenderRatio::NoSetGender),
                         SelectOption::new_with_label("Genderless", GenderRatio::Genderless),
                         SelectOption::new_with_label("50% ♂ / 50% ♀", GenderRatio::Male50Female50),
                         SelectOption::new_with_label("25% ♂ / 75% ♀", GenderRatio::Male25Female75),
@@ -562,8 +556,8 @@ macro_rules! impl_sized_component {
                     "gender",
                     "Gender",
                     vec![
-                        SelectOption::new_with_label("♂", GenderFilter::Male),
-                        SelectOption::new_with_label("♀", GenderFilter::Female),
+                        SelectOption::new_with_label("♂", Gender::Male),
+                        SelectOption::new_with_label("♀", Gender::Female),
                     ],
                 )
             }

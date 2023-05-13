@@ -1,8 +1,6 @@
-use std::convert::TryInto;
-
-use crate::bdsp::tid::settings::Settings;
-use crate::enums;
+use super::form_settings::Settings;
 use crate::rng::Xorshift;
+use chatot_forms::IDFilter;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -24,17 +22,27 @@ pub struct Result {
     pub tsv: u16,
     pub g8tid: u32,
     pub sid: u16,
-    pub filter_type: enums::IDFilter,
+    pub filter_type: Option<IDFilter>,
 }
 
 pub fn generate_tid(settings: Settings) -> Vec<Result> {
-    let states: [u32; 4] = settings.rng_state[0..4].try_into().unwrap_or_default();
+    let ids = settings
+        .ids
+        .split("\n")
+        .map(|id| id.parse::<u32>().unwrap_or_default())
+        .collect::<Vec<u32>>();
+    let states: [u32; 4] = [
+        settings.seed_0,
+        settings.seed_1,
+        settings.seed_2,
+        settings.seed_3,
+    ];
     let mut rng = Xorshift::from_state(states);
     rng.advance(settings.min_advances);
     let mut results: Vec<Result> = Vec::new();
     let values = settings.min_advances..=settings.max_advances;
     for value in values {
-        let generate_result = calculate_tid(rng, &settings);
+        let generate_result = calculate_tid(rng, &settings, &ids);
 
         if let Some(tid) = generate_result {
             let rng_state = rng.get_state();
@@ -48,7 +56,7 @@ pub fn generate_tid(settings: Settings) -> Vec<Result> {
                 tsv: tid.tsv,
                 g8tid: tid.g8tid,
                 sid: tid.sid,
-                filter_type: settings.filter_type,
+                filter_type: settings.gen8_id_type,
             };
             results.push(result);
         }
@@ -58,29 +66,29 @@ pub fn generate_tid(settings: Settings) -> Vec<Result> {
     results.into_iter().collect()
 }
 
-pub fn calculate_tid(mut rng: Xorshift, settings: &Settings) -> Option<Tid> {
+pub fn calculate_tid(mut rng: Xorshift, settings: &Settings, ids: &[u32]) -> Option<Tid> {
     let sidtid = rng.next();
     let tid = sidtid & 0xFFFF;
 
-    if settings.filter_type == enums::IDFilter::TID && settings.id.iter().all(|id| *id != tid) {
+    if settings.gen8_id_type == Some(IDFilter::TID) && ids.iter().all(|id| *id != tid) {
         return None;
     };
 
     let sid = sidtid >> 0x10;
 
-    if settings.filter_type == enums::IDFilter::SID && settings.id.iter().all(|id| *id != sid) {
+    if settings.gen8_id_type == Some(IDFilter::SID) && ids.iter().all(|id| *id != sid) {
         return None;
     };
 
     let tsv = ((tid ^ sid) >> 4) as u32;
 
-    if settings.filter_type == enums::IDFilter::TSV && settings.id.iter().all(|id| *id != tsv) {
+    if settings.gen8_id_type == Some(IDFilter::TSV) && ids.iter().all(|id| *id != tsv) {
         return None;
     };
 
     let g8tid = sidtid % 1000000;
 
-    if settings.filter_type == enums::IDFilter::G8TID && settings.id.iter().all(|id| *id != g8tid) {
+    if settings.gen8_id_type == Some(IDFilter::G8TID) && ids.iter().all(|id| *id != g8tid) {
         return None;
     };
 
@@ -100,11 +108,14 @@ mod test {
     #[test]
     fn should_generate_tids() {
         let settings = Settings {
-            id: vec![0],
-            filter_type: enums::IDFilter::None,
+            ids: "0".to_string(),
+            gen8_id_type: None,
             max_advances: 10,
             min_advances: 0,
-            rng_state: vec![0x12345678, 0x12345678, 0x12345678, 0x12345678],
+            seed_0: 0x12345678,
+            seed_1: 0x12345678,
+            seed_2: 0x12345678,
+            seed_3: 0x12345678,
         };
         let mut rng = Xorshift::from_state([0x12345678, 0x12345678, 0x12345678, 0x12345678]);
 
@@ -136,7 +147,7 @@ mod test {
         ];
 
         for (advance, expected_result) in expected_results.iter().enumerate() {
-            let result = calculate_tid(rng, &settings);
+            let result = calculate_tid(rng, &settings, &[0]);
 
             assert_eq!(
                 result.as_ref(),
@@ -151,11 +162,14 @@ mod test {
     #[test]
     fn should_filter_tids() {
         let settings = Settings {
-            id: vec![1234],
-            filter_type: enums::IDFilter::TSV,
+            ids: "1234".to_string(),
+            gen8_id_type: Some(IDFilter::TSV),
             max_advances: 10000,
             min_advances: 0,
-            rng_state: vec![0x12345678, 0x12345678, 0x12345678, 0x12345678],
+            seed_0: 0x12345678,
+            seed_1: 0x12345678,
+            seed_2: 0x12345678,
+            seed_3: 0x12345678,
         };
 
         let expected_results = vec![
@@ -165,7 +179,7 @@ mod test {
                 state2: 4253276561,
                 state3: 3177154437,
                 advances: 2672,
-                filter_type: enums::IDFilter::TSV,
+                filter_type: Some(IDFilter::TSV),
                 tid: 43426,
                 tsv: 1234,
                 g8tid: 833890,
@@ -177,7 +191,7 @@ mod test {
                 state2: 327036423,
                 state3: 766138671,
                 advances: 7940,
-                filter_type: enums::IDFilter::TSV,
+                filter_type: Some(IDFilter::TSV),
                 tid: 54774,
                 tsv: 1234,
                 g8tid: 281846,

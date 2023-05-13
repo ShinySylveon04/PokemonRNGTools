@@ -1,14 +1,8 @@
-use super::{generator, settings};
-use crate::{
-    enums::{
-        AbilityFilter, DeprecatedGenderFilter, DeprecatedGenderRatio, DeprecatedNatureFilter,
-        LeadFilter, ShinyFilter,
-    },
-    utils::format_ivs,
-};
+use super::generator;
+use crate::utils::format_ivs;
 use chatot_forms::{
-    impl_display, FieldGroup, Gen3Lead, GenderFilter, LargeComponent, NatureFilter, SelectOption,
-    ShinyTypeFilter, SmallComponent,
+    impl_display, FieldGroup, Gen3Ability, Gen3Lead, Gender, GenderRatio, LargeComponent, Nature,
+    SelectOption, ShinyType, SmallComponent,
 };
 use serde::{Deserialize, Serialize};
 
@@ -64,22 +58,23 @@ pub enum StaticPokemon {
 }
 
 impl_display!(StaticPokemon);
+
 impl StaticPokemon {
-    fn is_roamer(&self) -> bool {
+    pub fn is_roamer(&self) -> bool {
         match self {
             Self::Mesprit | Self::Cresselia => true,
             _ => false,
         }
     }
 
-    fn ability(&self) -> AbilityFilter {
+    pub fn ability(&self) -> Option<Gen3Ability> {
         match self {
-            Self::Jirachi | Self::Mew => AbilityFilter::Ability1,
-            _ => AbilityFilter::Any,
+            Self::Jirachi | Self::Mew => Some(Gen3Ability::Ability1),
+            _ => None,
         }
     }
 
-    fn set_ivs(&self) -> bool {
+    pub fn set_ivs(&self) -> bool {
         match self {
             Self::Chimchar
             | Self::Drifloon
@@ -93,55 +88,55 @@ impl StaticPokemon {
             _ => true,
         }
     }
-    fn gender_ratio(&self) -> DeprecatedGenderRatio {
+    pub fn gender_ratio(&self) -> GenderRatio {
         match self {
-            Self::Turtwig => DeprecatedGenderRatio::Male875Female125,
-            Self::Chimchar => DeprecatedGenderRatio::Male875Female125,
-            Self::Piplup => DeprecatedGenderRatio::Male875Female125,
-            Self::Eevee => DeprecatedGenderRatio::Male875Female125,
-            Self::Happiny => DeprecatedGenderRatio::Female,
-            Self::Riolu => DeprecatedGenderRatio::Male875Female125,
-            Self::Mew => DeprecatedGenderRatio::Genderless,
-            Self::Jirachi => DeprecatedGenderRatio::Genderless,
-            Self::Omanyte => DeprecatedGenderRatio::Male875Female125,
-            Self::Kabuto => DeprecatedGenderRatio::Male875Female125,
-            Self::Aerodactyl => DeprecatedGenderRatio::Male875Female125,
-            Self::Lileep => DeprecatedGenderRatio::Male875Female125,
-            Self::Anorith => DeprecatedGenderRatio::Male875Female125,
-            Self::Cranidos => DeprecatedGenderRatio::Male875Female125,
-            Self::Shieldon => DeprecatedGenderRatio::Male875Female125,
-            Self::Drifloon => DeprecatedGenderRatio::Male50Female50,
-            Self::Spiritomb => DeprecatedGenderRatio::Male50Female50,
-            Self::Rotom => DeprecatedGenderRatio::Genderless,
-            Self::Mesprit => DeprecatedGenderRatio::Genderless,
-            Self::Cresselia => DeprecatedGenderRatio::Genderless,
-            Self::Uxie => DeprecatedGenderRatio::Genderless,
-            Self::Azelf => DeprecatedGenderRatio::Genderless,
-            Self::Dialga => DeprecatedGenderRatio::Genderless,
-            Self::Palkia => DeprecatedGenderRatio::Genderless,
-            Self::Heatran => DeprecatedGenderRatio::Genderless,
-            Self::Regigigas => DeprecatedGenderRatio::Genderless,
-            Self::Giratina => DeprecatedGenderRatio::Genderless,
-            Self::Articuno => DeprecatedGenderRatio::Genderless,
-            Self::Zapdos => DeprecatedGenderRatio::Genderless,
-            Self::Moltres => DeprecatedGenderRatio::Genderless,
-            Self::Raikou => DeprecatedGenderRatio::Genderless,
-            Self::Entei => DeprecatedGenderRatio::Genderless,
-            Self::Suicune => DeprecatedGenderRatio::Genderless,
-            Self::Regirock => DeprecatedGenderRatio::Genderless,
-            Self::Regice => DeprecatedGenderRatio::Genderless,
-            Self::Registeel => DeprecatedGenderRatio::Genderless,
-            Self::Latias => DeprecatedGenderRatio::Genderless,
-            Self::Latios => DeprecatedGenderRatio::Genderless,
-            Self::Mewtwo => DeprecatedGenderRatio::Genderless,
-            Self::Lugia => DeprecatedGenderRatio::Genderless,
-            Self::HoOh => DeprecatedGenderRatio::Genderless,
-            Self::Kyogre => DeprecatedGenderRatio::Genderless,
-            Self::Groudon => DeprecatedGenderRatio::Genderless,
-            Self::Rayquaza => DeprecatedGenderRatio::Genderless,
-            Self::Darkrai => DeprecatedGenderRatio::Genderless,
-            Self::Shaymin => DeprecatedGenderRatio::Genderless,
-            Self::Arceus => DeprecatedGenderRatio::Genderless,
+            Self::Turtwig => GenderRatio::Male875Female125,
+            Self::Chimchar => GenderRatio::Male875Female125,
+            Self::Piplup => GenderRatio::Male875Female125,
+            Self::Eevee => GenderRatio::Male875Female125,
+            Self::Happiny => GenderRatio::Female,
+            Self::Riolu => GenderRatio::Male875Female125,
+            Self::Mew => GenderRatio::Genderless,
+            Self::Jirachi => GenderRatio::Genderless,
+            Self::Omanyte => GenderRatio::Male875Female125,
+            Self::Kabuto => GenderRatio::Male875Female125,
+            Self::Aerodactyl => GenderRatio::Male875Female125,
+            Self::Lileep => GenderRatio::Male875Female125,
+            Self::Anorith => GenderRatio::Male875Female125,
+            Self::Cranidos => GenderRatio::Male875Female125,
+            Self::Shieldon => GenderRatio::Male875Female125,
+            Self::Drifloon => GenderRatio::Male50Female50,
+            Self::Spiritomb => GenderRatio::Male50Female50,
+            Self::Rotom => GenderRatio::Genderless,
+            Self::Mesprit => GenderRatio::Genderless,
+            Self::Cresselia => GenderRatio::Genderless,
+            Self::Uxie => GenderRatio::Genderless,
+            Self::Azelf => GenderRatio::Genderless,
+            Self::Dialga => GenderRatio::Genderless,
+            Self::Palkia => GenderRatio::Genderless,
+            Self::Heatran => GenderRatio::Genderless,
+            Self::Regigigas => GenderRatio::Genderless,
+            Self::Giratina => GenderRatio::Genderless,
+            Self::Articuno => GenderRatio::Genderless,
+            Self::Zapdos => GenderRatio::Genderless,
+            Self::Moltres => GenderRatio::Genderless,
+            Self::Raikou => GenderRatio::Genderless,
+            Self::Entei => GenderRatio::Genderless,
+            Self::Suicune => GenderRatio::Genderless,
+            Self::Regirock => GenderRatio::Genderless,
+            Self::Regice => GenderRatio::Genderless,
+            Self::Registeel => GenderRatio::Genderless,
+            Self::Latias => GenderRatio::Genderless,
+            Self::Latios => GenderRatio::Genderless,
+            Self::Mewtwo => GenderRatio::Genderless,
+            Self::Lugia => GenderRatio::Genderless,
+            Self::HoOh => GenderRatio::Genderless,
+            Self::Kyogre => GenderRatio::Genderless,
+            Self::Groudon => GenderRatio::Genderless,
+            Self::Rayquaza => GenderRatio::Genderless,
+            Self::Darkrai => GenderRatio::Genderless,
+            Self::Shaymin => GenderRatio::Genderless,
+            Self::Arceus => GenderRatio::Genderless,
         }
     }
 }
@@ -248,92 +243,76 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    seed_0: u32,
-    seed_1: u32,
-    seed_2: u32,
-    seed_3: u32,
-    min_advances: u32,
-    max_advances: u32,
-    delay: u32,
-    gen3_lead: Option<Gen3Lead>,
-    pokemon: StaticPokemon,
-    shiny_type: Option<ShinyTypeFilter>,
-    nature_multiselect: Vec<NatureFilter>,
-    gender: Option<GenderFilter>,
-    min_hp_iv: u32,
-    min_atk_iv: u32,
-    min_def_iv: u32,
-    min_spa_iv: u32,
-    min_spd_iv: u32,
-    min_spe_iv: u32,
-    max_hp_iv: u32,
-    max_atk_iv: u32,
-    max_def_iv: u32,
-    max_spa_iv: u32,
-    max_spd_iv: u32,
-    max_spe_iv: u32,
+    pub seed_0: u32,
+    pub seed_1: u32,
+    pub seed_2: u32,
+    pub seed_3: u32,
+    pub min_advances: usize,
+    pub max_advances: usize,
+    pub delay: usize,
+    pub gen3_lead: Option<Gen3Lead>,
+    pub pokemon: StaticPokemon,
+    pub shiny_type: Vec<ShinyType>,
+    pub nature_multiselect: Vec<Nature>,
+    pub gender: Option<Gender>,
+    pub min_hp_iv: u8,
+    pub min_atk_iv: u8,
+    pub min_def_iv: u8,
+    pub min_spa_iv: u8,
+    pub min_spd_iv: u8,
+    pub min_spe_iv: u8,
+    pub max_hp_iv: u8,
+    pub max_atk_iv: u8,
+    pub max_def_iv: u8,
+    pub max_spa_iv: u8,
+    pub max_spd_iv: u8,
+    pub max_spe_iv: u8,
 }
 
-impl From<Settings> for settings::Settings {
-    fn from(value: Settings) -> Self {
-        Self {
-            rng_state: vec![value.seed_0, value.seed_1, value.seed_2, value.seed_3],
-            lead_filter: value
-                .gen3_lead
-                .map(|lead| lead.into())
-                .unwrap_or(LeadFilter::None),
-            is_roamer: value.pokemon.is_roamer(),
-            shiny_filter: value
-                .shiny_type
-                .map(|shiny_type| shiny_type.into())
-                .unwrap_or(ShinyFilter::Any),
-            min_advances: value.min_advances as usize,
-            max_advances: value.max_advances as usize,
-            delay: value.delay as usize,
-            nature_filter: value
-                .nature_multiselect
-                .into_iter()
-                .map(|nature| (DeprecatedNatureFilter::from(nature) as u16).into())
-                .collect::<Vec<u32>>(),
-            ability_filter: value.pokemon.ability(),
-            gender_ratio: value.pokemon.gender_ratio(),
-            gender_filter: value
-                .gender
-                .map(|gender| gender.into())
-                .unwrap_or(DeprecatedGenderFilter::Any),
-            set_ivs: value.pokemon.set_ivs(),
-            min_ivs: vec![
-                value.min_hp_iv,
-                value.min_atk_iv,
-                value.min_def_iv,
-                value.min_spa_iv,
-                value.min_spd_iv,
-                value.min_spe_iv,
-            ],
-            max_ivs: vec![
-                value.max_hp_iv,
-                value.max_atk_iv,
-                value.max_def_iv,
-                value.max_spa_iv,
-                value.max_spd_iv,
-                value.max_spe_iv,
-            ],
-        }
+impl Settings {
+    pub fn min_ivs(&self) -> [u8; 6] {
+        [
+            self.min_hp_iv,
+            self.min_atk_iv,
+            self.min_def_iv,
+            self.min_spa_iv,
+            self.min_spd_iv,
+            self.min_spe_iv,
+        ]
+    }
+
+    pub fn max_ivs(&self) -> [u8; 6] {
+        [
+            self.max_hp_iv,
+            self.max_atk_iv,
+            self.max_def_iv,
+            self.max_spa_iv,
+            self.max_spd_iv,
+            self.max_spe_iv,
+        ]
     }
 }
 
 pub fn generate_stationary(settings: Settings) -> Vec<Vec<String>> {
-    let results = generator::generate_stationary(settings.into());
+    let gen3_lead = settings.gen3_lead;
+    let results = generator::generate_stationary(settings);
     results
         .into_iter()
         .map(|result| {
+            let stringified_nature = match gen3_lead {
+                Some(Gen3Lead::Synchronize) => "Synchronize".to_string(),
+                None => result.nature.to_string(),
+            };
             vec![
                 result.advances.to_string(),
-                result.shiny_value.to_string(),
-                result.nature.to_string(),
+                result
+                    .shiny_value
+                    .map(|shiny_type| shiny_type.to_string())
+                    .unwrap_or("None".to_string()),
+                stringified_nature,
                 result.ability.to_string(),
                 result.gender.to_string(),
-                format_ivs(result.ivs),
+                format_ivs(&result.ivs),
                 format!("{:x}", result.pid),
                 format!("{:x}", result.ec),
             ]

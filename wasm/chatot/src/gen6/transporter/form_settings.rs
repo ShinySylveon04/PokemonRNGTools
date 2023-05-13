@@ -1,6 +1,5 @@
+use super::generator;
 use crate::utils::format_ivs;
-
-use super::{generator, settings};
 use chatot_forms::{FieldGroup, LargeComponent, SmallComponent};
 use serde::{Deserialize, Serialize};
 
@@ -47,65 +46,59 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    min_hp_iv: u32,
-    min_atk_iv: u32,
-    min_def_iv: u32,
-    min_spa_iv: u32,
-    min_spd_iv: u32,
-    min_spe_iv: u32,
-    max_hp_iv: u32,
-    max_atk_iv: u32,
-    max_def_iv: u32,
-    max_spa_iv: u32,
-    max_spd_iv: u32,
-    max_spe_iv: u32,
-    seed: u32,
-    min_advances: usize,
-    max_advances: usize,
-    delay: usize,
-    mew_or_celebi: bool,
-    shiny_pokemon: bool,
-    tid: u32,
+    pub(super) min_hp_iv: u8,
+    pub(super) min_atk_iv: u8,
+    pub(super) min_def_iv: u8,
+    pub(super) min_spa_iv: u8,
+    pub(super) min_spd_iv: u8,
+    pub(super) min_spe_iv: u8,
+    pub(super) max_hp_iv: u8,
+    pub(super) max_atk_iv: u8,
+    pub(super) max_def_iv: u8,
+    pub(super) max_spa_iv: u8,
+    pub(super) max_spd_iv: u8,
+    pub(super) max_spe_iv: u8,
+    pub(super) seed: u32,
+    pub(super) min_advances: usize,
+    pub(super) max_advances: usize,
+    pub(super) delay: usize,
+    pub(super) mew_or_celebi: bool,
+    pub(super) shiny_pokemon: bool,
+    pub(super) tid: u16,
 }
 
-impl From<Settings> for settings::Settings {
-    fn from(value: Settings) -> Self {
-        Self {
-            min_ivs: vec![
-                value.min_hp_iv,
-                value.min_atk_iv,
-                value.min_def_iv,
-                value.min_spa_iv,
-                value.min_spd_iv,
-                value.min_spe_iv,
-            ],
-            max_ivs: vec![
-                value.max_hp_iv,
-                value.max_atk_iv,
-                value.max_def_iv,
-                value.max_spa_iv,
-                value.max_spd_iv,
-                value.max_spe_iv,
-            ],
-            rng_state: value.seed,
-            min_advances: value.min_advances,
-            max_advances: value.max_advances,
-            delay: value.delay,
-            iv_rolls: value.mew_or_celebi,
-            is_shiny: value.shiny_pokemon,
-            tid: value.tid,
-        }
+impl Settings {
+    pub(super) fn min_ivs(&self) -> [u8; 6] {
+        [
+            self.min_hp_iv,
+            self.min_atk_iv,
+            self.min_def_iv,
+            self.min_spa_iv,
+            self.min_spd_iv,
+            self.min_spe_iv,
+        ]
+    }
+
+    pub(super) fn max_ivs(&self) -> [u8; 6] {
+        [
+            self.max_hp_iv,
+            self.max_atk_iv,
+            self.max_def_iv,
+            self.max_spa_iv,
+            self.max_spd_iv,
+            self.max_spe_iv,
+        ]
     }
 }
 
 pub fn generate_transporter(settings: Settings) -> Vec<Vec<String>> {
-    let results = generator::generate_transporter(settings.into());
+    let results = generator::generate_transporter(settings);
     results
         .into_iter()
         .map(|result| {
             vec![
                 result.advances.to_string(),
-                format_ivs(result.ivs),
+                format_ivs(&result.ivs),
                 result.hidden_power.to_string(),
                 result.psv.to_string(),
                 format!("{:x}", result.pid),

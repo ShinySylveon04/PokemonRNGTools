@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-pub fn format_ivs(ivs: Vec<impl Display>) -> String {
+pub fn format_ivs(ivs: &[impl Display]) -> String {
     if ivs.len() != 6 {
         return String::new();
     }

@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
 
 const ANY = 'Any';
+const HEX_U32_REGEX = '[0-9A-Fa-f]{1,8}';
+const HEX_U64_REGEX = '[0-9A-Fa-f]{1,16}';
 
 type SharedConfig = {
   id: string;
@@ -75,11 +77,11 @@ export const InputField = ({
     }
 
     if (type === 'hex_number') {
-      return { pattern: '[0-9A-Fa-f]{1,8}' };
+      return { pattern: HEX_U32_REGEX };
     }
 
     if (type === 'hex_u64') {
-      return { pattern: '[0-9A-Fa-f]{1,16}' };
+      return { pattern: HEX_U64_REGEX };
     }
 
     return {};
@@ -189,13 +191,17 @@ export const InputField = ({
   }
 
   if (type === 'multiselect') {
-    const safeValue = isArray(value) ? value : String(value).split(',');
+    const safeValue = isArray(value) ? value : [];
     return (
       <FormControl fullWidth>
-        <InputLabel id={`${id}-label`}>{label}</InputLabel>
+        <InputLabel id={`${id}-label`} shrink>
+          {label}
+        </InputLabel>
         <Select
           multiple
           fullWidth
+          displayEmpty
+          notched
           required={required}
           id={id}
           name={id}
@@ -206,12 +212,16 @@ export const InputField = ({
           error={error}
           labelId={`${id}-label`}
           renderValue={selectedValues => {
+            if (selectedValues.length === 0) {
+              return t(ANY);
+            }
+
             return selectedValues
               .map(selectedValue => {
                 const option = options.find(
                   option => option.value == selectedValue,
                 );
-                return option == null ? null : option.label;
+                return option == null ? null : t(option.label);
               })
               .join(', ');
           }}
@@ -237,26 +247,41 @@ export type DeserializedValue =
   | number
   | string[]
   | typeof ANY;
-type Deserializer = (value: string) => DeserializedValue;
+type Deserializer = (value: SerializedValue) => DeserializedValue;
 
 const DESERIALIZERS: Record<FieldConfig['type'], Deserializer> = {
-  checkbox: value => value === 'true',
   // JS can only handle up to 0x1fffffffffffff
   // and wasm can't natively handle bigint.
   // Converting String -> u64 will happen in wasm.
-  hex_u64: value => value,
-  hex_number: value => {
-    const num = parseInt(value, 16);
+  hex_u64: (value: SerializedValue): string => {
+    const stringified = String(value);
+    const isValid = new RegExp(HEX_U64_REGEX).test(stringified);
+    return isValid ? stringified : '0';
+  },
+  hex_number: (value: SerializedValue): number => {
+    const stringified = String(value);
+    const isValid = new RegExp(HEX_U32_REGEX).test(stringified);
+    return isValid ? parseInt(stringified, 16) : 0;
+  },
+  number: (value: SerializedValue): number => {
+    const num = parseInt(String(value), 10);
     return isNaN(num) ? 0 : num;
   },
-  number: value => {
-    const num = parseInt(value, 10);
-    return isNaN(num) ? 0 : num;
+  text: (value: SerializedValue): string => {
+    return String(value);
   },
-  text: value => value,
-  select: value => value,
-  optional_select: value => value,
-  multiselect: value => value,
+  select: (value: SerializedValue): string => {
+    return String(value);
+  },
+  optional_select: (value: SerializedValue): string => {
+    return value == null ? ANY : String(value);
+  },
+  multiselect: (value: SerializedValue): string[] => {
+    return isArray(value) ? value : [];
+  },
+  checkbox: (value: SerializedValue): boolean => {
+    return String(value) === 'true';
+  },
 };
 
 const getDeserializer = (type: FieldConfig['type']): Deserializer => {
@@ -275,12 +300,16 @@ export const deserialize = ({
     return ANY;
   }
 
+  if (type === 'multiselect' && value == null) {
+    return [];
+  }
+
   if (value == null) {
     return '';
   }
 
   const deserializer = getDeserializer(type);
-  return deserializer(String(value));
+  return deserializer(value);
 };
 
 export const serialize = ({
@@ -290,16 +319,20 @@ export const serialize = ({
   type: FieldConfig['type'];
   value: DeserializedValue;
 }): SerializedValue => {
-  if (type === 'optional_select' && value == ANY) {
+  if (type === 'optional_select' && value === ANY) {
     return null;
   }
 
   const deserializer = getDeserializer(type);
-  return deserializer(String(value));
+  return deserializer(value);
 };
 
 export const isArray = (value: unknown): value is string[] => {
-  return _isArray(value);
+  if (_isArray(value)) {
+    return value.find(item => !isString(item)) == null;
+  }
+
+  return false;
 };
 
 export const isNumber = (value: unknown): value is number => {

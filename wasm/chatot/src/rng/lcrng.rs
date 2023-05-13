@@ -1,17 +1,10 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
 pub struct Lcrng {
     state: u32,
 }
 
 impl Lcrng {
-    pub fn new(seed: u32) -> Self {
-        Self { state: seed }
-    }
-
-    pub fn from_state(state: u32) -> Self {
+    pub fn new(state: u32) -> Self {
         Self { state }
     }
 

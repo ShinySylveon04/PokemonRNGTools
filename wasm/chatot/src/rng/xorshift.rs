@@ -1,6 +1,3 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
 pub struct Xorshift {
     state: [u32; 4],
@@ -33,22 +30,6 @@ impl Xorshift {
         for _ in 0..advances {
             self.next();
         }
-    }
-
-    pub fn advance_to_state(&mut self, state: [u32; 4]) -> Option<usize> {
-        let mut advances = 0;
-
-        // 10,000 is an arbitary limit to avoid an infinite loop
-        while self.get_state() != state {
-            self.next();
-            advances += 1;
-
-            if advances > 10_000 {
-                return None;
-            }
-        }
-
-        Some(advances)
     }
 
     fn get_mask(num: u32) -> u32 {

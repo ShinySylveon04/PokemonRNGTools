@@ -1,11 +1,17 @@
-use crate::{
-    _calculate_pokemon as calculate_swsh_pokemon,
-    enums::{AbilityFilter, DeprecatedEncounterFilter, DeprecatedNatureFilter, ShinyFilter},
-};
+use crate::_calculate_pokemon as calculate_swsh_pokemon;
 use chatot_forms::{
-    FieldGroup, Gen3AbilityFilter, LargeComponent, NatureFilter, SelectOption, ShinyTypeFilter,
+    impl_display, FieldGroup, Gen3Ability, LargeComponent, Nature, SelectOption, ShinyType,
 };
 use serde::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[repr(u32)]
+pub enum EncounterFilter {
+    Static = 0,
+    Dynamic = 1,
+}
+
+impl_display!(EncounterFilter);
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
     let rng_info_components = vec![
@@ -17,8 +23,8 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
             "encounter_type",
             "Encounter Type",
             vec![
-                SelectOption::new(DeprecatedEncounterFilter::Static),
-                SelectOption::new(DeprecatedEncounterFilter::Dynamic),
+                SelectOption::new(EncounterFilter::Static),
+                SelectOption::new(EncounterFilter::Dynamic),
             ],
         ),
         LargeComponent::tid(),
@@ -28,7 +34,7 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
 
     let filer_components = vec![
         LargeComponent::shiny_type(),
-        LargeComponent::nature(),
+        LargeComponent::nature_multiselect(),
         LargeComponent::gen3_ability(),
     ];
 
@@ -49,50 +55,64 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    tid: u32,
-    sid: u32,
+    tid: u16,
+    sid: u16,
     shiny_charm: bool,
     seed_u64_0: String,
     seed_u64_1: String,
-    encounter_type: DeprecatedEncounterFilter,
-    min_advances: u32,
-    max_advances: u32,
-    shiny_type: Option<ShinyTypeFilter>,
-    nature: Option<NatureFilter>,
-    gen3_ability: Option<Gen3AbilityFilter>,
+    encounter_type: EncounterFilter,
+    min_advances: usize,
+    max_advances: usize,
+    shiny_type: Vec<ShinyType>,
+    nature_multiselect: Vec<Nature>,
+    gen3_ability: Option<Gen3Ability>,
+}
+
+pub struct ParsedSettings {
+    pub tid: u16,
+    pub sid: u16,
+    pub shiny_charm: bool,
+    pub seed_u64_0: u64,
+    pub seed_u64_1: u64,
+    pub encounter_type: EncounterFilter,
+    pub min_advances: usize,
+    pub max_advances: usize,
+    pub shiny_type: Vec<ShinyType>,
+    pub nature_multiselect: Vec<Nature>,
+    pub gen3_ability: Option<Gen3Ability>,
+}
+
+impl From<Settings> for ParsedSettings {
+    fn from(value: Settings) -> Self {
+        Self {
+            tid: value.tid,
+            sid: value.sid,
+            shiny_charm: value.shiny_charm,
+            seed_u64_0: u64::from_str_radix(&value.seed_u64_0, 16).unwrap_or_default(),
+            seed_u64_1: u64::from_str_radix(&value.seed_u64_1, 16).unwrap_or_default(),
+            encounter_type: value.encounter_type,
+            min_advances: value.min_advances,
+            max_advances: value.max_advances,
+            shiny_type: value.shiny_type,
+            nature_multiselect: value.nature_multiselect,
+            gen3_ability: value.gen3_ability,
+        }
+    }
 }
 
 pub fn generate_overworld(settings: Settings) -> Vec<Vec<String>> {
-    let results = calculate_swsh_pokemon(
-        u64::from_str_radix(&settings.seed_u64_0, 16).unwrap_or_default(),
-        u64::from_str_radix(&settings.seed_u64_1, 16).unwrap_or_default(),
-        settings.tid as u16,
-        settings.sid as u16,
-        settings
-            .shiny_type
-            .map(|shiny_type| shiny_type.into())
-            .unwrap_or(ShinyFilter::Any),
-        settings.encounter_type,
-        settings.shiny_charm,
-        settings
-            .nature
-            .map(|nature| DeprecatedNatureFilter::from(nature))
-            .unwrap_or(DeprecatedNatureFilter::Any),
-        settings
-            .gen3_ability
-            .map(|ability| ability.into())
-            .unwrap_or(AbilityFilter::Any),
-        settings.min_advances,
-        settings.max_advances,
-    );
+    let results = calculate_swsh_pokemon(&settings.into());
     results
         .into_iter()
         .map(|result| {
             vec![
                 result.advances.to_string(),
-                result.shiny_value.to_string(),
+                result
+                    .shiny_value
+                    .map(|shiny_type| shiny_type.to_string())
+                    .unwrap_or("None".to_string()),
                 result.nature.to_string(),
-                u32::from(result.ability).to_string(),
+                result.ability.to_string(),
                 format!("{:x}", result.state0),
                 format!("{:x}", result.state1),
                 format!("{:x}", result.ec),

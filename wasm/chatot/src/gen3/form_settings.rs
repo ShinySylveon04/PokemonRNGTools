@@ -1,16 +1,8 @@
-use std::convert::TryInto;
-
-use super::{generator, settings};
-use crate::{
-    enums::{
-        AbilityFilter, DeprecatedEncounterSlotFilter, DeprecatedNatureFilter, LeadFilter,
-        ShinyFilter,
-    },
-    utils::format_ivs,
-};
+use super::generator;
+use crate::utils::format_ivs;
 use chatot_forms::{
-    EncounterSlotFilter, FieldGroup, Gen3AbilityFilter, Gen3Lead, Gen3Method, GenderFilter,
-    GenderRatio, LargeComponent, NatureFilter, ShinyTypeFilter, SmallComponent,
+    EncounterSlot, FieldGroup, Gen3Ability, Gen3Lead, Gen3Method, Gender, GenderRatio,
+    LargeComponent, Nature, ShinyType, SmallComponent,
 };
 use serde::{Deserialize, Serialize};
 
@@ -66,101 +58,74 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    seed: u32,
-    tid: u32,
-    sid: u32,
-    min_advances: u32,
-    max_advances: u32,
-    delay: u32,
-    min_hp_iv: u32,
-    min_atk_iv: u32,
-    min_def_iv: u32,
-    min_spa_iv: u32,
-    min_spd_iv: u32,
-    min_spe_iv: u32,
-    max_hp_iv: u32,
-    max_atk_iv: u32,
-    max_def_iv: u32,
-    max_spa_iv: u32,
-    max_spd_iv: u32,
-    max_spe_iv: u32,
-    gen3_method: Gen3Method,
-    gen3_lead: Option<Gen3Lead>,
-    shiny_type: Option<ShinyTypeFilter>,
-    nature_multiselect: Vec<NatureFilter>,
-    gen3_ability: Option<Gen3AbilityFilter>,
-    encounter_slot: Option<EncounterSlotFilter>,
-    gender_ratio: GenderRatio,
-    gender: GenderFilter,
+    pub(super) seed: u32,
+    pub(super) tid: u16,
+    pub(super) sid: u16,
+    pub(super) min_advances: usize,
+    pub(super) max_advances: usize,
+    pub(super) delay: usize,
+    pub(super) min_hp_iv: u8,
+    pub(super) min_atk_iv: u8,
+    pub(super) min_def_iv: u8,
+    pub(super) min_spa_iv: u8,
+    pub(super) min_spd_iv: u8,
+    pub(super) min_spe_iv: u8,
+    pub(super) max_hp_iv: u8,
+    pub(super) max_atk_iv: u8,
+    pub(super) max_def_iv: u8,
+    pub(super) max_spa_iv: u8,
+    pub(super) max_spd_iv: u8,
+    pub(super) max_spe_iv: u8,
+    pub(super) gen3_method: Gen3Method,
+    pub(super) gen3_lead: Option<Gen3Lead>,
+    pub(super) shiny_type: Vec<ShinyType>,
+    pub(super) nature_multiselect: Vec<Nature>,
+    pub(super) gen3_ability: Option<Gen3Ability>,
+    pub(super) encounter_slot: Option<EncounterSlot>,
+    pub(super) gender_ratio: GenderRatio,
+    pub(super) gender: Option<Gender>,
 }
 
-impl From<Settings> for settings::Settings {
-    fn from(value: Settings) -> Self {
-        Self {
-            nature_filter: value
-                .nature_multiselect
-                .into_iter()
-                .map(|nature| (DeprecatedNatureFilter::from(nature) as u16).into())
-                .collect::<Vec<u32>>(),
-            encounter_filter: vec![value
-                .encounter_slot
-                .map(|slot| slot.into())
-                .unwrap_or(DeprecatedEncounterSlotFilter::Any)
-                .into()],
-            gender_ratio: value.gender_ratio.into(),
-            lead_filter: value
-                .gen3_lead
-                .map(|lead| lead.into())
-                .unwrap_or(LeadFilter::None),
-            shiny_filter: value
-                .shiny_type
-                .map(|shiny_type| shiny_type.into())
-                .unwrap_or(ShinyFilter::Any),
-            ability_filter: value
-                .gen3_ability
-                .map(|ability| ability.into())
-                .unwrap_or(AbilityFilter::Any),
-            gender_filter: value.gender.into(),
-            method_filter: value.gen3_method.into(),
-            rng_state: value.seed,
-            delay: value.delay.try_into().unwrap_or_default(),
-            min_advances: value.min_advances.try_into().unwrap_or_default(),
-            max_advances: value.max_advances.try_into().unwrap_or_default(),
-            min_ivs: vec![
-                value.min_hp_iv as u16,
-                value.min_atk_iv as u16,
-                value.min_def_iv as u16,
-                value.min_spa_iv as u16,
-                value.min_spd_iv as u16,
-                value.min_spe_iv as u16,
-            ],
-            max_ivs: vec![
-                value.max_hp_iv as u16,
-                value.max_atk_iv as u16,
-                value.max_def_iv as u16,
-                value.max_spa_iv as u16,
-                value.max_spd_iv as u16,
-                value.max_spe_iv as u16,
-            ],
-            tid: value.tid,
-            sid: value.sid,
-        }
+impl Settings {
+    pub(super) fn min_ivs(&self) -> [u8; 6] {
+        [
+            self.min_hp_iv,
+            self.min_atk_iv,
+            self.min_def_iv,
+            self.min_spa_iv,
+            self.min_spd_iv,
+            self.min_spe_iv,
+        ]
+    }
+
+    pub(super) fn max_ivs(&self) -> [u8; 6] {
+        [
+            self.max_hp_iv,
+            self.max_atk_iv,
+            self.max_def_iv,
+            self.max_spa_iv,
+            self.max_spd_iv,
+            self.max_spe_iv,
+        ]
     }
 }
 
 pub fn generate_wild(settings: Settings) -> Vec<Vec<String>> {
-    let results = generator::generate_wild(settings.into());
+    let results = generator::generate_wild(settings);
     results
         .into_iter()
         .map(|result| {
             vec![
                 result.advances.to_string(),
-                result.shiny_value.to_string(),
+                result
+                    .shiny_value
+                    .map(|shiny_type| shiny_type.to_string())
+                    .unwrap_or("None".to_string()),
                 result.encounter.to_string(),
                 result.nature.to_string(),
-                u32::from(result.ability).to_string(),
+                u8::from(result.ability).to_string(),
                 result.gender.to_string(),
-                format_ivs(result.ivs),
+                format_ivs(&result.ivs),
                 format!("{:x}", result.pid),
             ]
         })

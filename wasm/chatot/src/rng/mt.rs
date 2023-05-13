@@ -1,6 +1,3 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
 #[derive(Debug, PartialEq, Clone)]
 pub struct MT {
     index: usize,

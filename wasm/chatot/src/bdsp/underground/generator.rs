@@ -1,19 +1,17 @@
-use crate::enums;
 use crate::rng::Xorshift;
+use chatot_forms::{Gen3Ability, Gender, GenderRatio, Nature, ShinyType};
 use serde::{Deserialize, Serialize};
-use std::convert::{TryFrom, TryInto};
-use wasm_bindgen::prelude::*;
+use std::convert::TryInto;
 
-#[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Pokemon {
-    pub shiny_value: enums::Shiny,
+    pub shiny_value: Option<ShinyType>,
     pub pid: u32,
     pub ec: u32,
-    pub nature: enums::Nature,
-    pub ivs: Vec<u32>,
-    pub ability: enums::Ability,
-    pub gender: enums::Gender,
+    pub nature: Nature,
+    pub ivs: [u8; 6],
+    pub ability: Gen3Ability,
+    pub gender: Gender,
     pub encounter: u32,
     pub advances: usize,
     pub is_rare: bool,
@@ -51,9 +49,7 @@ pub fn generate_size_slots(rng: &mut Xorshift) -> u32 {
     let mut sizes = vec![0, 0, 0, 1, 1, 1, 2, 2, 2];
 
     let size_rand = rng.rand_range(0, sizes.len().try_into().unwrap());
-
     let slot = sizes[size_rand as usize];
-
     sizes.remove(size_rand.try_into().unwrap());
 
     slot
@@ -61,9 +57,9 @@ pub fn generate_size_slots(rng: &mut Xorshift) -> u32 {
 
 pub fn generate_pokemon(
     mut rng: Xorshift,
-    gender_ratio: enums::DeprecatedGenderRatio,
+    gender_ratio: GenderRatio,
     advances: usize,
-    tiles: usize,
+    tiles: u8,
     large_room: bool,
     diglett_boost: bool,
 ) -> Vec<Pokemon> {
@@ -144,13 +140,13 @@ pub fn generate_pokemon(
 
     fn generate_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::DeprecatedGenderRatio,
+        gender_ratio: GenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> Pokemon {
         let encounter = rng.rand_range(0, 765); // slot weight call?
         rng.next(); // level
-        let mut shiny = enums::Shiny::None;
+        let mut shiny = None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -162,30 +158,30 @@ pub fn generate_pokemon(
             let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
             let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
-                shiny = enums::Shiny::Star;
+                shiny = Some(ShinyType::Star);
                 break;
             }
 
             if (psv ^ tsv) == 0 {
-                shiny = enums::Shiny::Square;
+                shiny = Some(ShinyType::Square);
                 break;
             }
         }
 
-        let mut ivs = vec![32, 32, 32, 32, 32, 32];
+        let mut ivs: [u8; 6] = [32, 32, 32, 32, 32, 32];
         for i in ivs.iter_mut() {
-            *i = rng.rand_max(32);
+            *i = rng.rand_max(32) as u8;
         }
 
         let ability_rand = rng.next();
         let ability = ability_rand - (ability_rand / 2) * 2;
 
-        let gender = match enums::get_set_gender_from_ratio(&gender_ratio) {
+        let gender = match gender_ratio.get_set_gender() {
             Some(set_gender) => set_gender,
             None => {
                 let gender_rand = rng.next();
                 let gender_num = (gender_rand - (gender_rand / 253) * 253) + 1;
-                enums::get_gender_from_ratio(&gender_ratio, gender_num)
+                gender_ratio.get_gender(gender_num as u8)
             }
         };
         let nature_rand = rng.next();
@@ -203,9 +199,9 @@ pub fn generate_pokemon(
             shiny_value: shiny,
             pid,
             ec,
-            nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
+            nature: (nature as u8).into(),
             ivs,
-            ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
+            ability: (ability as u8).into(),
             gender,
             encounter,
             advances,
@@ -215,12 +211,12 @@ pub fn generate_pokemon(
 
     fn generate_rare_underground_pokemon(
         rng: &mut Xorshift,
-        gender_ratio: enums::DeprecatedGenderRatio,
+        gender_ratio: GenderRatio,
         advances: usize,
         diglett_boost: bool,
     ) -> Pokemon {
         rng.next(); // level
-        let mut shiny = enums::Shiny::None;
+        let mut shiny = None;
         let ec = rng.next();
 
         let shiny_rolls = if diglett_boost { 2 } else { 1 };
@@ -232,30 +228,30 @@ pub fn generate_pokemon(
             let psv = shiny_rand & 0xFFFF ^ shiny_rand >> 0x10;
             let tsv = pid >> 0x10 ^ pid & 0xFFFF;
             if (psv ^ tsv) < 0x10 {
-                shiny = enums::Shiny::Star;
+                shiny = Some(ShinyType::Star);
                 break;
             }
 
             if (psv ^ tsv) == 0 {
-                shiny = enums::Shiny::Square;
+                shiny = Some(ShinyType::Square);
                 break;
             }
         }
 
-        let mut ivs = vec![32, 32, 32, 32, 32, 32];
+        let mut ivs = [32, 32, 32, 32, 32, 32];
         for i in ivs.iter_mut() {
-            *i = rng.rand_max(32);
+            *i = rng.rand_max(32) as u8;
         }
 
         let ability_rand = rng.next();
         let ability = ability_rand - (ability_rand / 2) * 2;
 
-        let gender = match enums::get_set_gender_from_ratio(&gender_ratio) {
+        let gender = match gender_ratio.get_set_gender() {
             Some(set_gender) => set_gender,
             None => {
                 let gender_rand = rng.next();
                 let gender_num = (gender_rand - (gender_rand / 253) * 253) + 1;
-                enums::get_gender_from_ratio(&gender_ratio, gender_num)
+                gender_ratio.get_gender(gender_num as u8)
             }
         };
         let nature_rand = rng.next();
@@ -272,9 +268,9 @@ pub fn generate_pokemon(
             shiny_value: shiny,
             pid,
             ec,
-            nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
+            nature: (nature as u8).into(),
             ivs,
-            ability: enums::Ability::try_from(ability).unwrap_or(enums::Ability::Ability0),
+            ability: (ability as u8).into(),
             gender,
             encounter,
             advances,

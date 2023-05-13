@@ -1,28 +1,25 @@
-use super::settings::Settings;
-use crate::enums::HiddenPower;
+use super::form_settings::Settings;
+use crate::chatot_forms::HiddenPower;
 use crate::rng::MT;
-use serde::Deserialize;
-use serde::Serialize;
-use std::convert::TryFrom;
 
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     pub pid: u32,
-    pub ivs: Vec<u32>,
-    pub psv: u32,
+    pub ivs: IVs,
+    pub psv: u16,
     pub hidden_power: HiddenPower,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Result {
     pub advances: usize,
     pub pid: u32,
-    pub ivs: Vec<u32>,
-    pub psv: u32,
+    pub ivs: IVs,
+    pub psv: u16,
     pub hidden_power: HiddenPower,
 }
 
-type IVs = Vec<u32>;
+type IVs = [u8; 6];
 fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
     ivs.iter()
         .zip(min_ivs.iter())
@@ -33,22 +30,23 @@ fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
 pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
     let _ec = rng.next();
     let mut pid = rng.next();
-    let mut psv = ((pid >> 16) ^ (pid & 0xffff)) >> 4;
+    let mut psv = (((pid >> 16) ^ (pid & 0xffff)) >> 4) as u16;
     let tsv = settings.tid >> 4;
 
-    if settings.is_shiny {
+    if settings.shiny_pokemon {
         let pid_low = pid & 0xffff;
-        pid = ((settings.tid ^ pid_low) << 16) | pid_low;
-        psv = (pid >> 16 ^ pid_low) >> 4;
+        let tid = settings.tid as u32;
+        pid = ((tid ^ pid_low) << 16) | pid_low;
+        psv = ((pid >> 16 ^ pid_low) >> 4) as u16;
     } else {
         if psv == tsv {
             pid = pid ^ 0x10000000
         }
     }
 
-    let mut ivs = vec![32, 32, 32, 32, 32, 32];
+    let mut ivs: IVs = [32, 32, 32, 32, 32, 32];
 
-    let iv_rolls = if settings.iv_rolls { 5 } else { 3 };
+    let iv_rolls = if settings.mew_or_celebi { 5 } else { 3 };
 
     for _ in 0..iv_rolls {
         let mut index: usize;
@@ -63,11 +61,11 @@ pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
 
     for i in ivs.iter_mut() {
         if *i == 32 {
-            *i = rng.rand_max(32)
+            *i = rng.rand_max(32) as u8
         };
     }
 
-    if !check_ivs(&ivs, &settings.min_ivs, &settings.max_ivs) {
+    if !check_ivs(&ivs, &settings.min_ivs(), &settings.max_ivs()) {
         return None;
     }
 
@@ -86,12 +84,12 @@ pub fn generate_pokemon(rng: &mut MT, settings: &Settings) -> Option<Pokemon> {
         pid,
         ivs,
         psv,
-        hidden_power: HiddenPower::try_from(hidden_power as u8).unwrap_or(HiddenPower::Invalid),
+        hidden_power: (hidden_power as u8).into(),
     })
 }
 
 pub fn generate_transporter(settings: Settings) -> Vec<Result> {
-    let mut rng = MT::new(settings.rng_state);
+    let mut rng = MT::new(settings.seed);
     rng.advance(settings.min_advances);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
@@ -128,14 +126,24 @@ mod test {
         rng.advance(28);
 
         let settings = Settings {
-            rng_state: 0x9ae265ea,
+            seed: 0x9ae265ea,
             delay: 28,
             min_advances: 0,
             max_advances: 1000,
-            min_ivs: vec![0, 0, 0, 0, 0, 0],
-            max_ivs: vec![31, 31, 31, 31, 31, 31],
-            iv_rolls: false,
-            is_shiny: false,
+            min_hp_iv: 0,
+            min_atk_iv: 0,
+            min_def_iv: 0,
+            min_spa_iv: 0,
+            min_spd_iv: 0,
+            min_spe_iv: 0,
+            max_hp_iv: 31,
+            max_atk_iv: 31,
+            max_def_iv: 31,
+            max_spa_iv: 31,
+            max_spd_iv: 31,
+            max_spe_iv: 31,
+            mew_or_celebi: false,
+            shiny_pokemon: false,
             tid: 0,
         };
 
@@ -143,7 +151,7 @@ mod test {
 
         let expected_result = Pokemon {
             pid: 0x0250eff9,
-            ivs: vec![6, 31, 31, 6, 31, 31],
+            ivs: [6, 31, 31, 6, 31, 31],
             psv: 3802,
             hidden_power: HiddenPower::Psychic,
         };
@@ -158,14 +166,24 @@ mod test {
         rng.advance(28);
 
         let settings = Settings {
-            rng_state: 0xaea136ac,
+            seed: 0xaea136ac,
             delay: 28,
             min_advances: 0,
             max_advances: 1000,
-            min_ivs: vec![0, 0, 0, 0, 0, 0],
-            max_ivs: vec![31, 31, 31, 31, 31, 31],
-            iv_rolls: false,
-            is_shiny: true,
+            min_hp_iv: 0,
+            min_atk_iv: 0,
+            min_def_iv: 0,
+            min_spa_iv: 0,
+            min_spd_iv: 0,
+            min_spe_iv: 0,
+            max_hp_iv: 31,
+            max_atk_iv: 31,
+            max_def_iv: 31,
+            max_spa_iv: 31,
+            max_spd_iv: 31,
+            max_spe_iv: 31,
+            mew_or_celebi: false,
+            shiny_pokemon: true,
             tid: 14979,
         };
 
@@ -173,7 +191,7 @@ mod test {
 
         let expected_result = Pokemon {
             pid: 0xb1e08b63,
-            ivs: vec![31, 6, 31, 31, 7, 19],
+            ivs: [31, 6, 31, 31, 7, 19],
             psv: 0936,
             hidden_power: HiddenPower::Dragon,
         };

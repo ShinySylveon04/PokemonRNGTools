@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+num_enum = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_repr = "0.1"
 wasm-bindgen = {version = "=0.2.78", features = ["serde-serialize"]}

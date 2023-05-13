@@ -1,14 +1,7 @@
-use crate::{
-    _calculate_pokemon_bdsp_underground,
-    enums::{
-        AbilityFilter, DeprecatedEncounterSlotFilter, DeprecatedGenderFilter,
-        DeprecatedNatureFilter, ShinyFilter,
-    },
-    utils::format_ivs,
-};
+use crate::{_calculate_pokemon_bdsp_underground, utils::format_ivs};
 use chatot_forms::{
-    impl_display, EncounterSlotFilter, FieldGroup, Gen3AbilityFilter, GenderFilter, GenderRatio,
-    LargeComponent, NatureFilter, SelectOption, ShinyTypeFilter, SmallComponent,
+    impl_display, EncounterSlot, FieldGroup, Gen3Ability, Gender, GenderRatio, LargeComponent,
+    Nature, SelectOption, ShinyType, SmallComponent,
 };
 use serde::{Deserialize, Serialize};
 
@@ -81,93 +74,71 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    seed_0: u32,
-    seed_1: u32,
-    seed_2: u32,
-    seed_3: u32,
-    min_advances: u32,
-    max_advances: u32,
-    delay: u32,
-    statue_tiles: u32,
-    room_size: RoomSize,
-    diglett_boost: bool,
-    shiny_type: Option<ShinyTypeFilter>,
-    nature_multiselect: Vec<NatureFilter>,
-    gen3_ability: Option<Gen3AbilityFilter>,
-    encounter_slot: Option<EncounterSlotFilter>,
-    gender_ratio: GenderRatio,
-    gender: Option<GenderFilter>,
-    min_hp_iv: u32,
-    min_atk_iv: u32,
-    min_def_iv: u32,
-    min_spa_iv: u32,
-    min_spd_iv: u32,
-    min_spe_iv: u32,
-    max_hp_iv: u32,
-    max_atk_iv: u32,
-    max_def_iv: u32,
-    max_spa_iv: u32,
-    max_spd_iv: u32,
-    max_spe_iv: u32,
+    pub seed_0: u32,
+    pub seed_1: u32,
+    pub seed_2: u32,
+    pub seed_3: u32,
+    pub min_advances: usize,
+    pub max_advances: usize,
+    pub delay: usize,
+    pub statue_tiles: u8,
+    pub room_size: RoomSize,
+    pub diglett_boost: bool,
+    pub shiny_type: Vec<ShinyType>,
+    pub nature_multiselect: Vec<Nature>,
+    pub gen3_ability: Option<Gen3Ability>,
+    pub encounter_slot: Option<EncounterSlot>,
+    pub gender_ratio: GenderRatio,
+    pub gender: Option<Gender>,
+    pub min_hp_iv: u8,
+    pub min_atk_iv: u8,
+    pub min_def_iv: u8,
+    pub min_spa_iv: u8,
+    pub min_spd_iv: u8,
+    pub min_spe_iv: u8,
+    pub max_hp_iv: u8,
+    pub max_atk_iv: u8,
+    pub max_def_iv: u8,
+    pub max_spa_iv: u8,
+    pub max_spd_iv: u8,
+    pub max_spe_iv: u8,
+}
+
+impl Settings {
+    pub fn min_ivs(&self) -> [u8; 6] {
+        [
+            self.min_hp_iv,
+            self.min_atk_iv,
+            self.min_def_iv,
+            self.min_spa_iv,
+            self.min_spd_iv,
+            self.min_spe_iv,
+        ]
+    }
+
+    pub fn max_ivs(&self) -> [u8; 6] {
+        [
+            self.max_hp_iv,
+            self.max_atk_iv,
+            self.max_def_iv,
+            self.max_spa_iv,
+            self.max_spd_iv,
+            self.max_spe_iv,
+        ]
+    }
 }
 
 pub fn generate_underground(settings: Settings) -> Vec<Vec<String>> {
-    let results = _calculate_pokemon_bdsp_underground(
-        settings.seed_0,
-        settings.seed_1,
-        settings.seed_2,
-        settings.seed_3,
-        settings
-            .shiny_type
-            .map(|shiny_type| shiny_type.into())
-            .unwrap_or(ShinyFilter::Any),
-        settings.min_advances as usize,
-        settings.max_advances as usize,
-        settings.delay as usize,
-        settings
-            .nature_multiselect
-            .into_iter()
-            .map(|nature| u32::from(DeprecatedNatureFilter::from(nature) as u16))
-            .collect(),
-        settings
-            .gen3_ability
-            .map(|ability| ability.into())
-            .unwrap_or(AbilityFilter::Any),
-        settings
-            .encounter_slot
-            .map(|slot| slot.into())
-            .unwrap_or(DeprecatedEncounterSlotFilter::Any),
-        settings.gender_ratio.into(),
-        settings
-            .gender
-            .map(|gender| gender.into())
-            .unwrap_or(DeprecatedGenderFilter::Any),
-        settings.statue_tiles as usize,
-        settings.room_size == RoomSize::Large,
-        settings.diglett_boost,
-        vec![
-            settings.min_hp_iv,
-            settings.min_atk_iv,
-            settings.min_def_iv,
-            settings.min_spa_iv,
-            settings.min_spd_iv,
-            settings.min_spe_iv,
-        ],
-        vec![
-            settings.max_hp_iv,
-            settings.max_atk_iv,
-            settings.max_def_iv,
-            settings.max_spa_iv,
-            settings.max_spd_iv,
-            settings.max_spe_iv,
-        ],
-    );
+    let results = _calculate_pokemon_bdsp_underground(&settings);
     results
         .into_iter()
         .map(|result| {
             vec![
                 result.advances.to_string(),
-                result.shiny_value.to_string(),
+                result
+                    .shiny_value
+                    .map(|shiny_type| shiny_type.to_string())
+                    .unwrap_or("None".to_string()),
                 if result.encounter == 0 {
                     "Rare".to_string()
                 } else {
@@ -176,7 +147,7 @@ pub fn generate_underground(settings: Settings) -> Vec<Vec<String>> {
                 result.nature.to_string(),
                 result.ability.to_string(),
                 result.gender.to_string(),
-                format_ivs(result.ivs),
+                format_ivs(&result.ivs),
                 format!("{:x}", result.pid),
                 format!("{:x}", result.ec),
             ]
