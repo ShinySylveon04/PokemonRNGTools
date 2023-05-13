@@ -10,7 +10,12 @@ import { Link, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
-const NavItems = ({ handleDrawerClose, location }) => (
+type NavItemsProps = {
+  location: string;
+  handleDrawerClose: () => void;
+};
+
+const NavItems = ({ handleDrawerClose, location }: NavItemsProps) => (
   <Box sx={{ overflow: 'auto' }}>
     <List>
       <ListItem>
@@ -92,7 +97,17 @@ const NavItems = ({ handleDrawerClose, location }) => (
   </Box>
 );
 
-export const NavDrawer = ({ isopen, isLargerScreen, handleDrawerClose }) => {
+type Props = {
+  isopen: boolean;
+  isLargerScreen: boolean;
+  handleDrawerClose: () => void;
+};
+
+export const NavDrawer = ({
+  isopen,
+  isLargerScreen,
+  handleDrawerClose,
+}: Props) => {
   const location = useLocation().pathname;
   return (
     <Box

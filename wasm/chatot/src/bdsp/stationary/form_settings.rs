@@ -1,6 +1,9 @@
 use super::{generator, settings};
 use crate::{
-    enums::{AbilityFilter, DeprecatedGenderRatio, DeprecatedNatureFilter},
+    enums::{
+        AbilityFilter, DeprecatedGenderFilter, DeprecatedGenderRatio, DeprecatedNatureFilter,
+        LeadFilter, ShinyFilter,
+    },
     utils::format_ivs,
 };
 use chatot_forms::{
@@ -211,7 +214,6 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
     let filer_components = vec![
         LargeComponent::shiny_type(),
         LargeComponent::nature_multiselect(),
-        LargeComponent::gen3_ability(),
         LargeComponent::gender(),
         LargeComponent::min_ivs_label(),
         SmallComponent::min_hp_iv(),
@@ -253,11 +255,11 @@ pub struct Settings {
     min_advances: u32,
     max_advances: u32,
     delay: u32,
-    gen3_lead: Gen3Lead,
+    gen3_lead: Option<Gen3Lead>,
     pokemon: StaticPokemon,
-    shiny_type: ShinyTypeFilter,
+    shiny_type: Option<ShinyTypeFilter>,
     nature_multiselect: Vec<NatureFilter>,
-    gender: GenderFilter,
+    gender: Option<GenderFilter>,
     min_hp_iv: u32,
     min_atk_iv: u32,
     min_def_iv: u32,
@@ -276,9 +278,15 @@ impl From<Settings> for settings::Settings {
     fn from(value: Settings) -> Self {
         Self {
             rng_state: vec![value.seed_0, value.seed_1, value.seed_2, value.seed_3],
-            lead_filter: value.gen3_lead.into(),
+            lead_filter: value
+                .gen3_lead
+                .map(|lead| lead.into())
+                .unwrap_or(LeadFilter::None),
             is_roamer: value.pokemon.is_roamer(),
-            shiny_filter: value.shiny_type.into(),
+            shiny_filter: value
+                .shiny_type
+                .map(|shiny_type| shiny_type.into())
+                .unwrap_or(ShinyFilter::Any),
             min_advances: value.min_advances as usize,
             max_advances: value.max_advances as usize,
             delay: value.delay as usize,
@@ -289,7 +297,10 @@ impl From<Settings> for settings::Settings {
                 .collect::<Vec<u32>>(),
             ability_filter: value.pokemon.ability(),
             gender_ratio: value.pokemon.gender_ratio(),
-            gender_filter: value.gender.into(),
+            gender_filter: value
+                .gender
+                .map(|gender| gender.into())
+                .unwrap_or(DeprecatedGenderFilter::Any),
             set_ivs: value.pokemon.set_ivs(),
             min_ivs: vec![
                 value.min_hp_iv,

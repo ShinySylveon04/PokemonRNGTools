@@ -28,7 +28,7 @@ impl SelectOption {
 pub struct FieldComponent {
     id: String,
     label: String,
-    default_value: String,
+    default_value: Option<String>,
     required: bool,
     r#type: String,
     size: String,
@@ -42,7 +42,7 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: "".to_string(),
+            default_value: None,
             required: true,
             r#type: "label".to_string(),
             options: None,
@@ -58,14 +58,10 @@ impl FieldComponent {
         default_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|value| value.to_string()),
             required: true,
             r#type: "number".to_string(),
             options: None,
@@ -83,14 +79,10 @@ impl FieldComponent {
         max_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|num| num.to_string()),
             required: true,
             r#type: "number".to_string(),
             options: None,
@@ -106,14 +98,10 @@ impl FieldComponent {
         default_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|num| num.to_string()),
             required: true,
             r#type: "hex_number".to_string(),
             options: None,
@@ -129,14 +117,10 @@ impl FieldComponent {
         default_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|num| num.to_string()),
             required: true,
             r#type: "hex_u64".to_string(),
             options: None,
@@ -155,7 +139,7 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value.to_string(),
+            default_value: Some(default_value.to_string()),
             required: true,
             r#type: "text".to_string(),
             options: None,
@@ -169,7 +153,7 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: "false".to_string(),
+            default_value: Some("false".to_string()),
             required: true,
             r#type: "checkbox".to_string(),
             options: None,
@@ -192,9 +176,28 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: Some(default_value),
             required: true,
             r#type: "select".to_string(),
+            options: Some(options),
+            size: size.to_string(),
+            min_value: None,
+            max_value: None,
+        }
+    }
+
+    pub fn optional_select(
+        id: impl ToString,
+        label: impl ToString,
+        options: Vec<SelectOption>,
+        size: FieldSize,
+    ) -> Self {
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: None,
+            required: true,
+            r#type: "optional_select".to_string(),
             options: Some(options),
             size: size.to_string(),
             min_value: None,
@@ -215,7 +218,7 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: Some(default_value),
             required: true,
             r#type: "multiselect".to_string(),
             options: Some(options),
@@ -292,6 +295,14 @@ macro_rules! impl_sized_component {
                 options: Vec<SelectOption>,
             ) -> FieldComponent {
                 FieldComponent::select(id, label, options, FieldSize::$field_size)
+            }
+
+            pub fn optional_select(
+                id: impl ToString,
+                label: impl ToString,
+                options: Vec<SelectOption>,
+            ) -> FieldComponent {
+                FieldComponent::optional_select(id, label, options, FieldSize::$field_size)
             }
 
             pub fn multiselect(
@@ -405,18 +416,14 @@ macro_rules! impl_sized_component {
                 $component::select(
                     "gen3_lead",
                     "Lead",
-                    vec![
-                        SelectOption::new(Gen3Lead::None),
-                        SelectOption::new(Gen3Lead::Synchronize),
-                    ],
+                    vec![SelectOption::new(Gen3Lead::Synchronize)],
                 )
             }
             pub fn gen8_id_type() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gen8_id_type",
                     "ID Filter",
                     vec![
-                        SelectOption::new_with_label("None", IDFilter::None),
                         SelectOption::new_with_label("TID", IDFilter::TID),
                         SelectOption::new_with_label("SID", IDFilter::SID),
                         SelectOption::new_with_label("TSV", IDFilter::TSV),
@@ -425,11 +432,10 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn shiny_type() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "shiny_type",
                     "Shiny",
                     vec![
-                        SelectOption::new(ShinyTypeFilter::Any),
                         SelectOption::new(ShinyTypeFilter::Star),
                         SelectOption::new(ShinyTypeFilter::Square),
                         SelectOption::new_with_label("Star/Square", ShinyTypeFilter::Both),
@@ -437,11 +443,10 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn nature() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "nature",
                     "Nature",
                     vec![
-                        SelectOption::new(NatureFilter::Any),
                         SelectOption::new(NatureFilter::Hardy),
                         SelectOption::new(NatureFilter::Lonely),
                         SelectOption::new(NatureFilter::Brave),
@@ -475,7 +480,6 @@ macro_rules! impl_sized_component {
                     "nature_multiselect",
                     "Nature",
                     vec![
-                        SelectOption::new(NatureFilter::Any),
                         SelectOption::new(NatureFilter::Hardy),
                         SelectOption::new(NatureFilter::Lonely),
                         SelectOption::new(NatureFilter::Brave),
@@ -505,22 +509,20 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn gen3_ability() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gen3_ability",
                     "Ability",
                     vec![
-                        SelectOption::new_with_label("Any", Gen3AbilityFilter::Any),
                         SelectOption::new_with_label("0", Gen3AbilityFilter::Ability0),
                         SelectOption::new_with_label("1", Gen3AbilityFilter::Ability1),
                     ],
                 )
             }
             pub fn encounter_slot() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "encounter_slot",
                     "Encounter Slot",
                     vec![
-                        SelectOption::new_with_label("Any", EncounterSlotFilter::Any),
                         SelectOption::new_with_label("0", EncounterSlotFilter::Slot0),
                         SelectOption::new_with_label("1", EncounterSlotFilter::Slot1),
                         SelectOption::new_with_label("2", EncounterSlotFilter::Slot2),
@@ -556,11 +558,10 @@ macro_rules! impl_sized_component {
                 )
             }
             pub fn gender() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gender",
                     "Gender",
                     vec![
-                        SelectOption::new_with_label("Any", GenderFilter::Any),
                         SelectOption::new_with_label("♂", GenderFilter::Male),
                         SelectOption::new_with_label("♀", GenderFilter::Female),
                     ],

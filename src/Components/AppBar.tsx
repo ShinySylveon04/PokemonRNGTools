@@ -13,7 +13,12 @@ import { ColorModeContext } from './ColorMode';
 
 import { Translate } from './Translate';
 
-export const AppBar = ({ handleDrawerToggle, isLargerScreen }) => {
+type Props = {
+  isLargerScreen: boolean;
+  handleDrawerToggle: () => void;
+};
+
+export const AppBar = ({ handleDrawerToggle, isLargerScreen }: Props) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   return (

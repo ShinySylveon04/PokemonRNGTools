@@ -1,5 +1,10 @@
 use crate::{
-    _calculate_pokemon_bdsp_underground, enums::DeprecatedNatureFilter, utils::format_ivs,
+    _calculate_pokemon_bdsp_underground,
+    enums::{
+        AbilityFilter, DeprecatedEncounterSlotFilter, DeprecatedGenderFilter,
+        DeprecatedNatureFilter, ShinyFilter,
+    },
+    utils::format_ivs,
 };
 use chatot_forms::{
     impl_display, EncounterSlotFilter, FieldGroup, Gen3AbilityFilter, GenderFilter, GenderRatio,
@@ -86,12 +91,12 @@ pub struct Settings {
     statue_tiles: u32,
     room_size: RoomSize,
     diglett_boost: bool,
-    shiny_type: ShinyTypeFilter,
+    shiny_type: Option<ShinyTypeFilter>,
     nature_multiselect: Vec<NatureFilter>,
-    gen3_ability: Gen3AbilityFilter,
-    encounter_slot: EncounterSlotFilter,
+    gen3_ability: Option<Gen3AbilityFilter>,
+    encounter_slot: Option<EncounterSlotFilter>,
     gender_ratio: GenderRatio,
-    gender: GenderFilter,
+    gender: Option<GenderFilter>,
     min_hp_iv: u32,
     min_atk_iv: u32,
     min_def_iv: u32,
@@ -112,7 +117,10 @@ pub fn generate_underground(settings: Settings) -> Vec<Vec<String>> {
         settings.seed_1,
         settings.seed_2,
         settings.seed_3,
-        settings.shiny_type.into(),
+        settings
+            .shiny_type
+            .map(|shiny_type| shiny_type.into())
+            .unwrap_or(ShinyFilter::Any),
         settings.min_advances as usize,
         settings.max_advances as usize,
         settings.delay as usize,
@@ -121,10 +129,19 @@ pub fn generate_underground(settings: Settings) -> Vec<Vec<String>> {
             .into_iter()
             .map(|nature| u32::from(DeprecatedNatureFilter::from(nature) as u16))
             .collect(),
-        settings.gen3_ability.into(),
-        settings.encounter_slot.into(),
+        settings
+            .gen3_ability
+            .map(|ability| ability.into())
+            .unwrap_or(AbilityFilter::Any),
+        settings
+            .encounter_slot
+            .map(|slot| slot.into())
+            .unwrap_or(DeprecatedEncounterSlotFilter::Any),
         settings.gender_ratio.into(),
-        settings.gender.into(),
+        settings
+            .gender
+            .map(|gender| gender.into())
+            .unwrap_or(DeprecatedGenderFilter::Any),
         settings.statue_tiles as usize,
         settings.room_size == RoomSize::Large,
         settings.diglett_boost,

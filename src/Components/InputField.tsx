@@ -15,13 +15,15 @@ import ListItemText from '@mui/material/ListItemText';
 import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
 
+const ANY = 'Any';
+
 type SharedConfig = {
   id: string;
   label: string;
   // Normally each field would have a specific type,
   // but we should be defensive against bad external configs.
   // This will also make types easier on the wasm side.
-  defaultValue: string;
+  defaultValue?: string;
   required?: boolean;
 };
 
@@ -33,7 +35,7 @@ type SelectOption = {
 export type FieldConfig = SharedConfig &
   (
     | {
-        type: 'select' | 'multiselect';
+        type: 'select' | 'optional_select' | 'multiselect';
         options: SelectOption[];
         minValue?: never;
         maxValue?: never;
@@ -158,7 +160,7 @@ export const InputField = ({
     );
   }
 
-  if (type === 'select') {
+  if (type === 'select' || type === 'optional_select') {
     return (
       <TextField
         select
@@ -172,6 +174,11 @@ export const InputField = ({
         value={value}
         error={error}
       >
+        {type === 'optional_select' && (
+          <MenuItem key={t(ANY)} value={ANY}>
+            {t(ANY)}
+          </MenuItem>
+        )}
         {options.map(option => (
           <MenuItem key={option.label} value={option.value}>
             {t(option.label)}
@@ -219,12 +226,20 @@ export const InputField = ({
       </FormControl>
     );
   }
+
+  return null;
 };
 
-export type ParsedValue = string | boolean | number | string[];
-type ValueParser = (value: string) => ParsedValue;
+export type SerializedValue = string | boolean | number | string[] | null;
+export type DeserializedValue =
+  | string
+  | boolean
+  | number
+  | string[]
+  | typeof ANY;
+type Deserializer = (value: string) => DeserializedValue;
 
-const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
+const DESERIALIZERS: Record<FieldConfig['type'], Deserializer> = {
   checkbox: value => value === 'true',
   // JS can only handle up to 0x1fffffffffffff
   // and wasm can't natively handle bigint.
@@ -238,14 +253,49 @@ const VALUE_PARSERS: Record<FieldConfig['type'], ValueParser> = {
     const num = parseInt(value, 10);
     return isNaN(num) ? 0 : num;
   },
-  select: value => value,
   text: value => value,
-  multiselect: value => value.split(','),
+  select: value => value,
+  optional_select: value => value,
+  multiselect: value => value,
 };
 
-export const getValueParser = (type: FieldConfig['type']): ValueParser => {
-  const parser = VALUE_PARSERS[type];
-  return parser == null ? VALUE_PARSERS.text : parser;
+const getDeserializer = (type: FieldConfig['type']): Deserializer => {
+  const deserializer = DESERIALIZERS[type];
+  return deserializer == null ? DESERIALIZERS.text : deserializer;
+};
+
+export const deserialize = ({
+  type,
+  value,
+}: {
+  type: FieldConfig['type'];
+  value: SerializedValue;
+}): DeserializedValue => {
+  if (type === 'optional_select' && value == null) {
+    return ANY;
+  }
+
+  if (value == null) {
+    return '';
+  }
+
+  const deserializer = getDeserializer(type);
+  return deserializer(String(value));
+};
+
+export const serialize = ({
+  type,
+  value,
+}: {
+  type: FieldConfig['type'];
+  value: DeserializedValue;
+}): SerializedValue => {
+  if (type === 'optional_select' && value == ANY) {
+    return null;
+  }
+
+  const deserializer = getDeserializer(type);
+  return deserializer(String(value));
 };
 
 export const isArray = (value: unknown): value is string[] => {

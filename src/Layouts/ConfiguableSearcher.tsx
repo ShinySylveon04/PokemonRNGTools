@@ -13,7 +13,12 @@ import {
   FieldGroupComponent,
   InputFieldGroup,
 } from '../Components/FieldGroup';
-import { ParsedValue, getValueParser } from '../Components/InputField';
+import {
+  DeserializedValue,
+  SerializedValue,
+  deserialize,
+  serialize,
+} from '../Components/InputField';
 
 function mapFieldComponents<Result>(
   fieldGroups: FieldGroup[],
@@ -22,7 +27,7 @@ function mapFieldComponents<Result>(
   const fields: FieldGroupComponent[] = fieldGroups.flatMap(
     fieldGroup => fieldGroup.components,
   );
-  return fields.reduce((acc, component) => {
+  return fields.reduce((acc: Record<string, Result>, component) => {
     if (component.type !== 'label') {
       acc[component.id] = mapper(component);
     }
@@ -34,7 +39,7 @@ export type SearcherConfig = {
   getFieldGroups: () => FieldGroup[];
   getResultColumns: () => string[];
   generateResults: (
-    formValues: Record<string, ParsedValue>,
+    formValues: Record<string, SerializedValue>,
   ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
@@ -47,33 +52,36 @@ export function ConfiguableSearcher({
 }: Props) {
   const { t } = useTranslation();
   const [isSearching, setIsSearching] = React.useState(false);
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState<ResultRow[]>([]);
 
   const fieldGroups = React.useMemo(getFieldGroups, [getFieldGroups]);
   const resultColumns = React.useMemo(getResultColumns, [getResultColumns]);
 
-  const valueParsers = React.useMemo(() => {
-    return mapFieldComponents(fieldGroups, component =>
-      getValueParser(component.type),
+  const serializers = React.useMemo(() => {
+    return mapFieldComponents(
+      fieldGroups,
+      component => (value: DeserializedValue) =>
+        serialize({ type: component.type, value }),
     );
   }, [fieldGroups]);
 
   const initialValues = React.useMemo(() => {
     return mapFieldComponents(fieldGroups, component => {
-      return component.defaultValue.length === 0
-        ? component.defaultValue
-        : valueParsers[component.id](component.defaultValue);
+      return deserialize({
+        type: component.type,
+        value: component.defaultValue || null,
+      });
     });
   }, [fieldGroups]);
 
   const handleSubmit = React.useCallback(
     async values => {
       setIsSearching(true);
-      const stringifiedValues = mapValues(values, (value, key) => {
-        return valueParsers[key](String(value));
+      const serialized = mapValues(values, (value, key) => {
+        return serializers[key](value);
       });
       try {
-        const newResults = await generateResults(stringifiedValues);
+        const newResults = await generateResults(serialized);
         setResults(newResults);
       } catch {
         setResults([]);

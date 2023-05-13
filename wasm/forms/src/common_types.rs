@@ -15,7 +15,6 @@ macro_rules! impl_display {
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum Gen3AbilityFilter {
-    Any,
     Ability0,
     Ability1,
 }
@@ -35,7 +34,6 @@ impl_display!(Gen3Method);
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum Gen3Lead {
-    None,
     Synchronize,
 }
 
@@ -44,11 +42,9 @@ impl_display!(Gen3Lead);
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum ShinyTypeFilter {
-    None,
     Star,
     Square,
     Both,
-    Any,
 }
 
 impl_display!(ShinyTypeFilter);
@@ -81,7 +77,6 @@ pub enum NatureFilter {
     Sassy,
     Careful,
     Quirky,
-    Any,
 }
 
 impl_display!(NatureFilter);
@@ -89,7 +84,6 @@ impl_display!(NatureFilter);
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum AbilityNumberFilter {
-    Any,
     Ability0,
     Ability1,
 }
@@ -99,7 +93,6 @@ impl_display!(AbilityNumberFilter);
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum EncounterSlotFilter {
-    Any,
     Slot0,
     Slot1,
     Slot2,
@@ -134,7 +127,6 @@ impl_display!(GenderRatio);
 #[wasm_bindgen]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum GenderFilter {
-    Any,
     Male,
     Female,
 }
@@ -148,7 +140,6 @@ pub enum IDFilter {
     SID,
     TSV,
     G8TID,
-    None,
 }
 
 impl_display!(IDFilter);

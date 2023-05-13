@@ -1,4 +1,7 @@
-use crate::{_calculate_pokemon as calculate_swsh_pokemon, enums::DeprecatedEncounterFilter};
+use crate::{
+    _calculate_pokemon as calculate_swsh_pokemon,
+    enums::{AbilityFilter, DeprecatedEncounterFilter, DeprecatedNatureFilter, ShinyFilter},
+};
 use chatot_forms::{
     FieldGroup, Gen3AbilityFilter, LargeComponent, NatureFilter, SelectOption, ShinyTypeFilter,
 };
@@ -54,9 +57,9 @@ pub struct Settings {
     encounter_type: DeprecatedEncounterFilter,
     min_advances: u32,
     max_advances: u32,
-    shiny_type: ShinyTypeFilter,
-    nature: NatureFilter,
-    gen3_ability: Gen3AbilityFilter,
+    shiny_type: Option<ShinyTypeFilter>,
+    nature: Option<NatureFilter>,
+    gen3_ability: Option<Gen3AbilityFilter>,
 }
 
 pub fn generate_overworld(settings: Settings) -> Vec<Vec<String>> {
@@ -65,11 +68,20 @@ pub fn generate_overworld(settings: Settings) -> Vec<Vec<String>> {
         u64::from_str_radix(&settings.seed_u64_1, 16).unwrap_or_default(),
         settings.tid as u16,
         settings.sid as u16,
-        settings.shiny_type.into(),
+        settings
+            .shiny_type
+            .map(|shiny_type| shiny_type.into())
+            .unwrap_or(ShinyFilter::Any),
         settings.encounter_type,
         settings.shiny_charm,
-        settings.nature.into(),
-        settings.gen3_ability.into(),
+        settings
+            .nature
+            .map(|nature| DeprecatedNatureFilter::from(nature))
+            .unwrap_or(DeprecatedNatureFilter::Any),
+        settings
+            .gen3_ability
+            .map(|ability| ability.into())
+            .unwrap_or(AbilityFilter::Any),
         settings.min_advances,
         settings.max_advances,
     );

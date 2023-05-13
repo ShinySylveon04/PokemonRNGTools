@@ -53,7 +53,6 @@ impl_display!(LeadFilter);
 impl From<chatot_forms::Gen3Lead> for LeadFilter {
     fn from(value: chatot_forms::Gen3Lead) -> Self {
         match value {
-            chatot_forms::Gen3Lead::None => Self::None,
             chatot_forms::Gen3Lead::Synchronize => Self::Synchronize,
         }
     }
@@ -103,7 +102,6 @@ impl PartialEq<Ability> for AbilityFilter {
 impl From<chatot_forms::Gen3AbilityFilter> for AbilityFilter {
     fn from(value: chatot_forms::Gen3AbilityFilter) -> Self {
         match value {
-            chatot_forms::Gen3AbilityFilter::Any => Self::Any,
             chatot_forms::Gen3AbilityFilter::Ability0 => Self::Ability0,
             chatot_forms::Gen3AbilityFilter::Ability1 => Self::Ability1,
         }
@@ -193,7 +191,6 @@ impl From<chatot_forms::NatureFilter> for DeprecatedNatureFilter {
             chatot_forms::NatureFilter::Sassy => Self::Sassy,
             chatot_forms::NatureFilter::Careful => Self::Careful,
             chatot_forms::NatureFilter::Quirky => Self::Quirky,
-            chatot_forms::NatureFilter::Any => Self::Any,
         }
     }
 }
@@ -272,11 +269,9 @@ impl PartialEq<Shiny> for ShinyFilter {
 impl From<chatot_forms::ShinyTypeFilter> for ShinyFilter {
     fn from(value: chatot_forms::ShinyTypeFilter) -> Self {
         match value {
-            chatot_forms::ShinyTypeFilter::None => Self::None,
             chatot_forms::ShinyTypeFilter::Star => Self::Star,
             chatot_forms::ShinyTypeFilter::Square => Self::Square,
             chatot_forms::ShinyTypeFilter::Both => Self::Both,
-            chatot_forms::ShinyTypeFilter::Any => Self::Any,
         }
     }
 }
@@ -355,7 +350,6 @@ impl_display!(DeprecatedEncounterSlotFilter);
 impl From<chatot_forms::EncounterSlotFilter> for DeprecatedEncounterSlotFilter {
     fn from(value: chatot_forms::EncounterSlotFilter) -> Self {
         match value {
-            chatot_forms::EncounterSlotFilter::Any => Self::Any,
             chatot_forms::EncounterSlotFilter::Slot0 => Self::Slot0,
             chatot_forms::EncounterSlotFilter::Slot1 => Self::Slot1,
             chatot_forms::EncounterSlotFilter::Slot2 => Self::Slot2,
@@ -478,7 +472,6 @@ impl PartialEq<Gender> for DeprecatedGenderFilter {
 impl From<chatot_forms::GenderFilter> for DeprecatedGenderFilter {
     fn from(value: chatot_forms::GenderFilter) -> Self {
         match value {
-            chatot_forms::GenderFilter::Any => Self::Any,
             chatot_forms::GenderFilter::Male => Self::Male,
             chatot_forms::GenderFilter::Female => Self::Female,
         }
@@ -498,7 +491,6 @@ pub enum IDFilter {
 impl From<chatot_forms::IDFilter> for IDFilter {
     fn from(value: chatot_forms::IDFilter) -> Self {
         match value {
-            chatot_forms::IDFilter::None => Self::None,
             chatot_forms::IDFilter::TID => Self::TID,
             chatot_forms::IDFilter::SID => Self::SID,
             chatot_forms::IDFilter::TSV => Self::TSV,

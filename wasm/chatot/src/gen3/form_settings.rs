@@ -2,10 +2,16 @@ use std::convert::TryInto;
 
 use super::{generator, settings};
 use crate::{
-    enums::{DeprecatedEncounterSlotFilter, DeprecatedNatureFilter},
+    enums::{
+        AbilityFilter, DeprecatedEncounterSlotFilter, DeprecatedNatureFilter, LeadFilter,
+        ShinyFilter,
+    },
     utils::format_ivs,
 };
-use chatot_forms::{FieldGroup, LargeComponent, SmallComponent};
+use chatot_forms::{
+    EncounterSlotFilter, FieldGroup, Gen3AbilityFilter, Gen3Lead, Gen3Method, GenderFilter,
+    GenderRatio, LargeComponent, NatureFilter, ShinyTypeFilter, SmallComponent,
+};
 use serde::{Deserialize, Serialize};
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
@@ -78,14 +84,14 @@ pub struct Settings {
     max_spa_iv: u32,
     max_spd_iv: u32,
     max_spe_iv: u32,
-    gen3_method: chatot_forms::Gen3Method,
-    gen3_lead: chatot_forms::Gen3Lead,
-    shiny_type: chatot_forms::ShinyTypeFilter,
-    nature_multiselect: Vec<chatot_forms::NatureFilter>,
-    gen3_ability: chatot_forms::Gen3AbilityFilter,
-    encounter_slot: chatot_forms::EncounterSlotFilter,
-    gender_ratio: chatot_forms::GenderRatio,
-    gender: chatot_forms::GenderFilter,
+    gen3_method: Gen3Method,
+    gen3_lead: Option<Gen3Lead>,
+    shiny_type: Option<ShinyTypeFilter>,
+    nature_multiselect: Vec<NatureFilter>,
+    gen3_ability: Option<Gen3AbilityFilter>,
+    encounter_slot: Option<EncounterSlotFilter>,
+    gender_ratio: GenderRatio,
+    gender: GenderFilter,
 }
 
 impl From<Settings> for settings::Settings {
@@ -96,11 +102,24 @@ impl From<Settings> for settings::Settings {
                 .into_iter()
                 .map(|nature| (DeprecatedNatureFilter::from(nature) as u16).into())
                 .collect::<Vec<u32>>(),
-            encounter_filter: vec![DeprecatedEncounterSlotFilter::from(value.encounter_slot).into()],
+            encounter_filter: vec![value
+                .encounter_slot
+                .map(|slot| slot.into())
+                .unwrap_or(DeprecatedEncounterSlotFilter::Any)
+                .into()],
             gender_ratio: value.gender_ratio.into(),
-            lead_filter: value.gen3_lead.into(),
-            shiny_filter: value.shiny_type.into(),
-            ability_filter: value.gen3_ability.into(),
+            lead_filter: value
+                .gen3_lead
+                .map(|lead| lead.into())
+                .unwrap_or(LeadFilter::None),
+            shiny_filter: value
+                .shiny_type
+                .map(|shiny_type| shiny_type.into())
+                .unwrap_or(ShinyFilter::Any),
+            ability_filter: value
+                .gen3_ability
+                .map(|ability| ability.into())
+                .unwrap_or(AbilityFilter::Any),
             gender_filter: value.gender.into(),
             method_filter: value.gen3_method.into(),
             rng_state: value.seed,
