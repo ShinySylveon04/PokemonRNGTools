@@ -35,6 +35,18 @@ function mapFieldComponents<Result>(
   }, {});
 }
 
+// This catches a failed wasm init when parcel reloads,
+// but isn't needed outside of development.
+function useCatchMemo<Return>(factory: () => Return) {
+  return React.useMemo(() => {
+    try {
+      return factory();
+    } catch {
+      return [];
+    }
+  }, [factory]);
+}
+
 export type SearcherConfig = {
   getFieldGroups: () => FieldGroup[];
   getResultColumns: () => string[];
@@ -54,8 +66,8 @@ export function ConfiguableSearcher({
   const [isSearching, setIsSearching] = React.useState(false);
   const [results, setResults] = React.useState<ResultRow[]>([]);
 
-  const fieldGroups = React.useMemo(getFieldGroups, [getFieldGroups]);
-  const resultColumns = React.useMemo(getResultColumns, [getResultColumns]);
+  const fieldGroups = useCatchMemo(getFieldGroups);
+  const resultColumns = useCatchMemo(getResultColumns);
 
   const serializers = React.useMemo(() => {
     return mapFieldComponents(

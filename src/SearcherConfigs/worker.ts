@@ -1,5 +1,5 @@
 import { expose } from 'comlink';
-import {
+import init, {
   generate_bdsp_static,
   generate_tid,
   generate_bdsp_underground,
@@ -7,7 +7,7 @@ import {
   generate_gen3_wild,
   generate_swsh_overworld,
   generate_transporter,
-} from '~/../wasm/chatot/Cargo.toml';
+} from '../../wasm/chatot/pkg/chatot';
 
 export type ResultGenerator =
   | 'BdSpStatic'
@@ -23,7 +23,12 @@ function exhaustive(generator: never) {
   throw new Error(`Got bad generator ${generator}`);
 }
 
-function generateResults(generator: ResultGenerator, settings: unknown) {
+// Initialize a single wasm instance
+const wasmInstance = init();
+
+async function generateResults(generator: ResultGenerator, settings: unknown) {
+  // Ensure the single instance has finished initializing
+  await wasmInstance;
   switch (generator) {
     case 'BdSpStatic':
       return generate_bdsp_static(settings);

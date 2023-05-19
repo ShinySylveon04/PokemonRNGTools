@@ -16,10 +16,10 @@ import {
   get_swsh_overworld_result_columns,
   get_transporter_field_groups,
   get_transporter_result_columns,
-} from '~/../wasm/chatot/Cargo.toml';
+} from '../../wasm/chatot/pkg/chatot';
 
 const generateResults = wrap<(name: ResultGenerator, settings: unknown) => any>(
-  new Worker('./worker.ts'),
+  new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' }),
 );
 
 export const BDSP_STATIC_CONFIG: SearcherConfig = {
