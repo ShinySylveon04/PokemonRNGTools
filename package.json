@@ -4,11 +4,14 @@
   "source": "public/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "start": "parcel public/index.html",
-    "start:wasm": "nodemon --exec \"sh -c 'wasm-pack build ./wasm/chatot --target web'\" --watch wasm --ext rs",
-    "build": "parcel build public/index.html",
-    "build:wasm": "wasm-pack build ./wasm/chatot --target web --release",
-    "check:types": "tsc --noEmit --project ./tsconfig.json"
+    "build": "yarn build:wasm && yarn build:js",
+    "build:core_lib": "wasm-pack build ./wasm/chatot --target web --release",
+    "build:plugin_template": "wasm-pack build ./wasm/plugin_template --target web --release",
+    "build:wasm": "yarn build:core_lib && yarn build:plugin_template",
+    "build:js": "parcel build public/index.html",
+    "check:types": "tsc --noEmit --project ./tsconfig.json",
+    "start": "yarn build:wasm && parcel public/index.html",
+    "start:wasm": "nodemon --exec \"sh -c 'wasm-pack build ./wasm/chatot --target web'\" --watch wasm --ext rs"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",

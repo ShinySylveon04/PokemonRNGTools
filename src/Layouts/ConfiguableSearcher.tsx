@@ -20,11 +20,6 @@ import {
   deserialize,
   serialize,
 } from '../Components/InputField';
-import { useWasm } from '../wasm/context';
-import type {
-  GetResultColumnFunctionName,
-  GetFieldGroupFunctionName,
-} from '../wasm/types';
 
 function mapFieldComponents<Result>(
   fieldGroups: FieldGroup[],
@@ -41,32 +36,24 @@ function mapFieldComponents<Result>(
   }, {});
 }
 
-export type SearcherConfig = {
-  getFieldGroups: GetFieldGroupFunctionName;
-  getResultColumns: GetResultColumnFunctionName;
+type Props = {
+  loading?: boolean;
+  fieldGroups: FieldGroup[];
+  resultColumns: string[];
   generateResults: (
     formValues: Record<string, SerializedValue>,
   ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
-type Props = {
-  config: SearcherConfig;
-};
-
 export function ConfiguableSearcher({
-  config: { getFieldGroups, getResultColumns, generateResults },
+  loading,
+  fieldGroups,
+  resultColumns,
+  generateResults,
 }: Props) {
   const { t } = useTranslation();
-  const { initializedWasm } = useWasm();
   const [isSearching, setIsSearching] = React.useState(false);
   const [results, setResults] = React.useState<ResultRow[]>([]);
-
-  const fieldGroups: FieldGroup[] | null = React.useMemo(() => {
-    return initializedWasm?.[getFieldGroups]?.();
-  }, [initializedWasm]);
-  const resultColumns: string[] | null = React.useMemo(() => {
-    return initializedWasm?.[getResultColumns]?.();
-  }, [initializedWasm]);
 
   const serializers = React.useMemo(() => {
     return mapFieldComponents(
@@ -126,7 +113,7 @@ export function ConfiguableSearcher({
                 flexDirection: 'column',
               }}
             >
-              {fieldGroups == null ? (
+              {loading ? (
                 <>
                   <InputFieldGroup loading />
                   <InputFieldGroup loading />
@@ -155,7 +142,7 @@ export function ConfiguableSearcher({
                 {isSearching ? <CircularProgress size={24} /> : t('Search')}
               </Button>
 
-              {resultColumns == null ? (
+              {loading ? (
                 <Skeleton variant="rectangular" height={200} />
               ) : (
                 <ResultTable columns={resultColumns} results={results} />

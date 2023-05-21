@@ -3,7 +3,8 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './Layouts/Main';
 import { Home } from './Pages/Home';
 import { Translate } from './Pages/Translate';
-import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
+import { PluginLoader } from './Pages/PluginLoader';
+import { ChatotSearcher } from './Layouts/ChatotSearcher';
 import {
   TRANSPORTER_CONFIG,
   BDSP_TID_CONFIG,
@@ -23,40 +24,35 @@ export const Pages = () => {
           <Route path="translate" element={<Translate />} />
           <Route
             path="gen6/transporter"
-            Component={() => (
-              <ConfiguableSearcher config={TRANSPORTER_CONFIG} />
-            )}
+            Component={() => <ChatotSearcher config={TRANSPORTER_CONFIG} />}
           />
           <Route
             path="bdsp/tid"
-            Component={() => <ConfiguableSearcher config={BDSP_TID_CONFIG} />}
+            Component={() => <ChatotSearcher config={BDSP_TID_CONFIG} />}
           />
           <Route
             path="bdsp/underground"
             Component={() => (
-              <ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />
+              <ChatotSearcher config={BDSP_UNDERGROUND_CONFIG} />
             )}
           />
           <Route
             path="gen3/wild"
-            Component={() => <ConfiguableSearcher config={GEN3_WILD_CONFIG} />}
+            Component={() => <ChatotSearcher config={GEN3_WILD_CONFIG} />}
           />
           <Route
             path="bdsp"
-            Component={() => <ConfiguableSearcher config={BDSP_WILD_CONFIG} />}
+            Component={() => <ChatotSearcher config={BDSP_WILD_CONFIG} />}
           />
           <Route
             path="bdsp/static"
-            Component={() => (
-              <ConfiguableSearcher config={BDSP_STATIC_CONFIG} />
-            )}
+            Component={() => <ChatotSearcher config={BDSP_STATIC_CONFIG} />}
           />
           <Route
             path="swsh"
-            Component={() => (
-              <ConfiguableSearcher config={SWSH_OVERWORLD_CONFIG} />
-            )}
+            Component={() => <ChatotSearcher config={SWSH_OVERWORLD_CONFIG} />}
           />
+          <Route path="plugin" Component={() => <PluginLoader />} />
         </Route>
       </Routes>
     </HashRouter>
