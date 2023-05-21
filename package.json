@@ -29,6 +29,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.15.1",
     "react-router-dom": "6",
+    "ts-toolbelt": "^9.6.0",
     "workbox-cacheable-response": "^6.4.2",
     "workbox-expiration": "^6.4.2",
     "workbox-precaching": "^6.4.2",

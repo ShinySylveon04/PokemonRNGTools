@@ -3,6 +3,7 @@ import { mapValues } from 'lodash-es';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Skeleton from '@mui/material/Skeleton';
 import Toolbar from '@mui/material/Toolbar';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form } from 'formik';
@@ -19,6 +20,11 @@ import {
   deserialize,
   serialize,
 } from '../Components/InputField';
+import { useWasm } from '../wasm/context';
+import type {
+  GetResultColumnFunctionName,
+  GetFieldGroupFunctionName,
+} from '../wasm/types';
 
 function mapFieldComponents<Result>(
   fieldGroups: FieldGroup[],
@@ -35,21 +41,9 @@ function mapFieldComponents<Result>(
   }, {});
 }
 
-// This catches a failed wasm init when parcel reloads,
-// but isn't needed outside of development.
-function useCatchMemo<Return>(factory: () => Return) {
-  return React.useMemo(() => {
-    try {
-      return factory();
-    } catch {
-      return [];
-    }
-  }, [factory]);
-}
-
 export type SearcherConfig = {
-  getFieldGroups: () => FieldGroup[];
-  getResultColumns: () => string[];
+  getFieldGroups: GetFieldGroupFunctionName;
+  getResultColumns: GetResultColumnFunctionName;
   generateResults: (
     formValues: Record<string, SerializedValue>,
   ) => ResultRow[] | Promise<ResultRow[]>;
@@ -63,22 +57,27 @@ export function ConfiguableSearcher({
   config: { getFieldGroups, getResultColumns, generateResults },
 }: Props) {
   const { t } = useTranslation();
+  const { initializedWasm } = useWasm();
   const [isSearching, setIsSearching] = React.useState(false);
   const [results, setResults] = React.useState<ResultRow[]>([]);
 
-  const fieldGroups = useCatchMemo(getFieldGroups);
-  const resultColumns = useCatchMemo(getResultColumns);
+  const fieldGroups: FieldGroup[] | null = React.useMemo(() => {
+    return initializedWasm?.[getFieldGroups]?.();
+  }, [initializedWasm]);
+  const resultColumns: string[] | null = React.useMemo(() => {
+    return initializedWasm?.[getResultColumns]?.();
+  }, [initializedWasm]);
 
   const serializers = React.useMemo(() => {
     return mapFieldComponents(
-      fieldGroups,
+      fieldGroups ?? [],
       component => (value: DeserializedValue) =>
         serialize({ type: component.type, value }),
     );
   }, [fieldGroups]);
 
   const initialValues = React.useMemo(() => {
-    return mapFieldComponents(fieldGroups, component => {
+    return mapFieldComponents(fieldGroups ?? [], component => {
       return deserialize({
         type: component.type,
         value: component.defaultValue || null,
@@ -101,14 +100,18 @@ export function ConfiguableSearcher({
         setIsSearching(false);
       }
     },
-    [generateResults],
+    [generateResults, serializers],
   );
 
   return (
     <>
       <Toolbar />
 
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+      >
         {() => {
           return (
             <Box
@@ -123,12 +126,19 @@ export function ConfiguableSearcher({
                 flexDirection: 'column',
               }}
             >
-              {fieldGroups.map(fieldGroup => (
-                <InputFieldGroup
-                  key={fieldGroup.label}
-                  fieldGroup={fieldGroup}
-                />
-              ))}
+              {fieldGroups == null ? (
+                <>
+                  <InputFieldGroup loading />
+                  <InputFieldGroup loading />
+                </>
+              ) : (
+                fieldGroups.map(fieldGroup => (
+                  <InputFieldGroup
+                    key={fieldGroup.label}
+                    fieldGroup={fieldGroup}
+                  />
+                ))
+              )}
 
               <Button
                 disabled={isSearching}
@@ -145,7 +155,11 @@ export function ConfiguableSearcher({
                 {isSearching ? <CircularProgress size={24} /> : t('Search')}
               </Button>
 
-              <ResultTable columns={resultColumns} results={results} />
+              {resultColumns == null ? (
+                <Skeleton variant="rectangular" height={200} />
+              ) : (
+                <ResultTable columns={resultColumns} results={results} />
+              )}
             </Box>
           );
         }}

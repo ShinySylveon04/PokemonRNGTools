@@ -87,7 +87,8 @@ export const InputField = ({
     return {};
   }, [type, minValue, maxValue]);
 
-  const value = formik.values[id];
+  // Ensures all inputs are controlled inputs
+  const value = formik.values[id] ?? '';
   const error = formik.touched[id] && Boolean(formik.errors[id]);
   const helperText = formik.touched[id] && formik.errors[id];
 

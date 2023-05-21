@@ -12,7 +12,7 @@ import {
   BDSP_WILD_CONFIG,
   BDSP_STATIC_CONFIG,
   SWSH_OVERWORLD_CONFIG,
-} from './SearcherConfigs/configs';
+} from './searcherConfigs';
 
 export const Pages = () => {
   return (
