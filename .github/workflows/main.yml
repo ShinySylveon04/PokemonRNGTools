@@ -22,13 +22,16 @@ jobs:
       - run: cd wasm/chatot && wasm-pack test --headless --chrome
       - run: cd wasm/chatot && wasm-pack test --headless --firefox
 
-      - name: Install dependencies
+      - name: Build wasm
+        run: yarn build:wasm
+
+      - name: Install site dependencies
         run: yarn
 
       - name: Check types
         run: yarn check:types
 
-      - name: Build
+      - name: Build site
         run: yarn build
 
       - name: Deploy to GitHub Pages
