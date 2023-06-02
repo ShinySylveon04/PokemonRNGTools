@@ -26,61 +26,6 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
     first ^ second
 }
 
-<<<<<<< HEAD
-#[wasm_bindgen]
-pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
-    init_panic_hook();
-    let parsed_settings: gen3::settings::Settings = settings.into_serde().unwrap();
-
-    let results = gen3::generator::generate_wild(parsed_settings);
-
-    serde_wasm_bindgen::to_value(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn get_transporter(settings: &JsValue) -> JsValue {
-    init_panic_hook();
-    let parsed_settings: gen6::transporter::settings::Settings = settings.into_serde().unwrap();
-
-    let results = gen6::transporter::generator::generate_transporter(parsed_settings);
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-// Begin BdSp functions
-
-#[wasm_bindgen]
-pub fn get_bdsp_wild(settings: &JsValue) -> JsValue {
-    init_panic_hook();
-    let parsed_settings: bdsp::wild::settings::Settings = settings.into_serde().unwrap();
-
-    let results = bdsp::wild::generator::generate_wild(parsed_settings);
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn get_bdsp_tid(settings: &JsValue) -> JsValue {
-    init_panic_hook();
-    let parsed_settings: bdsp::tid::settings::Settings = settings.into_serde().unwrap();
-
-    let results = bdsp::tid::generator::generate_tid(parsed_settings);
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-#[wasm_bindgen]
-pub fn get_bdsp_stationary(settings: &JsValue) -> JsValue {
-    init_panic_hook();
-    let parsed_settings: bdsp::stationary::settings::Settings = settings.into_serde().unwrap();
-
-    let results = bdsp::stationary::generator::generate_stationary(parsed_settings);
-
-    JsValue::from_serde(&results).unwrap()
-}
-
-=======
->>>>>>> c05e1337d826d1756eba2471935a455485246af4
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
     shiny_type: Option<ShinyType>,
@@ -228,19 +173,19 @@ pub fn calculate_pokemon_bdsp_underground(settings: &JsValue) -> JsValue {
     let parsed_settings: bdsp::underground::form_settings::Settings =
         settings.into_serde().unwrap();
     let results = _calculate_pokemon_bdsp_underground(&parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_tid_field_groups() -> JsValue {
     let result = bdsp::tid::form_settings::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_tid_result_columns() -> JsValue {
     let result = bdsp::tid::form_settings::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -248,19 +193,19 @@ pub fn generate_tid(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::tid::form_settings::Settings = settings.into_serde().unwrap();
     let results = bdsp::tid::form_settings::generate_tid(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_transporter_field_groups() -> JsValue {
     let result = gen6::transporter::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_transporter_result_columns() -> JsValue {
     let result = gen6::transporter::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -269,19 +214,19 @@ pub fn generate_transporter(settings: &JsValue) -> JsValue {
     let parsed_settings: gen6::transporter::form_settings::Settings =
         settings.into_serde().unwrap();
     let results = gen6::transporter::form_settings::generate_transporter(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_gen3_wild_field_groups() -> JsValue {
     let result = gen3::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_gen3_wild_result_columns() -> JsValue {
     let result = gen3::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -289,19 +234,19 @@ pub fn generate_gen3_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: gen3::form_settings::Settings = settings.into_serde().unwrap();
     let results = gen3::form_settings::generate_wild(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_wild_field_groups() -> JsValue {
     let result = bdsp::wild::form_settings::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_wild_result_columns() -> JsValue {
     let result = bdsp::wild::form_settings::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -309,19 +254,19 @@ pub fn generate_bdsp_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::wild::form_settings::Settings = settings.into_serde().unwrap();
     let results = bdsp::wild::form_settings::generate_wild(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_static_field_groups() -> JsValue {
     let result = bdsp::stationary::form_settings::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_static_result_columns() -> JsValue {
     let result = bdsp::stationary::form_settings::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -329,19 +274,19 @@ pub fn generate_bdsp_static(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::stationary::form_settings::Settings = settings.into_serde().unwrap();
     let results = bdsp::stationary::form_settings::generate_stationary(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_underground_field_groups() -> JsValue {
     let result = bdsp::underground::form_settings::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_bdsp_underground_result_columns() -> JsValue {
     let result = bdsp::underground::form_settings::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -350,19 +295,19 @@ pub fn generate_bdsp_underground(settings: &JsValue) -> JsValue {
     let parsed_settings: bdsp::underground::form_settings::Settings =
         settings.into_serde().unwrap();
     let results = bdsp::underground::form_settings::generate_underground(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_swsh_overworld_field_groups() -> JsValue {
     let result = swsh::form_settings::get_field_groups();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn get_swsh_overworld_result_columns() -> JsValue {
     let result = swsh::form_settings::get_result_columns();
-    JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -370,5 +315,5 @@ pub fn generate_swsh_overworld(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: swsh::form_settings::Settings = settings.into_serde().unwrap();
     let results = swsh::form_settings::generate_overworld(parsed_settings);
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }

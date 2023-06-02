@@ -21,7 +21,7 @@ pub fn get_field_groups() -> JsValue {
         FieldGroup::new("RNG Info", rng_info_components),
         FieldGroup::new("Filters", filer_components),
     ];
-    JsValue::from_serde(&field_groups).unwrap()
+    serde_wasm_bindgen::to_value(&field_groups).unwrap()
 }
 
 #[wasm_bindgen]
@@ -31,7 +31,7 @@ pub fn get_result_columns() -> JsValue {
         .into_iter()
         .map(String::from)
         .collect::<Vec<String>>();
-    JsValue::from_serde(&result_columns).unwrap()
+    serde_wasm_bindgen::to_value(&result_columns).unwrap()
 }
 
 #[wasm_bindgen]
@@ -46,5 +46,5 @@ pub fn generate_results(_settings: &JsValue) -> JsValue {
         vec!["5", "31 / 31 / 31 / 31 / 31 / 31", "aabbccdd"],
         vec!["6", "31 / 31 / 31 / 31 / 31 / 31", "aabbccdd"],
     ];
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
