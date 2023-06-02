@@ -35,6 +35,7 @@ dependencies = [
  "js-sys",
  "num_enum",
  "serde",
+ "serde-wasm-bindgen",
  "serde_repr",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -45,6 +46,7 @@ name = "chatot_forms"
 version = "0.1.0"
 dependencies = [
  "serde",
+ "serde-wasm-bindgen",
  "serde_repr",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -210,6 +212,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71b2f6e1ab5c2b98c05f0f35b236b22e8df7ead6ffbf51d7808da7f8817e7ab6"
 dependencies = [
  "serde_derive",
+]
+
+[[package]]
+name = "serde-wasm-bindgen"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1cfc62771e7b829b517cb213419236475f434fb480eddd76112ae182d274434a"
+dependencies = [
+ "js-sys",
+ "serde",
+ "wasm-bindgen",
 ]
 
 [[package]]

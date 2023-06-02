@@ -34,7 +34,7 @@ pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
 
     let results = gen3::generator::generate_wild(parsed_settings);
 
-    JsValue::from_serde(&results).unwrap()
+    serde_wasm_bindgen::to_value(&results).unwrap()
 }
 
 #[wasm_bindgen]
