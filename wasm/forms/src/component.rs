@@ -8,7 +8,14 @@ pub struct SelectOption {
 }
 
 impl SelectOption {
-    pub fn new(label: impl ToString, value: impl ToString) -> Self {
+    pub fn new(label: impl ToString) -> Self {
+        Self {
+            label: label.to_string(),
+            value: label.to_string(),
+        }
+    }
+
+    pub fn new_with_label(label: impl ToString, value: impl ToString) -> Self {
         Self {
             label: label.to_string(),
             value: value.to_string(),
@@ -21,11 +28,13 @@ impl SelectOption {
 pub struct FieldComponent {
     id: String,
     label: String,
-    default_value: String,
+    default_value: Option<String>,
     required: bool,
     r#type: String,
     size: String,
     options: Option<Vec<SelectOption>>,
+    min_value: Option<u32>,
+    max_value: Option<u32>,
 }
 
 impl FieldComponent {
@@ -33,11 +42,13 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: "".to_string(),
+            default_value: None,
             required: true,
             r#type: "label".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -47,18 +58,37 @@ impl FieldComponent {
         default_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|value| value.to_string()),
             required: true,
             r#type: "number".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: Some(0),
+            max_value: None,
+        }
+    }
+
+    pub fn number_with_limits(
+        id: impl ToString,
+        label: impl ToString,
+        default_value: Option<u32>,
+        min_value: Option<u32>,
+        max_value: Option<u32>,
+        size: FieldSize,
+    ) -> Self {
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: default_value.map(|num| num.to_string()),
+            required: true,
+            r#type: "number".to_string(),
+            options: None,
+            size: size.to_string(),
+            min_value,
+            max_value,
         }
     }
 
@@ -68,18 +98,35 @@ impl FieldComponent {
         default_value: Option<u32>,
         size: FieldSize,
     ) -> Self {
-        let default_value = match default_value {
-            Some(num) => num.to_string(),
-            None => "".to_string(),
-        };
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: default_value.map(|num| num.to_string()),
             required: true,
             r#type: "hex_number".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
+        }
+    }
+
+    pub fn hex_u64(
+        id: impl ToString,
+        label: impl ToString,
+        default_value: Option<u32>,
+        size: FieldSize,
+    ) -> Self {
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: default_value.map(|num| num.to_string()),
+            required: true,
+            r#type: "hex_u64".to_string(),
+            options: None,
+            size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -92,11 +139,13 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value.to_string(),
+            default_value: Some(default_value.to_string()),
             required: true,
             r#type: "text".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -104,11 +153,13 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: "false".to_string(),
+            default_value: Some("false".to_string()),
             required: true,
             r#type: "checkbox".to_string(),
             options: None,
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -125,11 +176,32 @@ impl FieldComponent {
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
+            default_value: Some(default_value),
             required: true,
             r#type: "select".to_string(),
             options: Some(options),
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
+        }
+    }
+
+    pub fn optional_select(
+        id: impl ToString,
+        label: impl ToString,
+        options: Vec<SelectOption>,
+        size: FieldSize,
+    ) -> Self {
+        Self {
+            id: id.to_string(),
+            label: label.to_string(),
+            default_value: None,
+            required: true,
+            r#type: "optional_select".to_string(),
+            options: Some(options),
+            size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 
@@ -139,18 +211,16 @@ impl FieldComponent {
         options: Vec<SelectOption>,
         size: FieldSize,
     ) -> Self {
-        let default_value = options
-            .first()
-            .map(|string| string.value.to_string())
-            .unwrap_or_default();
         Self {
             id: id.to_string(),
             label: label.to_string(),
-            default_value: default_value,
-            required: true,
+            default_value: None,
+            required: false,
             r#type: "multiselect".to_string(),
             options: Some(options),
             size: size.to_string(),
+            min_value: None,
+            max_value: None,
         }
     }
 }
@@ -170,12 +240,37 @@ macro_rules! impl_sized_component {
                 FieldComponent::number(id, label, default_value, FieldSize::$field_size)
             }
 
+            pub fn number_with_limits(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+                min_value: Option<u32>,
+                max_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::number_with_limits(
+                    id,
+                    label,
+                    default_value,
+                    min_value,
+                    max_value,
+                    FieldSize::$field_size,
+                )
+            }
+
             pub fn hex_number(
                 id: impl ToString,
                 label: impl ToString,
                 default_value: Option<u32>,
             ) -> FieldComponent {
                 FieldComponent::hex_number(id, label, default_value, FieldSize::$field_size)
+            }
+
+            pub fn hex_u64(
+                id: impl ToString,
+                label: impl ToString,
+                default_value: Option<u32>,
+            ) -> FieldComponent {
+                FieldComponent::hex_u64(id, label, default_value, FieldSize::$field_size)
             }
 
             pub fn text(
@@ -198,12 +293,28 @@ macro_rules! impl_sized_component {
                 FieldComponent::select(id, label, options, FieldSize::$field_size)
             }
 
+            pub fn optional_select(
+                id: impl ToString,
+                label: impl ToString,
+                options: Vec<SelectOption>,
+            ) -> FieldComponent {
+                FieldComponent::optional_select(id, label, options, FieldSize::$field_size)
+            }
+
             pub fn multiselect(
                 id: impl ToString,
                 label: impl ToString,
                 options: Vec<SelectOption>,
             ) -> FieldComponent {
                 FieldComponent::multiselect(id, label, options, FieldSize::$field_size)
+            }
+
+            fn min_iv(id: impl ToString, label: impl ToString) -> FieldComponent {
+                $component::number_with_limits(id, label, Some(0), Some(0), Some(31))
+            }
+
+            fn max_iv(id: impl ToString, label: impl ToString) -> FieldComponent {
+                $component::number_with_limits(id, label, Some(31), Some(0), Some(31))
             }
 
             pub fn seed() -> FieldComponent {
@@ -221,6 +332,14 @@ macro_rules! impl_sized_component {
             pub fn seed_3() -> FieldComponent {
                 $component::hex_number("seed_3", "Seed 3", None)
             }
+            // Adding for when we implement validation
+            pub fn seed_u64_0() -> FieldComponent {
+                $component::hex_u64("seed_u64_0", "Seed 0", None)
+            }
+            // Adding for when we implement validation
+            pub fn seed_u64_1() -> FieldComponent {
+                $component::hex_u64("seed_u64_1", "Seed 1", None)
+            }
             pub fn min_advances() -> FieldComponent {
                 $component::number("min_advances", "Min Advances", Some(0))
             }
@@ -231,83 +350,123 @@ macro_rules! impl_sized_component {
                 $component::number("delay", "Delay", Some(0))
             }
             pub fn tid() -> FieldComponent {
-                $component::number("tid", "TID", Some(0))
+                $component::number_with_limits("tid", "TID", Some(0), Some(0), Some(99999))
             }
             pub fn sid() -> FieldComponent {
-                $component::number("sid", "SID", Some(0))
+                $component::number_with_limits("sid", "SID", Some(0), Some(0), Some(99999))
             }
             pub fn min_ivs_label() -> FieldComponent {
                 $component::label("min_ivs_label", "Min IVs")
             }
             pub fn min_hp_iv() -> FieldComponent {
-                $component::number("min_hp_iv", "HP", Some(0))
+                $component::min_iv("min_hp_iv", "HP")
             }
             pub fn min_atk_iv() -> FieldComponent {
-                $component::number("min_atk_iv", "Attack", Some(0))
+                $component::min_iv("min_atk_iv", "Attack")
             }
             pub fn min_def_iv() -> FieldComponent {
-                $component::number("min_def_iv", "Defense", Some(0))
+                $component::min_iv("min_def_iv", "Defense")
             }
             pub fn min_spa_iv() -> FieldComponent {
-                $component::number("min_spa_iv", "Special Attack", Some(0))
+                $component::min_iv("min_spa_iv", "Special Attack")
             }
             pub fn min_spd_iv() -> FieldComponent {
-                $component::number("min_spd_iv", "Special Defense", Some(0))
+                $component::min_iv("min_spd_iv", "Special Defense")
             }
             pub fn min_spe_iv() -> FieldComponent {
-                $component::number("min_spe_iv", "Speed", Some(0))
+                $component::min_iv("min_spe_iv", "Speed")
             }
             pub fn max_ivs_label() -> FieldComponent {
                 $component::label("max_ivs_label", "Max IVs")
             }
             pub fn max_hp_iv() -> FieldComponent {
-                $component::number("max_hp_iv", "HP", Some(31))
+                $component::max_iv("max_hp_iv", "HP")
             }
             pub fn max_atk_iv() -> FieldComponent {
-                $component::number("max_atk_iv", "Attack", Some(31))
+                $component::max_iv("max_atk_iv", "Attack")
             }
             pub fn max_def_iv() -> FieldComponent {
-                $component::number("max_def_iv", "Defense", Some(31))
+                $component::max_iv("max_def_iv", "Defense")
             }
             pub fn max_spa_iv() -> FieldComponent {
-                $component::number("max_spa_iv", "Special Attack", Some(31))
+                $component::max_iv("max_spa_iv", "Special Attack")
             }
             pub fn max_spd_iv() -> FieldComponent {
-                $component::number("max_spd_iv", "Special Defense", Some(31))
+                $component::max_iv("max_spd_iv", "Special Defense")
             }
             pub fn max_spe_iv() -> FieldComponent {
-                $component::number("max_spe_iv", "Speed", Some(31))
+                $component::max_iv("max_spe_iv", "Speed")
             }
             pub fn gen3_method() -> FieldComponent {
                 $component::select(
                     "gen3_method",
                     "Method",
                     vec![
-                        SelectOption::new("Method H1", Gen3Method::H1),
-                        SelectOption::new("Method H2", Gen3Method::H2),
-                        SelectOption::new("Method H4", Gen3Method::H4),
+                        SelectOption::new_with_label("Method H1", Gen3Method::H1),
+                        SelectOption::new_with_label("Method H2", Gen3Method::H2),
+                        SelectOption::new_with_label("Method H4", Gen3Method::H4),
                     ],
                 )
             }
             pub fn gen3_lead() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gen3_lead",
                     "Lead",
+                    vec![SelectOption::new(Gen3Lead::Synchronize)],
+                )
+            }
+            pub fn gen8_id_type() -> FieldComponent {
+                $component::optional_select(
+                    "gen8_id_type",
+                    "ID Filter",
                     vec![
-                        SelectOption::new("None", Gen3Lead::None),
-                        SelectOption::new("Synchronize", Gen3Lead::Synchronize),
+                        SelectOption::new_with_label("TID", IDFilter::TID),
+                        SelectOption::new_with_label("SID", IDFilter::SID),
+                        SelectOption::new_with_label("TSV", IDFilter::TSV),
+                        SelectOption::new_with_label("Gen 8 TID", IDFilter::G8TID),
                     ],
                 )
             }
             pub fn shiny_type() -> FieldComponent {
-                $component::select(
+                $component::multiselect(
                     "shiny_type",
                     "Shiny",
                     vec![
-                        SelectOption::new("Any", ShinyTypeFilter::Any),
-                        SelectOption::new("Star", ShinyTypeFilter::Star),
-                        SelectOption::new("Square", ShinyTypeFilter::Square),
-                        SelectOption::new("Star/Square", ShinyTypeFilter::Both),
+                        SelectOption::new(ShinyType::Star),
+                        SelectOption::new(ShinyType::Square),
+                    ],
+                )
+            }
+            pub fn nature() -> FieldComponent {
+                $component::optional_select(
+                    "nature",
+                    "Nature",
+                    vec![
+                        SelectOption::new(Nature::Hardy),
+                        SelectOption::new(Nature::Lonely),
+                        SelectOption::new(Nature::Brave),
+                        SelectOption::new(Nature::Adamant),
+                        SelectOption::new(Nature::Naughty),
+                        SelectOption::new(Nature::Bold),
+                        SelectOption::new(Nature::Docile),
+                        SelectOption::new(Nature::Relaxed),
+                        SelectOption::new(Nature::Impish),
+                        SelectOption::new(Nature::Lax),
+                        SelectOption::new(Nature::Timid),
+                        SelectOption::new(Nature::Hasty),
+                        SelectOption::new(Nature::Serious),
+                        SelectOption::new(Nature::Jolly),
+                        SelectOption::new(Nature::Naive),
+                        SelectOption::new(Nature::Modest),
+                        SelectOption::new(Nature::Mild),
+                        SelectOption::new(Nature::Quiet),
+                        SelectOption::new(Nature::Bashful),
+                        SelectOption::new(Nature::Rash),
+                        SelectOption::new(Nature::Calm),
+                        SelectOption::new(Nature::Gentle),
+                        SelectOption::new(Nature::Sassy),
+                        SelectOption::new(Nature::Careful),
+                        SelectOption::new(Nature::Quirky),
                     ],
                 )
             }
@@ -316,64 +475,61 @@ macro_rules! impl_sized_component {
                     "nature_multiselect",
                     "Nature",
                     vec![
-                        SelectOption::new("Any", NatureFilter::Any),
-                        SelectOption::new("Hardy", NatureFilter::Hardy),
-                        SelectOption::new("Lonely", NatureFilter::Lonely),
-                        SelectOption::new("Brave", NatureFilter::Brave),
-                        SelectOption::new("Adamant", NatureFilter::Adamant),
-                        SelectOption::new("Naughty", NatureFilter::Naughty),
-                        SelectOption::new("Bold", NatureFilter::Bold),
-                        SelectOption::new("Docile", NatureFilter::Docile),
-                        SelectOption::new("Relaxed", NatureFilter::Relaxed),
-                        SelectOption::new("Impish", NatureFilter::Impish),
-                        SelectOption::new("Lax", NatureFilter::Lax),
-                        SelectOption::new("Timid", NatureFilter::Timid),
-                        SelectOption::new("Hasty", NatureFilter::Hasty),
-                        SelectOption::new("Serious", NatureFilter::Serious),
-                        SelectOption::new("Jolly", NatureFilter::Jolly),
-                        SelectOption::new("Naive", NatureFilter::Naive),
-                        SelectOption::new("Modest", NatureFilter::Modest),
-                        SelectOption::new("Mild", NatureFilter::Mild),
-                        SelectOption::new("Quiet", NatureFilter::Quiet),
-                        SelectOption::new("Bashful", NatureFilter::Bashful),
-                        SelectOption::new("Rash", NatureFilter::Rash),
-                        SelectOption::new("Calm", NatureFilter::Calm),
-                        SelectOption::new("Gentle", NatureFilter::Gentle),
-                        SelectOption::new("Sassy", NatureFilter::Sassy),
-                        SelectOption::new("Careful", NatureFilter::Careful),
-                        SelectOption::new("Quirky", NatureFilter::Quirky),
+                        SelectOption::new(Nature::Hardy),
+                        SelectOption::new(Nature::Lonely),
+                        SelectOption::new(Nature::Brave),
+                        SelectOption::new(Nature::Adamant),
+                        SelectOption::new(Nature::Naughty),
+                        SelectOption::new(Nature::Bold),
+                        SelectOption::new(Nature::Docile),
+                        SelectOption::new(Nature::Relaxed),
+                        SelectOption::new(Nature::Impish),
+                        SelectOption::new(Nature::Lax),
+                        SelectOption::new(Nature::Timid),
+                        SelectOption::new(Nature::Hasty),
+                        SelectOption::new(Nature::Serious),
+                        SelectOption::new(Nature::Jolly),
+                        SelectOption::new(Nature::Naive),
+                        SelectOption::new(Nature::Modest),
+                        SelectOption::new(Nature::Mild),
+                        SelectOption::new(Nature::Quiet),
+                        SelectOption::new(Nature::Bashful),
+                        SelectOption::new(Nature::Rash),
+                        SelectOption::new(Nature::Calm),
+                        SelectOption::new(Nature::Gentle),
+                        SelectOption::new(Nature::Sassy),
+                        SelectOption::new(Nature::Careful),
+                        SelectOption::new(Nature::Quirky),
                     ],
                 )
             }
             pub fn gen3_ability() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gen3_ability",
                     "Ability",
                     vec![
-                        SelectOption::new("Any", Gen3AbilityFilter::Any),
-                        SelectOption::new("0", Gen3AbilityFilter::Ability0),
-                        SelectOption::new("1", Gen3AbilityFilter::Ability1),
+                        SelectOption::new_with_label("0", Gen3Ability::Ability0),
+                        SelectOption::new_with_label("1", Gen3Ability::Ability1),
                     ],
                 )
             }
             pub fn encounter_slot() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "encounter_slot",
                     "Encounter Slot",
                     vec![
-                        SelectOption::new("Any", EncounterSlotFilter::Any),
-                        SelectOption::new("0", EncounterSlotFilter::Slot0),
-                        SelectOption::new("1", EncounterSlotFilter::Slot1),
-                        SelectOption::new("2", EncounterSlotFilter::Slot2),
-                        SelectOption::new("3", EncounterSlotFilter::Slot3),
-                        SelectOption::new("4", EncounterSlotFilter::Slot4),
-                        SelectOption::new("5", EncounterSlotFilter::Slot5),
-                        SelectOption::new("6", EncounterSlotFilter::Slot6),
-                        SelectOption::new("7", EncounterSlotFilter::Slot7),
-                        SelectOption::new("8", EncounterSlotFilter::Slot8),
-                        SelectOption::new("9", EncounterSlotFilter::Slot9),
-                        SelectOption::new("10", EncounterSlotFilter::Slot10),
-                        SelectOption::new("11", EncounterSlotFilter::Slot11),
+                        SelectOption::new_with_label("0", EncounterSlot::Slot0),
+                        SelectOption::new_with_label("1", EncounterSlot::Slot1),
+                        SelectOption::new_with_label("2", EncounterSlot::Slot2),
+                        SelectOption::new_with_label("3", EncounterSlot::Slot3),
+                        SelectOption::new_with_label("4", EncounterSlot::Slot4),
+                        SelectOption::new_with_label("5", EncounterSlot::Slot5),
+                        SelectOption::new_with_label("6", EncounterSlot::Slot6),
+                        SelectOption::new_with_label("7", EncounterSlot::Slot7),
+                        SelectOption::new_with_label("8", EncounterSlot::Slot8),
+                        SelectOption::new_with_label("9", EncounterSlot::Slot9),
+                        SelectOption::new_with_label("10", EncounterSlot::Slot10),
+                        SelectOption::new_with_label("11", EncounterSlot::Slot11),
                     ],
                 )
             }
@@ -382,27 +538,31 @@ macro_rules! impl_sized_component {
                     "gender_ratio",
                     "Gender Ratio",
                     vec![
-                        SelectOption::new("No Set Gender", GenderRatio::NoSetGender),
-                        SelectOption::new("Genderless", GenderRatio::Genderless),
-                        SelectOption::new("50% ♂ / 50% ♀", GenderRatio::Male50Female50),
-                        SelectOption::new("25% ♂ / 75% ♀", GenderRatio::Male25Female75),
-                        SelectOption::new("75% ♂ / 25% ♀", GenderRatio::Male75Female25),
-                        SelectOption::new("87.5% ♂ / 12.5% ♀", GenderRatio::Male875Female125),
-                        SelectOption::new("100% ♂", GenderRatio::Male),
-                        SelectOption::new("100% ♀", GenderRatio::Female),
+                        SelectOption::new_with_label("Genderless", GenderRatio::Genderless),
+                        SelectOption::new_with_label("50% ♂ / 50% ♀", GenderRatio::Male50Female50),
+                        SelectOption::new_with_label("25% ♂ / 75% ♀", GenderRatio::Male25Female75),
+                        SelectOption::new_with_label("75% ♂ / 25% ♀", GenderRatio::Male75Female25),
+                        SelectOption::new_with_label(
+                            "87.5% ♂ / 12.5% ♀",
+                            GenderRatio::Male875Female125,
+                        ),
+                        SelectOption::new_with_label("100% ♂", GenderRatio::Male),
+                        SelectOption::new_with_label("100% ♀", GenderRatio::Female),
                     ],
                 )
             }
             pub fn gender() -> FieldComponent {
-                $component::select(
+                $component::optional_select(
                     "gender",
                     "Gender",
                     vec![
-                        SelectOption::new("Any", GenderFilter::Any),
-                        SelectOption::new("♂", GenderFilter::Male),
-                        SelectOption::new("♀", GenderFilter::Female),
+                        SelectOption::new_with_label("♂", Gender::Male),
+                        SelectOption::new_with_label("♀", Gender::Female),
                     ],
                 )
+            }
+            pub fn shiny_charm() -> FieldComponent {
+                $component::checkbox("shiny_charm", "Shiny Charm")
             }
         }
     };

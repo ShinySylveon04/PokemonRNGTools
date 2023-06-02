@@ -15,13 +15,15 @@ const options = [
 
 export const Translate = () => {
   const { t, i18n } = useTranslation();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null,
+  );
   const open = Boolean(anchorEl);
-  const handleClickListItem = event => {
+  const handleClickListItem = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (event, option) => {
+  const handleMenuItemClick = (event: React.MouseEvent, option: string) => {
     setAnchorEl(null);
     i18n.changeLanguage(option);
     // @ts-ignore

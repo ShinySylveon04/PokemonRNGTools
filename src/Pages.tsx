@@ -3,19 +3,17 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './Layouts/Main';
 import { Home } from './Pages/Home';
 import { Translate } from './Pages/Translate';
-import { SwSh } from './SwSh/SwSh';
-import { Wild } from './BdSp/Wild/Wild';
-import { Stationary } from './BdSp/Stationary/Stationary';
-import { Underground } from './BdSp/Underground/Underground';
-import { TID } from './BdSp/TID/TID';
-import { Gen3Wild } from './Gen3/Wild';
-import { Gen6Transporter } from './Gen6/Transporter';
-import { TRANSPORTER_CONFIG } from './SearcherConfigs/Transporter';
-import { BDSP_TID_CONFIG } from './SearcherConfigs/BdSpTid';
-import { BDSP_UNDERGROUND_CONFIG } from './SearcherConfigs/BdSpUnderground';
-import { GEN3_WILD_CONFIG } from './SearcherConfigs/Gen3Wild';
-import { BDSP_WILD_CONFIG } from './SearcherConfigs/BdSpWild';
-import { ConfiguableSearcher } from './Layouts/ConfiguableSearcher';
+import { PluginLoader } from './Pages/PluginLoader';
+import { ChatotSearcher } from './Layouts/ChatotSearcher';
+import {
+  TRANSPORTER_CONFIG,
+  BDSP_TID_CONFIG,
+  BDSP_UNDERGROUND_CONFIG,
+  GEN3_WILD_CONFIG,
+  BDSP_WILD_CONFIG,
+  BDSP_STATIC_CONFIG,
+  SWSH_OVERWORLD_CONFIG,
+} from './searcherConfigs';
 
 export const Pages = () => {
   return (
@@ -24,33 +22,37 @@ export const Pages = () => {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="translate" element={<Translate />} />
-          <Route path="gen3/wild" element={<Gen3Wild />} />
-          <Route path="gen6/transporter" element={<Gen6Transporter />} />
-          <Route path="swsh" element={<SwSh />} />
-          <Route path="bdsp" element={<Wild />} />
-          <Route path="bdsp/static" element={<Stationary />} />
-          <Route path="bdsp/underground" element={<Underground />} />
-          <Route path="bdsp/tid" element={<TID />} />
           <Route
-            path="gen6/transporter2"
-            element={<ConfiguableSearcher config={TRANSPORTER_CONFIG} />}
+            path="gen6/transporter"
+            Component={() => <ChatotSearcher config={TRANSPORTER_CONFIG} />}
           />
           <Route
-            path="bdsp/tid2"
-            element={<ConfiguableSearcher config={BDSP_TID_CONFIG} />}
+            path="bdsp/tid"
+            Component={() => <ChatotSearcher config={BDSP_TID_CONFIG} />}
           />
           <Route
-            path="bdsp/underground2"
-            element={<ConfiguableSearcher config={BDSP_UNDERGROUND_CONFIG} />}
+            path="bdsp/underground"
+            Component={() => (
+              <ChatotSearcher config={BDSP_UNDERGROUND_CONFIG} />
+            )}
           />
           <Route
-            path="gen3/wild2"
-            element={<ConfiguableSearcher config={GEN3_WILD_CONFIG} />}
+            path="gen3/wild"
+            Component={() => <ChatotSearcher config={GEN3_WILD_CONFIG} />}
           />
           <Route
-            path="bdsp2"
-            element={<ConfiguableSearcher config={BDSP_WILD_CONFIG} />}
+            path="bdsp"
+            Component={() => <ChatotSearcher config={BDSP_WILD_CONFIG} />}
           />
+          <Route
+            path="bdsp/static"
+            Component={() => <ChatotSearcher config={BDSP_STATIC_CONFIG} />}
+          />
+          <Route
+            path="swsh"
+            Component={() => <ChatotSearcher config={SWSH_OVERWORLD_CONFIG} />}
+          />
+          <Route path="plugin" Component={() => <PluginLoader />} />
         </Route>
       </Routes>
     </HashRouter>

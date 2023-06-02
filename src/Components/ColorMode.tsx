@@ -8,7 +8,11 @@ export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
-export const ColorMode = ({ children }) => {
+type Props = {
+  children: React.ReactNode;
+};
+
+export const ColorMode = ({ children }: Props) => {
   const savedMode =
     localStorage.getItem('ColorMode') === 'light' ? 'light' : 'dark';
   const [mode, setMode] = React.useState<PaletteMode>(savedMode);

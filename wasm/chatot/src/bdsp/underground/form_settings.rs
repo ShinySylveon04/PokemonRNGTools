@@ -1,10 +1,17 @@
-use super::generator;
-use crate::utils::format_ivs;
+use crate::{_calculate_pokemon_bdsp_underground, utils::format_ivs};
 use chatot_forms::{
-    EncounterSlot, FieldGroup, Gen3Ability, Gen3Lead, Gender, GenderRatio, LargeComponent, Nature,
-    ShinyType, SmallComponent,
+    impl_display, EncounterSlot, FieldGroup, Gen3Ability, Gender, GenderRatio, LargeComponent,
+    Nature, SelectOption, ShinyType, SmallComponent,
 };
 use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RoomSize {
+    Small,
+    Large,
+}
+
+impl_display!(RoomSize);
 
 pub fn get_field_groups() -> Vec<FieldGroup> {
     let rng_info_components = vec![
@@ -14,8 +21,17 @@ pub fn get_field_groups() -> Vec<FieldGroup> {
         LargeComponent::seed_3(),
         LargeComponent::min_advances(),
         LargeComponent::max_advances(),
-        LargeComponent::number("delay", "Delay", Some(1)),
-        LargeComponent::gen3_lead(),
+        LargeComponent::delay(),
+        LargeComponent::number("statue_tiles", "Statue Tiles", Some(0)),
+        LargeComponent::select(
+            "room_size",
+            "Room Size",
+            vec![
+                SelectOption::new(RoomSize::Small),
+                SelectOption::new(RoomSize::Large),
+            ],
+        ),
+        LargeComponent::checkbox("diglett_boost", "Diglett Boost"),
     ];
 
     let filer_components = vec![
@@ -58,36 +74,38 @@ pub fn get_result_columns() -> Vec<String> {
 
 #[derive(Deserialize, Serialize)]
 pub struct Settings {
-    pub(super) seed_0: u32,
-    pub(super) seed_1: u32,
-    pub(super) seed_2: u32,
-    pub(super) seed_3: u32,
-    pub(super) min_advances: usize,
-    pub(super) max_advances: usize,
-    pub(super) delay: usize,
-    pub(super) gen3_lead: Option<Gen3Lead>,
-    pub(super) shiny_type: Vec<ShinyType>,
-    pub(super) nature_multiselect: Vec<Nature>,
-    pub(super) gen3_ability: Option<Gen3Ability>,
-    pub(super) encounter_slot: Option<EncounterSlot>,
-    pub(super) gender_ratio: GenderRatio,
-    pub(super) gender: Option<Gender>,
-    pub(super) min_hp_iv: u8,
-    pub(super) min_atk_iv: u8,
-    pub(super) min_def_iv: u8,
-    pub(super) min_spa_iv: u8,
-    pub(super) min_spd_iv: u8,
-    pub(super) min_spe_iv: u8,
-    pub(super) max_hp_iv: u8,
-    pub(super) max_atk_iv: u8,
-    pub(super) max_def_iv: u8,
-    pub(super) max_spa_iv: u8,
-    pub(super) max_spd_iv: u8,
-    pub(super) max_spe_iv: u8,
+    pub seed_0: u32,
+    pub seed_1: u32,
+    pub seed_2: u32,
+    pub seed_3: u32,
+    pub min_advances: usize,
+    pub max_advances: usize,
+    pub delay: usize,
+    pub statue_tiles: u8,
+    pub room_size: RoomSize,
+    pub diglett_boost: bool,
+    pub shiny_type: Vec<ShinyType>,
+    pub nature_multiselect: Vec<Nature>,
+    pub gen3_ability: Option<Gen3Ability>,
+    pub encounter_slot: Option<EncounterSlot>,
+    pub gender_ratio: GenderRatio,
+    pub gender: Option<Gender>,
+    pub min_hp_iv: u8,
+    pub min_atk_iv: u8,
+    pub min_def_iv: u8,
+    pub min_spa_iv: u8,
+    pub min_spd_iv: u8,
+    pub min_spe_iv: u8,
+    pub max_hp_iv: u8,
+    pub max_atk_iv: u8,
+    pub max_def_iv: u8,
+    pub max_spa_iv: u8,
+    pub max_spd_iv: u8,
+    pub max_spe_iv: u8,
 }
 
 impl Settings {
-    pub(super) fn min_ivs(&self) -> [u8; 6] {
+    pub fn min_ivs(&self) -> [u8; 6] {
         [
             self.min_hp_iv,
             self.min_atk_iv,
@@ -98,7 +116,7 @@ impl Settings {
         ]
     }
 
-    pub(super) fn max_ivs(&self) -> [u8; 6] {
+    pub fn max_ivs(&self) -> [u8; 6] {
         [
             self.max_hp_iv,
             self.max_atk_iv,
@@ -110,24 +128,23 @@ impl Settings {
     }
 }
 
-pub fn generate_wild(settings: Settings) -> Vec<Vec<String>> {
-    let gen3_lead = settings.gen3_lead;
-    let results = generator::generate_wild(settings);
+pub fn generate_underground(settings: Settings) -> Vec<Vec<String>> {
+    let results = _calculate_pokemon_bdsp_underground(&settings);
     results
         .into_iter()
         .map(|result| {
-            let stringified_nature = match gen3_lead {
-                Some(Gen3Lead::Synchronize) => "Synchronize".to_string(),
-                None => result.nature.to_string(),
-            };
             vec![
                 result.advances.to_string(),
                 result
                     .shiny_value
                     .map(|shiny_type| shiny_type.to_string())
                     .unwrap_or("None".to_string()),
-                result.encounter.to_string(),
-                stringified_nature,
+                if result.encounter == 0 {
+                    "Rare".to_string()
+                } else {
+                    result.encounter.to_string()
+                },
+                result.nature.to_string(),
                 result.ability.to_string(),
                 result.gender.to_string(),
                 format_ivs(&result.ivs),

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="Chatot.png" />
     <link rel="shortcut icon" href="Chatot.png" />
     <meta
@@ -33,12 +33,15 @@
 
       gtag('config', 'G-4ZMFTTTDQV');
     </script>
-    <script>
+    <script type="module">
       // Check that service workers are supported
       if ('serviceWorker' in navigator) {
         // Use the window load event to keep the page load performant
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js');
+          navigator.serviceWorker.register(
+            new URL('./service-worker.js', import.meta.url),
+            { type: 'module' },
+          );
         });
       }
     </script>
@@ -46,7 +49,7 @@
 
   <body>
     <div id="app"></div>
-    <script src="../src/index.tsx"></script>
+    <script type="module" src="../src/index.tsx"></script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

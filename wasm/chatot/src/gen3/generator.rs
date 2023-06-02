@@ -1,36 +1,37 @@
-use super::settings::Settings;
-use crate::enums::{self, Shiny};
+use super::form_settings::Settings;
 use crate::rng::Lcrng;
-use serde::{Deserialize, Serialize};
-use std::convert::TryFrom;
+use chatot_forms::{
+    EncounterSlot, Gen3Ability, Gen3Lead, Gen3Method, Gender, MultiFilter, Nature, ShinyType,
+    SingleFilter,
+};
 
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
-    pub shiny: enums::Shiny,
+    pub shiny: Option<ShinyType>,
     pub pid: u32,
-    pub nature: enums::Nature,
-    pub ivs: Vec<u16>,
-    pub ability: enums::Ability,
-    pub gender: enums::Gender,
-    pub encounter: u8,
+    pub nature: Nature,
+    pub ivs: IVs,
+    pub ability: Gen3Ability,
+    pub gender: Gender,
+    pub encounter: EncounterSlot,
     pub is_synch: bool,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Result {
     pub rng_state: u32,
     pub advances: usize,
-    pub shiny_value: enums::Shiny,
+    pub shiny_value: Option<ShinyType>,
     pub pid: u32,
-    pub nature: enums::Nature,
-    pub ivs: Vec<u16>,
-    pub ability: enums::Ability,
-    pub gender: enums::Gender,
-    pub encounter: u8,
+    pub nature: Nature,
+    pub ivs: IVs,
+    pub ability: Gen3Ability,
+    pub gender: Gender,
+    pub encounter: EncounterSlot,
     pub is_synch: bool,
 }
 
-type IVs = Vec<u16>;
+type IVs = [u8; 6];
 fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
     ivs.iter()
         .zip(min_ivs.iter())
@@ -42,40 +43,30 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
     rng.next_u32(); // unknown
 
     // encounter slot
-    let encounter_rand = rng.next_u16() % 100;
+    let encounter_rand = (rng.next_u16() % 100) as u8;
 
     rng.next_u32();
 
-    let nature_rand;
+    let nature_rand: u8;
     let mut is_synch = false;
 
-    match settings.lead_filter {
-        enums::LeadFilter::None => {
-            nature_rand = rng.next_u16() % 25;
+    match settings.gen3_lead {
+        None => {
+            nature_rand = (rng.next_u16() % 25) as u8;
         }
-        enums::LeadFilter::Synchronize => {
+        Some(Gen3Lead::Synchronize) => {
             if (rng.next_u16() & 1) == 0 {
                 // if synchronized, nature set doesn't matter
                 nature_rand = 0;
                 is_synch = true;
             } else {
-                nature_rand = rng.next_u16() % 25;
+                nature_rand = (rng.next_u16() % 25) as u8;
             }
         }
     };
 
-    let nature = enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy);
-
-    let natures: Vec<enums::DeprecatedNatureFilter> = settings
-        .nature_filter
-        .iter()
-        .map(|nature| {
-            enums::DeprecatedNatureFilter::try_from(*nature as u16)
-                .unwrap_or(enums::DeprecatedNatureFilter::Hardy)
-        })
-        .collect();
-
-    if !natures.iter().any(|nat| *nat == nature) {
+    let nature: Nature = nature_rand.into();
+    if !Nature::passes_filter(&settings.nature_multiselect, Some(nature)) {
         return None;
     }
 
@@ -89,83 +80,68 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
         }
     }
 
-    let tsv = (settings.tid ^ settings.sid) as u16;
-
-    let shiny = Shiny::calculate_shiny_gen3(pid, tsv);
-
-    if settings.shiny_filter != shiny {
+    let tsv = settings.tid ^ settings.sid;
+    let shiny = ShinyType::calculate_shiny_gen3(pid, tsv);
+    if !ShinyType::passes_filter(&settings.shiny_type, shiny) {
         return None;
     }
 
-    let ability_rand = pid & 1;
-
-    let ability = enums::Ability::try_from(ability_rand as u32).unwrap_or(enums::Ability::Ability0);
-
-    if settings.ability_filter != ability {
+    let ability: Gen3Ability = (pid as u8 & 1).into();
+    if !Gen3Ability::passes_filter(settings.gen3_ability, ability) {
         return None;
     }
 
-    let gender_rand = pid & 255;
-
-    let gender = match enums::get_set_gender_from_ratio(&settings.gender_ratio) {
+    let gender_rand = (pid & 255) as u8;
+    let gender = match settings.gender_ratio.get_set_gender() {
         Some(set_gender) => set_gender,
-        None => enums::get_gender_from_ratio(&settings.gender_ratio, gender_rand.into()),
+        None => settings.gender_ratio.get_gender(gender_rand),
     };
 
-    if settings.gender_filter != gender {
+    if !Gender::passes_filter(settings.gender, gender) {
         return None;
     }
 
     let iv1;
     let iv2;
 
-    match settings.method_filter {
-        enums::MethodFilter::MethodH1 => {
+    match settings.gen3_method {
+        Gen3Method::H1 => {
             iv1 = rng.next_u16();
             iv2 = rng.next_u16();
         }
-        enums::MethodFilter::MethodH2 => {
+        Gen3Method::H2 => {
             rng.next_u16();
             iv1 = rng.next_u16();
             iv2 = rng.next_u16();
         }
-        _ => {
+        Gen3Method::H4 => {
             iv1 = rng.next_u16();
             rng.next_u16();
             iv2 = rng.next_u16();
         }
     };
 
-    let mut ivs = vec![32, 32, 32, 32, 32, 32];
+    let ivs = [
+        (iv1 & 0x1f) as u8,
+        ((iv1 >> 5) & 0x1f) as u8,
+        ((iv1 >> 10) & 0x1f) as u8,
+        ((iv2 >> 5) & 0x1f) as u8,
+        ((iv2 >> 10) & 0x1f) as u8,
+        (iv2 & 0x1f) as u8,
+    ];
 
-    ivs[0] = iv1 & 0x1f;
-    ivs[1] = (iv1 >> 5) & 0x1f;
-    ivs[2] = (iv1 >> 10) & 0x1f;
-    ivs[3] = (iv2 >> 5) & 0x1f;
-    ivs[4] = (iv2 >> 10) & 0x1f;
-    ivs[5] = iv2 & 0x1f;
-
-    if !check_ivs(&ivs, &settings.min_ivs, &settings.max_ivs) {
+    if !check_ivs(&ivs, &settings.min_ivs(), &settings.max_ivs()) {
         return None;
     }
 
-    let encounter_slots: [u16; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
-
+    let encounter_slots: [u8; 12] = [20, 40, 50, 60, 70, 80, 85, 90, 94, 98, 99, 100];
     let encounter = encounter_slots
         .iter()
         .position(|enc| encounter_rand < *enc)
         .unwrap_or(0) as u8;
+    let encounter: EncounterSlot = encounter.into();
 
-    let encounters: Vec<enums::DeprecatedEncounterSlotFilter> = settings
-        .encounter_filter
-        .iter()
-        .map(|encounter| {
-            enums::DeprecatedEncounterSlotFilter::try_from(*encounter)
-                .unwrap_or(enums::DeprecatedEncounterSlotFilter::Slot0)
-        })
-        .collect();
-
-    if !encounters.iter().any(|slot| *slot == encounter) {
+    if !EncounterSlot::passes_filter(settings.encounter_slot, encounter) {
         return None;
     }
 
@@ -182,7 +158,7 @@ pub fn generate_pokemon(mut rng: Lcrng, settings: &Settings) -> Option<Pokemon> 
 }
 
 pub fn generate_wild(settings: Settings) -> Vec<Result> {
-    let mut rng = Lcrng::from_state(settings.rng_state);
+    let mut rng = Lcrng::new(settings.seed);
     rng.advance(settings.delay);
     let mut results: Vec<Result> = Vec::new();
     let values = settings.min_advances..=settings.max_advances;
@@ -216,49 +192,60 @@ pub fn generate_wild(settings: Settings) -> Vec<Result> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use chatot_forms::GenderRatio;
     use std::vec;
 
     #[test]
     fn should_generate_pokemon() {
-        let mut rng = Lcrng::from_state(0);
+        let mut rng = Lcrng::new(0);
         let settings = Settings {
-            nature_filter: vec![25],
-            encounter_filter: vec![12],
-            rng_state: 0,
+            nature_multiselect: vec![],
+            encounter_slot: None,
+            seed: 0,
             delay: 0,
             min_advances: 0,
             max_advances: 10,
-            gender_ratio: enums::DeprecatedGenderRatio::Male50Female50,
-            lead_filter: enums::LeadFilter::None,
-            shiny_filter: enums::ShinyFilter::None,
-            ability_filter: enums::AbilityFilter::Any,
-            gender_filter: enums::DeprecatedGenderFilter::Any,
-            min_ivs: vec![0, 0, 0, 0, 0, 0],
-            max_ivs: vec![31, 31, 31, 31, 31, 31],
+            gender_ratio: GenderRatio::Male50Female50,
+            gen3_lead: None,
+            shiny_type: vec![],
+            gen3_ability: None,
+            gender: None,
+            min_hp_iv: 0,
+            min_atk_iv: 0,
+            min_def_iv: 0,
+            min_spa_iv: 0,
+            min_spd_iv: 0,
+            min_spe_iv: 0,
+            max_hp_iv: 31,
+            max_atk_iv: 31,
+            max_def_iv: 31,
+            max_spa_iv: 31,
+            max_spd_iv: 31,
+            max_spe_iv: 31,
             tid: 0,
             sid: 0,
-            method_filter: enums::MethodFilter::MethodH1,
+            gen3_method: Gen3Method::H1,
         };
 
         let expected_results = vec![
             Pokemon {
-                shiny: enums::Shiny::None,
+                shiny: None,
                 pid: 0x60A1E414,
-                nature: enums::Nature::Calm,
-                ivs: vec![11, 25, 10, 25, 3, 24],
-                ability: enums::Ability::Ability0,
-                gender: enums::Gender::Female,
-                encounter: 5,
+                nature: Nature::Calm,
+                ivs: [11, 25, 10, 25, 3, 24],
+                ability: Gen3Ability::Ability0,
+                gender: Gender::Female,
+                encounter: EncounterSlot::Slot5,
                 is_synch: false,
             },
             Pokemon {
-                shiny: enums::Shiny::None,
+                shiny: None,
                 pid: 0x639E3D69,
-                nature: enums::Nature::Bashful,
-                ivs: vec![9, 9, 7, 20, 26, 13],
-                ability: enums::Ability::Ability1,
-                gender: enums::Gender::Female,
-                encounter: 0,
+                nature: Nature::Bashful,
+                ivs: [9, 9, 7, 20, 26, 13],
+                ability: Gen3Ability::Ability1,
+                gender: Gender::Female,
+                encounter: EncounterSlot::Slot0,
                 is_synch: false,
             },
         ];

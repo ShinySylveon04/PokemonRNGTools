@@ -45,11 +45,22 @@ dependencies = [
 name = "chatot_forms"
 version = "0.1.0"
 dependencies = [
+ "num_enum",
  "serde",
  "serde-wasm-bindgen",
  "serde_repr",
  "wasm-bindgen",
  "wasm-bindgen-test",
+]
+
+[[package]]
+name = "chatot_plugin_template"
+version = "0.1.0"
+dependencies = [
+ "chatot_forms",
+ "console_error_panic_hook",
+ "serde",
+ "wasm-bindgen",
 ]
 
 [[package]]

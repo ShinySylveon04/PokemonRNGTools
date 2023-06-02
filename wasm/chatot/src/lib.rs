@@ -1,12 +1,11 @@
 #![feature(iter_order_by)]
-use js_sys::Array;
-use std::convert::TryFrom;
+use bdsp::underground::form_settings::RoomSize;
+use chatot_forms::{self, Gen3Ability, Gender, MultiFilter, Nature, ShinyType, SingleFilter};
 use wasm_bindgen::prelude::*;
 
 extern crate console_error_panic_hook;
 
 mod bdsp;
-mod enums;
 mod gen3;
 mod gen6;
 mod rng;
@@ -27,6 +26,7 @@ fn calculate_shiny_value(first: u16, second: u16) -> u16 {
     first ^ second
 }
 
+<<<<<<< HEAD
 #[wasm_bindgen]
 pub fn get_gen3_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
@@ -79,51 +79,52 @@ pub fn get_bdsp_stationary(settings: &JsValue) -> JsValue {
     JsValue::from_serde(&results).unwrap()
 }
 
+=======
+>>>>>>> c05e1337d826d1756eba2471935a455485246af4
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Pokemon {
-    shiny_type: enums::Shiny,
+    shiny_type: Option<ShinyType>,
     ec: u32,
     pid: u32,
-    nature: enums::Nature,
-    ability: enums::Ability,
+    nature: Nature,
+    ability: Gen3Ability,
 }
 
-#[wasm_bindgen(getter_with_clone)]
 pub struct ShinyResult {
     pub state0: u64,
     pub state1: u64,
-    pub advances: u32,
-    pub shiny_value: enums::Shiny,
+    pub advances: usize,
+    pub shiny_value: Option<ShinyType>,
     pub ec: u32,
     pub pid: u32,
-    pub nature: enums::Nature,
-    pub ability: enums::Ability,
+    pub nature: Nature,
+    pub ability: Gen3Ability,
 }
 
 pub fn filter(
     results: Pokemon,
-    shiny_filter: enums::ShinyFilter,
-    nature_filter: enums::DeprecatedNatureFilter,
-    ability_filter: enums::AbilityFilter,
+    shiny_filter: &[ShinyType],
+    nature_filter: &[Nature],
+    ability_filter: Option<Gen3Ability>,
 ) -> bool {
-    shiny_filter == results.shiny_type
-        && nature_filter == results.nature
-        && ability_filter == results.ability
+    ShinyType::passes_filter(shiny_filter, results.shiny_type)
+        && Nature::passes_filter(nature_filter, Some(results.nature))
+        && Gen3Ability::passes_filter(ability_filter, results.ability)
 }
 
 pub fn filter_bdsp_underground(
     results: &bdsp::underground::generator::Pokemon,
-    shiny_filter: enums::ShinyFilter,
-    natures: &[enums::DeprecatedNatureFilter],
-    ability_filter: enums::AbilityFilter,
-    gender_filter: enums::DeprecatedGenderFilter,
-    min_ivs: &Vec<u32>,
-    max_ivs: &Vec<u32>,
+    shiny_filter: &[ShinyType],
+    natures: &[Nature],
+    ability_filter: Option<Gen3Ability>,
+    gender_filter: Option<Gender>,
+    min_ivs: &[u8],
+    max_ivs: &[u8],
 ) -> bool {
-    return ability_filter == results.ability
-        && natures.iter().any(|nature| *nature == results.nature)
-        && gender_filter == results.gender
-        && shiny_filter == results.shiny_value
+    return Gen3Ability::passes_filter(ability_filter, results.ability)
+        && Nature::passes_filter(natures, Some(results.nature))
+        && Gender::passes_filter(gender_filter, results.gender)
+        && ShinyType::passes_filter(shiny_filter, results.shiny_value)
         && results
             .ivs
             .iter()
@@ -134,35 +135,32 @@ pub fn filter_bdsp_underground(
             .eq_by(max_ivs, |&iv, &max_iv| iv <= max_iv);
 }
 
-#[wasm_bindgen]
-pub fn calculate_pokemon(
-    seed1: u64,
-    seed2: u64,
-    tid: u16,
-    sid: u16,
-    shiny_filter: enums::ShinyFilter,
-    encounter_type: enums::DeprecatedEncounterFilter,
-    shiny_charm: bool,
-    nature_filter: enums::DeprecatedNatureFilter,
-    ability_filter: enums::AbilityFilter,
-    min: u32,
-    max: u32,
-) -> Array {
-    let mut rng = rng::Xoroshiro::from_state(seed1, seed2);
+pub(crate) fn _calculate_pokemon(
+    settings: &crate::swsh::form_settings::ParsedSettings,
+) -> Vec<ShinyResult> {
+    let mut rng = rng::Xoroshiro::from_state(settings.seed_u64_0, settings.seed_u64_1);
     let mut pokemon_results;
     let mut shiny_results: Vec<ShinyResult> = Vec::new();
-    let values = min..=max;
+    let values = settings.min_advances..=settings.max_advances;
     for value in values {
-        pokemon_results = match encounter_type {
-            enums::DeprecatedEncounterFilter::Static => {
-                swsh::generate_static_pokemon(rng, tid, sid, shiny_charm)
+        pokemon_results = match settings.encounter_type {
+            crate::swsh::form_settings::EncounterFilter::Static => {
+                swsh::generate_static_pokemon(rng, settings.tid, settings.sid, settings.shiny_charm)
             }
-            enums::DeprecatedEncounterFilter::Dynamic => {
-                swsh::generate_dynamic_pokemon(rng, tid, sid, shiny_charm)
-            }
+            crate::swsh::form_settings::EncounterFilter::Dynamic => swsh::generate_dynamic_pokemon(
+                rng,
+                settings.tid,
+                settings.sid,
+                settings.shiny_charm,
+            ),
         };
 
-        if filter(pokemon_results, shiny_filter, nature_filter, ability_filter) {
+        if filter(
+            pokemon_results,
+            &settings.shiny_type,
+            &settings.nature_multiselect,
+            settings.gen3_ability,
+        ) {
             let shiny_state = rng.get_state();
             let result = ShinyResult {
                 state0: shiny_state.0,
@@ -179,62 +177,41 @@ pub fn calculate_pokemon(
         rng.next();
     }
 
-    shiny_results.into_iter().map(JsValue::from).collect()
+    shiny_results
 }
 
-#[wasm_bindgen]
-pub fn calculate_pokemon_bdsp_underground(
-    seed1: u32,
-    seed2: u32,
-    seed3: u32,
-    seed4: u32,
-    shiny_filter: enums::ShinyFilter,
-    min_advances: usize,
-    max_advances: usize,
-    delay: usize,
-    nature_filter: Vec<u32>,
-    ability_filter: enums::AbilityFilter,
-    _encounter_filter: enums::DeprecatedEncounterSlotFilter,
-    gender_ratio: enums::DeprecatedGenderRatio,
-    gender_filter: enums::DeprecatedGenderFilter,
-    tiles: usize,
-    large_room: bool,
-    diglett_boost: bool,
-    min_ivs: Vec<u32>,
-    max_ivs: Vec<u32>,
-) -> JsValue {
-    init_panic_hook();
-    let natures: Vec<enums::DeprecatedNatureFilter> = nature_filter
-        .iter()
-        .map(|nature| {
-            enums::DeprecatedNatureFilter::try_from(*nature as u16)
-                .unwrap_or(enums::DeprecatedNatureFilter::Hardy)
-        })
-        .collect();
-    let mut rng = rng::Xorshift::from_state([seed1, seed2, seed3, seed4]);
-    rng.advance(delay);
+pub(crate) fn _calculate_pokemon_bdsp_underground(
+    settings: &crate::bdsp::underground::form_settings::Settings,
+) -> Vec<bdsp::underground::generator::Pokemon> {
+    let mut rng = rng::Xorshift::from_state([
+        settings.seed_0,
+        settings.seed_1,
+        settings.seed_2,
+        settings.seed_3,
+    ]);
+    rng.advance(settings.delay);
     let mut pokemon_results = Vec::new();
-    let values = min_advances..=max_advances;
-    rng.advance(min_advances);
+    let values = settings.min_advances..=settings.max_advances;
+    rng.advance(settings.min_advances);
     for value in values {
         let mut result = bdsp::underground::generator::generate_pokemon(
             rng,
-            gender_ratio,
+            settings.gender_ratio,
             value,
-            tiles,
-            large_room,
-            diglett_boost,
+            settings.statue_tiles,
+            settings.room_size == RoomSize::Large,
+            settings.diglett_boost,
         );
 
         if result.iter().any(|pokemon| {
             filter_bdsp_underground(
                 pokemon,
-                shiny_filter,
-                &natures,
-                ability_filter,
-                gender_filter,
-                &min_ivs,
-                &max_ivs,
+                &settings.shiny_type,
+                &settings.nature_multiselect,
+                settings.gen3_ability,
+                settings.gender,
+                &settings.min_ivs(),
+                &settings.max_ivs(),
             )
         }) {
             pokemon_results.append(&mut result);
@@ -242,8 +219,35 @@ pub fn calculate_pokemon_bdsp_underground(
         rng.next();
     }
 
-    let results: Vec<bdsp::underground::generator::Pokemon> = pokemon_results.into_iter().collect();
+    pokemon_results.into_iter().collect()
+}
 
+#[wasm_bindgen]
+pub fn calculate_pokemon_bdsp_underground(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::underground::form_settings::Settings =
+        settings.into_serde().unwrap();
+    let results = _calculate_pokemon_bdsp_underground(&parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_tid_field_groups() -> JsValue {
+    let result = bdsp::tid::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_tid_result_columns() -> JsValue {
+    let result = bdsp::tid::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_tid(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::tid::form_settings::Settings = settings.into_serde().unwrap();
+    let results = bdsp::tid::form_settings::generate_tid(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }
 
@@ -305,5 +309,66 @@ pub fn generate_bdsp_wild(settings: &JsValue) -> JsValue {
     init_panic_hook();
     let parsed_settings: bdsp::wild::form_settings::Settings = settings.into_serde().unwrap();
     let results = bdsp::wild::form_settings::generate_wild(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_field_groups() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_static_result_columns() -> JsValue {
+    let result = bdsp::stationary::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_bdsp_static(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::stationary::form_settings::Settings = settings.into_serde().unwrap();
+    let results = bdsp::stationary::form_settings::generate_stationary(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_underground_field_groups() -> JsValue {
+    let result = bdsp::underground::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_bdsp_underground_result_columns() -> JsValue {
+    let result = bdsp::underground::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_bdsp_underground(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: bdsp::underground::form_settings::Settings =
+        settings.into_serde().unwrap();
+    let results = bdsp::underground::form_settings::generate_underground(parsed_settings);
+    JsValue::from_serde(&results).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_swsh_overworld_field_groups() -> JsValue {
+    let result = swsh::form_settings::get_field_groups();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn get_swsh_overworld_result_columns() -> JsValue {
+    let result = swsh::form_settings::get_result_columns();
+    JsValue::from_serde(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn generate_swsh_overworld(settings: &JsValue) -> JsValue {
+    init_panic_hook();
+    let parsed_settings: swsh::form_settings::Settings = settings.into_serde().unwrap();
+    let results = swsh::form_settings::generate_overworld(parsed_settings);
     JsValue::from_serde(&results).unwrap()
 }

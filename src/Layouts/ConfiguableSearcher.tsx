@@ -3,6 +3,7 @@ import { mapValues } from 'lodash-es';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Skeleton from '@mui/material/Skeleton';
 import Toolbar from '@mui/material/Toolbar';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form } from 'formik';
@@ -13,7 +14,12 @@ import {
   FieldGroupComponent,
   InputFieldGroup,
 } from '../Components/FieldGroup';
-import { ParsedValue, getValueParser } from '../Components/InputField';
+import {
+  DeserializedValue,
+  SerializedValue,
+  deserialize,
+  serialize,
+} from '../Components/InputField';
 
 function mapFieldComponents<Result>(
   fieldGroups: FieldGroup[],
@@ -22,7 +28,7 @@ function mapFieldComponents<Result>(
   const fields: FieldGroupComponent[] = fieldGroups.flatMap(
     fieldGroup => fieldGroup.components,
   );
-  return fields.reduce((acc, component) => {
+  return fields.reduce((acc: Record<string, Result>, component) => {
     if (component.type !== 'label') {
       acc[component.id] = mapper(component);
     }
@@ -30,50 +36,50 @@ function mapFieldComponents<Result>(
   }, {});
 }
 
-export type SearcherConfig = {
-  getFieldGroups: () => FieldGroup[];
-  getResultColumns: () => string[];
+type Props = {
+  loading?: boolean;
+  fieldGroups: FieldGroup[];
+  resultColumns: string[];
   generateResults: (
-    formValues: Record<string, ParsedValue>,
+    formValues: Record<string, SerializedValue>,
   ) => ResultRow[] | Promise<ResultRow[]>;
 };
 
-type Props = {
-  config: SearcherConfig;
-};
-
 export function ConfiguableSearcher({
-  config: { getFieldGroups, getResultColumns, generateResults },
+  loading,
+  fieldGroups,
+  resultColumns,
+  generateResults,
 }: Props) {
   const { t } = useTranslation();
   const [isSearching, setIsSearching] = React.useState(false);
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState<ResultRow[]>([]);
 
-  const fieldGroups = React.useMemo(getFieldGroups, [getFieldGroups]);
-  const resultColumns = React.useMemo(getResultColumns, [getResultColumns]);
-
-  const valueParsers = React.useMemo(() => {
-    return mapFieldComponents(fieldGroups, component =>
-      getValueParser(component.type),
+  const serializers = React.useMemo(() => {
+    return mapFieldComponents(
+      fieldGroups ?? [],
+      component => (value: DeserializedValue) =>
+        serialize({ type: component.type, value }),
     );
   }, [fieldGroups]);
 
   const initialValues = React.useMemo(() => {
-    return mapFieldComponents(fieldGroups, component => {
-      return component.defaultValue.length === 0
-        ? component.defaultValue
-        : valueParsers[component.id](component.defaultValue);
+    return mapFieldComponents(fieldGroups ?? [], component => {
+      return deserialize({
+        type: component.type,
+        value: component.defaultValue || null,
+      });
     });
   }, [fieldGroups]);
 
   const handleSubmit = React.useCallback(
     async values => {
       setIsSearching(true);
-      const stringifiedValues = mapValues(values, (value, key) => {
-        return valueParsers[key](String(value));
+      const serialized = mapValues(values, (value, key) => {
+        return serializers[key](value);
       });
       try {
-        const newResults = await generateResults(stringifiedValues);
+        const newResults = await generateResults(serialized);
         setResults(newResults);
       } catch {
         setResults([]);
@@ -81,14 +87,18 @@ export function ConfiguableSearcher({
         setIsSearching(false);
       }
     },
-    [generateResults],
+    [generateResults, serializers],
   );
 
   return (
     <>
       <Toolbar />
 
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+      >
         {() => {
           return (
             <Box
@@ -103,12 +113,19 @@ export function ConfiguableSearcher({
                 flexDirection: 'column',
               }}
             >
-              {fieldGroups.map(fieldGroup => (
-                <InputFieldGroup
-                  key={fieldGroup.label}
-                  fieldGroup={fieldGroup}
-                />
-              ))}
+              {loading ? (
+                <>
+                  <InputFieldGroup loading />
+                  <InputFieldGroup loading />
+                </>
+              ) : (
+                fieldGroups.map(fieldGroup => (
+                  <InputFieldGroup
+                    key={fieldGroup.label}
+                    fieldGroup={fieldGroup}
+                  />
+                ))
+              )}
 
               <Button
                 disabled={isSearching}
@@ -125,7 +142,11 @@ export function ConfiguableSearcher({
                 {isSearching ? <CircularProgress size={24} /> : t('Search')}
               </Button>
 
-              <ResultTable columns={resultColumns} results={results} />
+              {loading ? (
+                <Skeleton variant="rectangular" height={200} />
+              ) : (
+                <ResultTable columns={resultColumns} results={results} />
+              )}
             </Box>
           );
         }}

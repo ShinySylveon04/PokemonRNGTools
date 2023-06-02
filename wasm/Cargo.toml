@@ -2,4 +2,5 @@
 members = [
     "chatot",
     "forms",
+    "plugin_template"
 ]

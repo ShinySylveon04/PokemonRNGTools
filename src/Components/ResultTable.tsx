@@ -85,11 +85,16 @@ export const ResultTable = ({ columns, results }: Props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (
+    event: React.MouseEvent | null,
+    newPage: number,
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };

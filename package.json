@@ -4,15 +4,21 @@
   "source": "public/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "start": "parcel public/index.html",
-    "build": "parcel build public/index.html",
-    "check:types": "tsc --noEmit --project ./tsconfig.json"
+    "build": "yarn build:wasm && yarn build:js",
+    "build:core_lib": "wasm-pack build ./wasm/chatot --target web --release",
+    "build:plugin_template": "wasm-pack build ./wasm/plugin_template --target web --release",
+    "build:wasm": "yarn build:core_lib && yarn build:plugin_template",
+    "build:js": "parcel build public/index.html",
+    "check:types": "tsc --noEmit --project ./tsconfig.json",
+    "start": "yarn build:wasm && parcel public/index.html",
+    "start:wasm": "nodemon --exec \"sh -c 'wasm-pack build ./wasm/chatot --target web'\" --watch wasm --ext rs"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.1.0",
     "@mui/material": "^5.0.0",
+    "@parcel/service-worker": "^2.8.3",
     "@types/react": "^16.8.6 || ^17.0.0",
     "comlink": "^4.3.1",
     "formik": "^2.2.9",
@@ -21,12 +27,12 @@
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.3.1",
     "lodash-es": "^4.17.21",
-    "parcel-plugin-service-worker-manifest": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.15.1",
     "react-router-dom": "6",
+    "ts-toolbelt": "^9.6.0",
     "workbox-cacheable-response": "^6.4.2",
     "workbox-expiration": "^6.4.2",
     "workbox-precaching": "^6.4.2",
@@ -34,8 +40,15 @@
     "workbox-strategies": "^6.4.2"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.5",
-    "parcel-plugin-wasm.rs": "^1.3.0",
+    "@parcel/packager-raw-url": "2.8.3",
+    "@parcel/transformer-webmanifest": "2.8.3",
+    "@types/lodash-es": "^4.17.7",
+    "@types/react-dom": "^18.2.4",
+    "@types/react-helmet": "^6.1.6",
+    "nodemon": "^2.0.22",
+    "parcel": "^2.8.3",
+    "parcel-config-precache-manifest": "^0.0.4",
+    "process": "^0.11.10",
     "typescript": "^5.0.4"
   }
 }

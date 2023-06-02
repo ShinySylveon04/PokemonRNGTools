@@ -1,11 +1,12 @@
-use crate::bdsp::stationary::settings::Settings;
-use crate::enums;
+use crate::bdsp::stationary::form_settings::Settings;
 use crate::rng::{Xoroshiro, Xorshift};
-use std::convert::TryFrom;
+use chatot_forms::{
+    self, Gen3Ability, Gen3Lead, Gender, MultiFilter, Nature, ShinyType, SingleFilter,
+};
 
 use crate::bdsp::stationary::generator::Pokemon;
 
-type IVs = Vec<u32>;
+type IVs = [u8; 6];
 fn check_ivs(ivs: &IVs, min_ivs: &IVs, max_ivs: &IVs) -> bool {
     ivs.iter()
         .zip(min_ivs.iter())
@@ -22,15 +23,13 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
     let shiny_rand = rng.next_bdsp();
     let pid = rng.next_bdsp();
 
-    let shiny = enums::Shiny::calculate_shiny_gen8(pid, shiny_rand);
-
-    if settings.shiny_filter != shiny {
+    let shiny = ShinyType::calculate_shiny_gen8(pid, shiny_rand);
+    if !ShinyType::passes_filter(&settings.shiny_type, shiny) {
         return None;
     }
 
-    let mut ivs = vec![32, 32, 32, 32, 32, 32];
-
-    if settings.set_ivs {
+    let mut ivs: IVs = [32, 32, 32, 32, 32, 32];
+    if settings.pokemon.set_ivs() {
         for _ in 0..3 {
             let mut index: usize;
             loop {
@@ -45,54 +44,45 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
 
     for i in ivs.iter_mut() {
         if *i == 32 {
-            *i = rng.next_bdsp() % 32
+            *i = (rng.next_bdsp() % 32) as u8
         };
     }
 
-    if !check_ivs(&ivs, &settings.min_ivs, &settings.max_ivs) {
+    if !check_ivs(&ivs, &settings.min_ivs(), &settings.max_ivs()) {
         return None;
     }
 
     let ability_rand = rng.next_bdsp() & 1;
-
-    let ability = enums::Ability::try_from(ability_rand - (ability_rand / 2) * 2)
-        .unwrap_or(enums::Ability::Ability0);
-
-    if settings.ability_filter != ability {
+    let ability_rand = (ability_rand - (ability_rand / 2) * 2) as u8;
+    let ability: Gen3Ability = ability_rand.into();
+    if !Gen3Ability::passes_filter(settings.pokemon.ability(), ability) {
         return None;
     }
 
-    let gender = match enums::get_set_gender_from_ratio(&settings.gender_ratio) {
+    let gender_ratio = settings.pokemon.gender_ratio();
+    let gender = match gender_ratio.get_set_gender() {
         Some(set_gender) => set_gender,
         None => {
             let gender_rand = rng.next_bdsp();
-            let gender_num = (gender_rand - (gender_rand / 253) * 253) + 1;
-            enums::get_gender_from_ratio(&settings.gender_ratio, gender_num)
+            let gender_num = ((gender_rand - (gender_rand / 253) * 253) + 1) as u8;
+            gender_ratio.get_gender(gender_num)
         }
     };
 
-    if settings.gender_filter != gender {
+    if !Gender::passes_filter(settings.gender, gender) {
         return None;
     }
 
-    let nature = match enums::get_sync_nature(&settings.lead_filter) {
-        Some(set_nature) => set_nature,
+    let nature = match settings.gen3_lead {
+        // Can be anything - we're going to render "Synchronize" to the user
+        Some(Gen3Lead::Synchronize) => Nature::Hardy,
         None => {
             let nature_rand = rng.next_bdsp() % 25;
-            enums::Nature::try_from(nature_rand as u16).unwrap_or(enums::Nature::Hardy)
+            Nature::from(nature_rand as u8)
         }
     };
 
-    let natures: Vec<enums::DeprecatedNatureFilter> = settings
-        .nature_filter
-        .iter()
-        .map(|nature| {
-            enums::DeprecatedNatureFilter::try_from(*nature as u16)
-                .unwrap_or(enums::DeprecatedNatureFilter::Hardy)
-        })
-        .collect();
-
-    if !natures.iter().any(|nat| *nat == nature) {
+    if !Nature::passes_filter(&settings.nature_multiselect, Some(nature)) {
         return None;
     }
 
@@ -100,7 +90,7 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
         shiny,
         pid,
         ec,
-        nature: enums::Nature::try_from(nature as u16).unwrap_or(enums::Nature::Hardy),
+        nature,
         ivs,
         ability,
         gender,
@@ -110,55 +100,66 @@ pub fn generate_pokemon(mut seed_rng: Xorshift, settings: &Settings) -> Option<P
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::bdsp::stationary::form_settings::StaticPokemon;
     use std::vec;
 
     #[test]
     fn should_generate_pokemon() {
         let mut rng = Xorshift::from_state([1, 2, 3, 4]);
         let settings = Settings {
-            nature_filter: vec![25],
-            rng_state: vec![1, 2, 3, 4],
+            nature_multiselect: vec![],
+            shiny_type: vec![],
+            seed_0: 1,
+            seed_1: 2,
+            seed_2: 3,
+            seed_3: 4,
             delay: 0,
             min_advances: 0,
             max_advances: 10,
-            gender_ratio: enums::DeprecatedGenderRatio::Genderless,
-            lead_filter: enums::LeadFilter::None,
-            shiny_filter: enums::ShinyFilter::None,
-            ability_filter: enums::AbilityFilter::Any,
-            gender_filter: enums::DeprecatedGenderFilter::Any,
-            min_ivs: vec![0, 0, 0, 0, 0, 0],
-            max_ivs: vec![31, 31, 31, 31, 31, 31],
-            set_ivs: true,
-            is_roamer: true,
+            gen3_lead: None,
+            gender: None,
+            pokemon: StaticPokemon::Mesprit,
+            min_hp_iv: 0,
+            min_atk_iv: 0,
+            min_def_iv: 0,
+            min_spa_iv: 0,
+            min_spd_iv: 0,
+            min_spe_iv: 0,
+            max_hp_iv: 31,
+            max_atk_iv: 31,
+            max_def_iv: 31,
+            max_spa_iv: 31,
+            max_spd_iv: 31,
+            max_spe_iv: 31,
         };
 
         let expected_results = vec![
             Pokemon {
-                shiny: enums::Shiny::None,
+                shiny: None,
                 pid: 0x88C59540,
                 ec: 2147485709,
-                nature: enums::Nature::Naive,
-                ivs: vec![2, 31, 27, 30, 31, 31],
-                ability: enums::Ability::Ability0,
-                gender: enums::Gender::Genderless,
+                nature: Nature::Naive,
+                ivs: [2, 31, 27, 30, 31, 31],
+                ability: Gen3Ability::Ability0,
+                gender: Gender::Genderless,
             },
             Pokemon {
-                shiny: enums::Shiny::None,
+                shiny: None,
                 pid: 0xEB66944A,
                 ec: 2147489823,
-                nature: enums::Nature::Bold,
-                ivs: vec![11, 31, 31, 20, 31, 30],
-                ability: enums::Ability::Ability1,
-                gender: enums::Gender::Genderless,
+                nature: Nature::Bold,
+                ivs: [11, 31, 31, 20, 31, 30],
+                ability: Gen3Ability::Ability1,
+                gender: Gender::Genderless,
             },
             Pokemon {
-                shiny: enums::Shiny::None,
+                shiny: None,
                 pid: 0x2D994828,
                 ec: 2147483652,
-                nature: enums::Nature::Bold,
-                ivs: vec![14, 31, 31, 24, 31, 15],
-                ability: enums::Ability::Ability0,
-                gender: enums::Gender::Genderless,
+                nature: Nature::Bold,
+                ivs: [14, 31, 31, 24, 31, 15],
+                ability: Gen3Ability::Ability0,
+                gender: Gender::Genderless,
             },
         ];
 
