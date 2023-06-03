@@ -44,11 +44,7 @@ pub enum Gen3Ability {
 
 impl SingleFilter for Gen3Ability {}
 
-impl std::fmt::Display for Gen3Ability {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", (*self as u8))
-    }
-}
+impl_display!(Gen3Ability);
 
 #[wasm_bindgen]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
